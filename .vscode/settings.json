@@ -10,6 +10,7 @@
   },
   "files.exclude": {
     "**/.idea": true,
+    "**/.github": true,
     "**/.mvn": true,
     "**/target": true
   },
