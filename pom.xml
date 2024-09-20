@@ -39,9 +39,14 @@
       <version>22</version>
     </dependency>
     <dependency>
-      <groupId>io.github.palexdev</groupId>
-      <artifactId>materialfx</artifactId>
-      <version>11.17.0</version>
+      <groupId>org.jgrapht</groupId>
+      <artifactId>jgrapht-core</artifactId>
+      <version>1.5.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jgrapht</groupId>
+      <artifactId>jgrapht-io</artifactId>
+      <version>1.5.2</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -59,17 +64,10 @@
       <version>1.5.6</version>
     </dependency>
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.30</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Optionally: parameterized tests support -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
@@ -95,14 +93,25 @@
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
-        <version>0.0.6</version>
+        <version>0.0.8</version>
         <executions>
           <execution>
             <!-- Default configuration for running -->
             <!-- Usage: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>uoa.lavs.App</mainClass>
+              <mainClass>org.se306.visualisation.FxApp</mainClass>
+            </configuration>
+          </execution>
+          <execution>
+          <!-- Debug configuration -->
+          <!-- Usage: mvn clean javafx:run@debug -->
+            <id>debug</id>
+            <configuration>
+              <mainClass>org.se306.visualisation.FxApp</mainClass>
+              <options>
+                <option>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:8000</option>
+              </options>
             </configuration>
           </execution>
         </executions>
@@ -112,14 +121,13 @@
         <version>3.2.1</version>
       </plugin>
     </plugins>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+
+    <pluginManagement>
       <plugins>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.4.0</version>
         </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.3.1</version>
@@ -144,7 +152,6 @@
           <artifactId>maven-deploy-plugin</artifactId>
           <version>3.1.2</version>
         </plugin>
-        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
           <version>3.12.1</version>
