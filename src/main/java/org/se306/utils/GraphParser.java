@@ -5,10 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
+import java.util.Map;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 import org.jgrapht.nio.dot.DOTImporter;
 import org.se306.App;
@@ -38,16 +39,17 @@ public class GraphParser {
   public static void graphToDot(Graph<Task, DefaultWeightedEdge> graph, String dotFileUrl) {
     DOTExporter<Task, DefaultWeightedEdge> exporter = new DOTExporter<>();
 
-    // exporter.setVertexAttributeProvider(
-    //     task -> {
-    //       String weight = Integer.toString(task.getWeight());
-    //       return Map.of("Weight", weight);
-    //     });
+    exporter.setVertexAttributeProvider(
+        task -> {
+          return Map.of("Weight", DefaultAttribute.createAttribute(task.getWeight()));
+        });
 
     // Create file if it does not exist
     try {
       Files.createDirectories(Paths.get(dotFileUrl).getParent());
-      Files.createFile(Paths.get(dotFileUrl));
+      if (!Files.exists(Paths.get(dotFileUrl))) {
+        Files.createFile(Paths.get(dotFileUrl));
+      }
     } catch (IOException e) {
       e.printStackTrace();
     }

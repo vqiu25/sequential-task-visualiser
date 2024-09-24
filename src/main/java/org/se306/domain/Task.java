@@ -12,4 +12,7 @@ public class Task {
     this.weight = weight;
   }
 
+  public int getWeight() {
+    return weight;
+  }
 }
