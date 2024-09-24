@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 import org.jgrapht.nio.dot.DOTImporter;
@@ -21,15 +21,31 @@ public class GraphParser {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GraphParser.class);
 
+  /**
+   * Reads a dot file and returns a graph
+   *
+   * @param dotFileUrl The URL of the dot file, relative to the resources/org/se306 folder
+   * @return The JGraphT SimpleDirectedWeightedGraph
+   */
   public static Graph<Task, DefaultWeightedEdge> dotToGraph(String dotFileUrl) {
-    Graph<Task, DefaultWeightedEdge> graph = new SimpleGraph<>(DefaultWeightedEdge.class);
+    Graph<Task, DefaultWeightedEdge> graph =
+        new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
     DOTImporter<Task, DefaultWeightedEdge> importer = new DOTImporter<>();
 
-    // Set how to read vertex attributes
+    // How to read vertex attributes: Weight
     importer.setVertexWithAttributesFactory(
         (id, attributes) -> {
           int weight = Integer.parseInt(attributes.get("Weight").getValue());
           return new Task(id, weight);
+        });
+
+    // How to read edge attributes: Weight
+    importer.setEdgeWithAttributesFactory(
+        (attributes) -> {
+          int weight = Integer.parseInt(attributes.get("Weight").getValue());
+          DefaultWeightedEdge edge = new DefaultWeightedEdge();
+          graph.setEdgeWeight(edge, weight);
+          return edge;
         });
 
     // Read from file
@@ -43,13 +59,26 @@ public class GraphParser {
     return graph;
   }
 
+  /**
+   * Writes a graph to a dot file
+   *
+   * @param graph The JGraphT graph
+   * @param dotFileUrl The URL of the dot file, relative to the resources/org/se306 folder
+   */
   public static void graphToDot(Graph<Task, DefaultWeightedEdge> graph, String dotFileUrl) {
     DOTExporter<Task, DefaultWeightedEdge> exporter = new DOTExporter<>();
 
-    // Set how to write vertex attributes
+    // How to write vertex attributes: Weight
     exporter.setVertexAttributeProvider(
         task -> {
           return Map.of("Weight", DefaultAttribute.createAttribute(task.getWeight()));
+        });
+
+    // How to write edge attributes: Weight
+    exporter.setEdgeAttributeProvider(
+        edge -> {
+          return Map.of(
+              "Weight", DefaultAttribute.createAttribute((int) graph.getEdgeWeight(edge)));
         });
 
     // Write to file
