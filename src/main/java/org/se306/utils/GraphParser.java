@@ -71,7 +71,7 @@ public class GraphParser {
     // How to write vertex attributes: Weight
     exporter.setVertexAttributeProvider(
         task -> {
-          return Map.of("Weight", DefaultAttribute.createAttribute(task.getWeight()));
+          return Map.of("Weight", DefaultAttribute.createAttribute(task.getTaskLength()));
         });
 
     // How to write edge attributes: Weight
