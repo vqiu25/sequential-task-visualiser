@@ -5,6 +5,7 @@ target/
 data/**
 !data/*/
 !data/**/.gitkeep
+test/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
