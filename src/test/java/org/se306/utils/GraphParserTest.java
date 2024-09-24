@@ -1,13 +1,13 @@
 package org.se306.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.se306.domain.Task;
 
@@ -18,25 +18,27 @@ public class GraphParserTest {
   public void testOutTreeFile() throws IOException, URISyntaxException {
     String expected =
         """
-        digraph G {
-          0 [Weight=1];
-          1 [Weight=2];
-          2 [Weight=3];
-          3 [Weight=4];
-          4 [Weight=5];
-          5 [Weight=6];
-          6 [Weight=7];
-          0 -> 1 [];
-          0 -> 2 [];
-          1 -> 3 [];
-          1 -> 4 [];
-          2 -> 5 [];
-          2 -> 6 [];
+        strict digraph G {
+          1 [ Weight="5" ];
+          2 [ Weight="6" ];
+          3 [ Weight="5" ];
+          4 [ Weight="6" ];
+          5 [ Weight="4" ];
+          6 [ Weight="7" ];
+          7 [ Weight="7" ];
+          1 -> 2 [ Weight="15" ];
+          1 -> 3 [ Weight="11" ];
+          1 -> 4 [ Weight="11" ];
+          2 -> 5 [ Weight="19" ];
+          2 -> 6 [ Weight="4" ];
+          2 -> 7 [ Weight="21" ];
         }
-        """; // Temp
+        """;
 
     testGraphParser("dot/Nodes_7_OutTree.dot", expected);
   }
+
+  
 
   private void testGraphParser(String dotFileUrl, String expected) throws IOException {
     String testPath = "test/" + dotFileUrl;
@@ -49,6 +51,8 @@ public class GraphParserTest {
 
     // Compare
     String actual = Files.readString(Paths.get(testPath));
-    assertEquals(expected, actual);
+    System.err.println(actual);
+    System.err.println(expected);
+    assertEquals(expected.replaceAll("\\s", ""), actual.replaceAll("\\s", "")); // Ignore whitespace
   }
 }
