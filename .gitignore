@@ -1,11 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-data/**
-!data/*/
-!data/**/.gitkeep
-test/
+out/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

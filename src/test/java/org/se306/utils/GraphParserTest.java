@@ -3,6 +3,7 @@ package org.se306.utils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,31 +17,32 @@ public class GraphParserTest {
 
   @Test
   public void testOutTreeFile() throws IOException, URISyntaxException {
-    String expected =
-        """
-        strict digraph G {
-          1 [ Weight="5" ];
-          2 [ Weight="6" ];
-          3 [ Weight="5" ];
-          4 [ Weight="6" ];
-          5 [ Weight="4" ];
-          6 [ Weight="7" ];
-          7 [ Weight="7" ];
-          1 -> 2 [ Weight="15" ];
-          1 -> 3 [ Weight="11" ];
-          1 -> 4 [ Weight="11" ];
-          2 -> 5 [ Weight="19" ];
-          2 -> 6 [ Weight="4" ];
-          2 -> 7 [ Weight="21" ];
-        }
-        """;
-
-    testGraphParser("dot/Nodes_7_OutTree.dot", expected);
+    testGraphParser("dot/Nodes_7_OutTree.dot");
   }
 
-  
+  @Test
+  public void testRandomFile() throws IOException, URISyntaxException {
+    testGraphParser("dot/Nodes_8_Random.dot");
+  }
 
-  private void testGraphParser(String dotFileUrl, String expected) throws IOException {
+  @Test
+  public void testSeriesParallelFile() throws IOException, URISyntaxException {
+    testGraphParser("dot/Nodes_9_SeriesParallel.dot");
+  }
+
+  @Test
+  public void testRandom2File() throws IOException, URISyntaxException {
+    testGraphParser("dot/Nodes_10_Random.dot");
+  }
+
+  @Test
+  public void testOutTree2File() throws IOException, URISyntaxException {
+    testGraphParser("dot/Nodes_11_OutTree.dot");
+  }
+
+  private void testGraphParser(String dotFileUrl) throws IOException, URISyntaxException {
+    URI expectedPath =
+        GraphParserTest.class.getResource(dotFileUrl.replace("dot/", "expected/")).toURI();
     String testPath = "test/" + dotFileUrl;
 
     // Read
@@ -49,10 +51,9 @@ public class GraphParserTest {
     // Write
     GraphParser.graphToDot(graph, testPath);
 
-    // Compare
-    String actual = Files.readString(Paths.get(testPath));
-    System.err.println(actual);
-    System.err.println(expected);
-    assertEquals(expected.replaceAll("\\s", ""), actual.replaceAll("\\s", "")); // Ignore whitespace
+    // Compare (ignoring whitespace)
+    String expected = Files.readString(Paths.get(expectedPath)).replaceAll("\\s", "");
+    String actual = Files.readString(Paths.get(testPath)).replaceAll("\\s", "");
+    assertEquals(expected, actual);
   }
 }
