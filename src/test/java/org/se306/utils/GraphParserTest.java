@@ -43,7 +43,7 @@ public class GraphParserTest {
   private void testGraphParser(String dotFileUrl) throws IOException, URISyntaxException {
     URI expectedPath =
         GraphParserTest.class.getResource(dotFileUrl.replace("dot/", "expected/")).toURI();
-    String testPath = "test/" + dotFileUrl;
+    String testPath = "out/" + dotFileUrl;
 
     // Read
     Graph<Task, DefaultWeightedEdge> graph = GraphParser.dotToGraph(dotFileUrl);
