@@ -1,0 +1,31 @@
+strict digraph G {
+  1 [ Weight="6" ];
+  2 [ Weight="10" ];
+  3 [ Weight="3" ];
+  4 [ Weight="8" ];
+  5 [ Weight="5" ];
+  6 [ Weight="5" ];
+  7 [ Weight="7" ];
+  8 [ Weight="8" ];
+  9 [ Weight="3" ];
+  10 [ Weight="8" ];
+  1 -> 2 [ Weight="34" ];
+  1 -> 3 [ Weight="24" ];
+  1 -> 4 [ Weight="44" ];
+  5 -> 6 [ Weight="48" ];
+  5 -> 7 [ Weight="19" ];
+  5 -> 8 [ Weight="39" ];
+  6 -> 2 [ Weight="10" ];
+  6 -> 9 [ Weight="48" ];
+  6 -> 10 [ Weight="48" ];
+  3 -> 8 [ Weight="10" ];
+  3 -> 9 [ Weight="48" ];
+  3 -> 10 [ Weight="48" ];
+  3 -> 4 [ Weight="39" ];
+  8 -> 9 [ Weight="15" ];
+  8 -> 10 [ Weight="39" ];
+  8 -> 4 [ Weight="29" ];
+  9 -> 10 [ Weight="15" ];
+  9 -> 4 [ Weight="34" ];
+  10 -> 4 [ Weight="39" ];
+}
