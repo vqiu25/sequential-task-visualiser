@@ -108,6 +108,17 @@
               <mainClass>org.se306.visualisation.FxApp</mainClass>
             </configuration>
           </execution>
+          <execution>
+          <!-- Debug configuration -->
+          <!-- Usage: mvn clean javafx:run@debug -->
+            <id>debug</id>
+            <configuration>
+              <mainClass>org.se306.visualisation.FxApp</mainClass>
+              <options>
+                <option>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:8000</option>
+              </options>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>

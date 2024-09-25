@@ -1,0 +1,23 @@
+strict digraph G {
+  1 [ Weight="10" ];
+  2 [ Weight="6" ];
+  3 [ Weight="7" ];
+  4 [ Weight="5" ];
+  5 [ Weight="7" ];
+  6 [ Weight="2" ];
+  7 [ Weight="2" ];
+  8 [ Weight="7" ];
+  9 [ Weight="9" ];
+  1 -> 2 [ Weight="51" ];
+  1 -> 3 [ Weight="22" ];
+  1 -> 4 [ Weight="44" ];
+  2 -> 6 [ Weight="59" ];
+  2 -> 7 [ Weight="15" ];
+  2 -> 8 [ Weight="59" ];
+  3 -> 5 [ Weight="59" ];
+  4 -> 5 [ Weight="66" ];
+  9 -> 5 [ Weight="37" ];
+  6 -> 9 [ Weight="22" ];
+  7 -> 9 [ Weight="59" ];
+  8 -> 9 [ Weight="59" ];
+}
