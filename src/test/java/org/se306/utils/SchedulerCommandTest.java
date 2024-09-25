@@ -26,7 +26,7 @@ public class SchedulerCommandTest {
     assertEquals(5, command.getProcessors());
     assertEquals(1, command.getCores());
     assertEquals("input-output.dot", command.getOutputFileName());
-    assertFalse(command.checkVisualise());
+    assertFalse(command.toVisualise());
   }
 
   @Test
@@ -42,7 +42,7 @@ public class SchedulerCommandTest {
     assertEquals(4, command.getCores());
     assertEquals("output.dot", command.getOutputFileName());
     assertNotEquals("output", command.getOutputFileName());
-    assertTrue(command.checkVisualise());
+    assertTrue(command.toVisualise());
   }
 
   @Test
@@ -58,7 +58,7 @@ public class SchedulerCommandTest {
     assertEquals(4, command.getCores());
     assertEquals("output.dot", command.getOutputFileName());
     assertNotEquals("output", command.getOutputFileName());
-    assertFalse(command.checkVisualise());
+    assertFalse(command.toVisualise());
   }
 
   @Test
@@ -74,4 +74,6 @@ public class SchedulerCommandTest {
     // Assert
     assertNotEquals(0, exitCode);
   }
+
+  // TODO: test for invalid path names?
 }

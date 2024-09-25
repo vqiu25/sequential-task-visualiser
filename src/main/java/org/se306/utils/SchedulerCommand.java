@@ -5,11 +5,10 @@ import picocli.CommandLine.Parameters;
 
 public class SchedulerCommand implements Runnable {
 
-  // TODO: sort out relative paths or something
   @Parameters(
       index = "0",
       paramLabel = "INPUT.dot",
-      description = "a task graph with integer weights in dot format")
+      description = "a task graph with integer weights in dot format in the same directory")
   private String inputFileName;
 
   @Parameters(
@@ -36,8 +35,6 @@ public class SchedulerCommand implements Runnable {
 
   @Override
   public void run() {
-    // TODO: parse/validate input file name when reading?
-
     if (outputFileName == null) {
       outputFileName =
           String.format(
@@ -60,7 +57,7 @@ public class SchedulerCommand implements Runnable {
     return cores;
   }
 
-  public boolean checkVisualise() {
+  public boolean toVisualise() {
     return visualise;
   }
 
