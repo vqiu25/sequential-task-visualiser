@@ -1,39 +1,56 @@
 package org.se306.algorithms;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.se306.domain.Task;
 
 public class ValidSchedule {
-  private Graph<Task, DefaultEdge> findValidSchedule(Graph<Task, DefaultEdge> graph, int numProcessors) {
-    TopologicalOrderIterator<Task, DefaultEdge> iterator = new TopologicalOrderIterator<Task, DefaultEdge>(graph);
-    Map<Integer, Integer> processorNextStartTimes = new HashMap<Integer, Integer>();
+  public void findValidSchedule(Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
+    // Perform topological sorting
+    TopologicalOrderIterator<Task, DefaultWeightedEdge> iterator =
+        new TopologicalOrderIterator<>(graph);
 
-    for (int i = 1; i <= numProcessors; i++) {
-      processorNextStartTimes.put(i, 0);
-    }
+    // Tracks the time each processor is available to start a new task
+    int[] processorAvailableTime = new int[numProcessors];
 
+    // Process tasks in topological order
     while (iterator.hasNext()) {
-      Task vertex = iterator.next();
-      int bestStartTime = Integer.MAX_VALUE;
-      int bestProcessor = -1;
-      for (int processor = 1; processor <= numProcessors; processor++) {
-        int startTime = processorNextStartTimes.get(processor); // Fix this calculation to include communication cost
-        if (startTime < bestStartTime) {
-          bestStartTime = startTime;
-          bestProcessor = processor;
+      Task task = iterator.next();
+
+      // Initialise variables for processor assignment
+      int chosenProcessor = -1;
+      int minStartTime = Integer.MAX_VALUE;
+
+      // Try assigning the task to each processor and pick the best
+      for (int i = 0; i < numProcessors; i++) {
+        int earliestStartTime = processorAvailableTime[i];
+
+        // Calculate earliest start time on processor i, considering dependencies
+        for (DefaultWeightedEdge incomingEdge : graph.incomingEdgesOf(task)) {
+          Task predecessor = graph.getEdgeSource(incomingEdge);
+          int communicationDelay = (int) graph.getEdgeWeight(incomingEdge);
+          int finishTime = predecessor.getStartTime() + predecessor.getTaskLength();
+
+          if (predecessor.getProcessor() != i) {
+            finishTime += communicationDelay;
+          }
+          earliestStartTime = Math.max(earliestStartTime, finishTime);
+        }
+
+        // Update if this processor allows an earlier start time
+        if (earliestStartTime < minStartTime) {
+          minStartTime = earliestStartTime;
+          chosenProcessor = i;
         }
       }
 
-      vertex.setStartTime(bestStartTime);
-      vertex.setProcessor(bestProcessor);
-      processorNextStartTimes.put(bestProcessor, vertex.getFinishTime());
-      // Modify the graph object as well
-    }
+      // Assign the task to the chosen processor and update times
+      task.setStartTime(minStartTime);
+      task.setProcessor(chosenProcessor);
 
-    return graph;
+      // Update processor availability time
+      processorAvailableTime[chosenProcessor] = minStartTime + task.getTaskLength();
+    }
   }
 }
