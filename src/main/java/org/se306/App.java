@@ -1,10 +1,13 @@
 package org.se306;
 
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.se306.domain.Task;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import org.se306.utils.GraphParser;
+import org.se306.utils.SchedulerCommand;
+import org.se306.visualisation.FxApp;
 import org.slf4j.Logger;
+import picocli.CommandLine;
 
 /** Hello world! */
 public class App {
@@ -12,25 +15,43 @@ public class App {
   private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(App.class);
 
   public static void main(String[] args) {
+    // TODO: remove logging methods after project completion
+    logArgs(args);
+    SchedulerCommand command = new SchedulerCommand();
+    CommandLine cmdLine = new CommandLine(command);
+    if (cmdLine.execute(args) != 0) {
+      return;
+    }
+    logCommandInfo(command);
+
+    AppState state = AppState.getInstance();
+    try (InputStream inputStream = new FileInputStream(command.getInputFileName())) {
+      state.setGraph(GraphParser.dotToGraph(inputStream));
+    } catch (IOException e) {
+      LOGGER.error("Error reading input file", e);
+      return;
+    }
+
+    // run scheduler here, using command.getProcessors(), command.getCores(), and state.getGraph()
+
+    // execute visualisation if indicated
+    if (command.toVisualise()) {
+      FxApp.launch(FxApp.class);
+    }
+
+    // output graph to dot file
+    GraphParser.graphToDot(state.getGraph(), command.getOutputFileName());
+  }
+
+  private static void logArgs(String[] args) {
     LOGGER.info("Arguments: {}", (Object) args);
+  }
 
-    // SchedulerCommand command = new SchedulerCommand();
-    // CommandLine cmdLine = new CommandLine(command);
-    // if (cmdLine.execute(args) != 0) {
-    //   return;
-    // }
-
-    // LOGGER.info("Input file: {}", command.getInputFileName());
-    // LOGGER.info("Processors: {}", command.getProcessors());
-    // LOGGER.info("Cores: {}", command.getCores());
-    // LOGGER.info("Output file: {}", command.getOutputFileName());
-    // LOGGER.info("Visualise: {}", command.toVisualise());
-
-    // if (command.toVisualise()) {
-    //   FxApp.launch(FxApp.class);
-    // }
-
-    Graph<Task, DefaultWeightedEdge> graph = GraphParser.dotToGraph("dot/Nodes_7_OutTree.dot");
-    GraphParser.graphToDot(graph, "App.dot");
+  private static void logCommandInfo(SchedulerCommand command) {
+    LOGGER.info("Input file: {}", command.getInputFileName());
+    LOGGER.info("Processors: {}", command.getProcessors());
+    LOGGER.info("Cores: {}", command.getCores());
+    LOGGER.info("Output file: {}", command.getOutputFileName());
+    LOGGER.info("Visualise: {}", command.toVisualise());
   }
 }
