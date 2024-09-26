@@ -15,4 +15,20 @@ public class Task {
   public int getTaskLength() {
     return taskLength;
   }
+
+  public int getStartTime() {
+    return startTime;
+  }
+
+  public void setStartTime(int startTime) {
+    this.startTime = startTime;
+  }
+
+  public int getProcessor() {
+    return processor;
+  }
+
+  public void setProcessor(int processor) {
+    this.processor = processor;
+  }
 }

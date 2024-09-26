@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
@@ -72,7 +73,9 @@ public class GraphParser {
     // How to write vertex attributes: Weight
     exporter.setVertexAttributeProvider(
         task -> {
-          return Map.of("Weight", DefaultAttribute.createAttribute(task.getTaskLength()));
+          return Map.of("Weight", DefaultAttribute.createAttribute(task.getTaskLength()),
+              "Start", DefaultAttribute.createAttribute(task.getStartTime()),
+              "Processor", DefaultAttribute.createAttribute(task.getProcessor()));
         });
 
     // How to write edge attributes: Weight
