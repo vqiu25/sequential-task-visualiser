@@ -6,7 +6,7 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.se306.domain.Task;
 
 public class ValidSchedule {
-  public void findValidSchedule(Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
+  public static void findValidSchedule(Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
     // Perform topological sorting
     TopologicalOrderIterator<Task, DefaultWeightedEdge> iterator =
         new TopologicalOrderIterator<>(graph);
