@@ -3,6 +3,7 @@ package org.se306.utils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -10,6 +11,7 @@ import java.nio.file.Paths;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.Test;
+import org.se306.AppTest;
 import org.se306.domain.Task;
 
 /** Tests GraphParser by reading in dot file then writing it back out and checking output */
@@ -41,12 +43,12 @@ public class GraphParserTest {
   }
 
   private void testGraphParser(String dotFileUrl) throws IOException, URISyntaxException {
-    URI expectedPath =
-        GraphParserTest.class.getResource(dotFileUrl.replace("dot/", "expected/")).toURI();
-    String testPath = "out/" + dotFileUrl;
+    URI expectedPath = AppTest.class.getResource(dotFileUrl.replace("dot/", "expected/")).toURI();
+    String testPath = "out/" + dotFileUrl.replace("dot/", "");
 
     // Read
-    Graph<Task, DefaultWeightedEdge> graph = GraphParser.dotToGraph(dotFileUrl);
+    InputStream dotFileInputStream = AppTest.class.getResourceAsStream(dotFileUrl);
+    Graph<Task, DefaultWeightedEdge> graph = GraphParser.dotToGraph(dotFileInputStream);
 
     // Write
     GraphParser.graphToDot(graph, testPath);

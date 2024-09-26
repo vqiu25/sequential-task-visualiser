@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.jgrapht.nio.DefaultAttribute;
+import org.jgrapht.nio.ImportException;
 import org.jgrapht.nio.dot.DOTExporter;
 import org.jgrapht.nio.dot.DOTImporter;
-import org.se306.App;
 import org.se306.domain.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +25,10 @@ public class GraphParser {
   /**
    * Reads a dot file and returns a graph
    *
-   * @param dotFileUrl The URL of the dot file, relative to the resources/org/se306 folder
+   * @param dotFileInputStream The InputStream opened from the dot file
    * @return The JGraphT SimpleDirectedWeightedGraph
    */
-  public static Graph<Task, DefaultWeightedEdge> dotToGraph(String dotFileUrl) {
+  public static Graph<Task, DefaultWeightedEdge> dotToGraph(InputStream dotFileInputStream) {
     Graph<Task, DefaultWeightedEdge> graph =
         new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
     DOTImporter<Task, DefaultWeightedEdge> importer = new DOTImporter<>();
@@ -48,11 +49,11 @@ public class GraphParser {
           return edge;
         });
 
-    // Read from file
-    try (InputStream dotFileInputStream = App.class.getResourceAsStream(dotFileUrl)) {
+    // Store graph
+    try {
       importer.importGraph(graph, dotFileInputStream);
-    } catch (IOException e) {
-      LOGGER.error("Error reading dot file", e);
+    } catch (ImportException e) {
+      LOGGER.error("Error storing graph from dot file", e);
       throw new RuntimeException(e);
     }
 
@@ -63,7 +64,7 @@ public class GraphParser {
    * Writes a graph to a dot file
    *
    * @param graph The JGraphT graph
-   * @param dotFileUrl The URL of the dot file, relative to the resources/org/se306 folder
+   * @param dotFileUrl The String URL of the dot file, relative to the root directory
    */
   public static void graphToDot(Graph<Task, DefaultWeightedEdge> graph, String dotFileUrl) {
     DOTExporter<Task, DefaultWeightedEdge> exporter = new DOTExporter<>();
@@ -92,11 +93,22 @@ public class GraphParser {
     }
   }
 
+  /**
+   * Creates a file if it does not exist, and if the url contains a parent directory, creates the
+   * directory if it does not exist
+   *
+   * @param dotFileUrl the URL of the file e.g. dot/graph.dot, or just graph.dot
+   */
   private static void createFileIfNotExists(String dotFileUrl) {
     try {
-      Files.createDirectories(Paths.get(dotFileUrl).getParent());
-      if (!Files.exists(Paths.get(dotFileUrl))) {
-        Files.createFile(Paths.get(dotFileUrl));
+      Path dir = Paths.get(dotFileUrl).getParent();
+      if (dir != null) {
+        Files.createDirectories(dir);
+      }
+
+      Path file = Paths.get(dotFileUrl);
+      if (!Files.exists(file)) {
+        Files.createFile(file);
       }
     } catch (IOException e) {
       LOGGER.error("Error creating file", e);

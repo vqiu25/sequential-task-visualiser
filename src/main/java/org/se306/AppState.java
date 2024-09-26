@@ -16,4 +16,12 @@ public class AppState {
     }
     return instance;
   }
+
+  public void setGraph(Graph<Task, DefaultWeightedEdge> graph) {
+    this.graph = graph;
+  }
+
+  public Graph<Task, DefaultWeightedEdge> getGraph() {
+    return graph;
+  }
 }
