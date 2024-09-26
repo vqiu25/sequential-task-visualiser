@@ -25,7 +25,7 @@ public class GraphParser {
   /**
    * Reads a dot file and returns a graph
    *
-   * @param dotFileUrl The URL of the dot file, relative to the resources/org/se306 folder
+   * @param dotFileInputStream The InputStream opened from the dot file
    * @return The JGraphT SimpleDirectedWeightedGraph
    */
   public static Graph<Task, DefaultWeightedEdge> dotToGraph(InputStream dotFileInputStream) {
@@ -64,7 +64,7 @@ public class GraphParser {
    * Writes a graph to a dot file
    *
    * @param graph The JGraphT graph
-   * @param dotFileUrl The URL of the dot file, relative to the resources/org/se306 folder
+   * @param dotFileUrl The String URL of the dot file, relative to the root directory
    */
   public static void graphToDot(Graph<Task, DefaultWeightedEdge> graph, String dotFileUrl) {
     DOTExporter<Task, DefaultWeightedEdge> exporter = new DOTExporter<>();
@@ -93,6 +93,12 @@ public class GraphParser {
     }
   }
 
+  /**
+   * Creates a file if it does not exist, and if the url contains a parent directory, creates the
+   * directory if it does not exist
+   *
+   * @param dotFileUrl the URL of the file e.g. dot/graph.dot, or just graph.dot
+   */
   private static void createFileIfNotExists(String dotFileUrl) {
     try {
       Path dir = Paths.get(dotFileUrl).getParent();
