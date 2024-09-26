@@ -3,10 +3,12 @@ package org.se306;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.se306.utils.GraphParser;
 import org.se306.utils.SchedulerCommand;
 import org.se306.visualisation.FxApp;
 import org.slf4j.Logger;
+
 import picocli.CommandLine;
 
 /** Hello world! */
@@ -15,11 +17,11 @@ public class App {
   private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(App.class);
 
   public static void main(String[] args) {
-    // TODO: remove logging methods after project completion
     logArgs(args);
     SchedulerCommand command = new SchedulerCommand();
     CommandLine cmdLine = new CommandLine(command);
     if (cmdLine.execute(args) != 0) {
+      LOGGER.error("Error parsing command line arguments");
       return;
     }
     logCommandInfo(command);
@@ -36,7 +38,7 @@ public class App {
 
     // execute visualisation if indicated
     if (command.toVisualise()) {
-      FxApp.launch(FxApp.class);
+      FxApp.launch(FxApp.class); // Note: this is blocking, but we're allowed to use extra threads for JavaFX
     }
 
     // output graph to dot file
@@ -44,7 +46,7 @@ public class App {
   }
 
   private static void logArgs(String[] args) {
-    LOGGER.info("Arguments: {}", (Object) args);
+    LOGGER.debug("Arguments: {}", (Object) args);
   }
 
   private static void logCommandInfo(SchedulerCommand command) {
