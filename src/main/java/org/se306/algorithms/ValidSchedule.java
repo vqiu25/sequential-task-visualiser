@@ -23,16 +23,16 @@ public class ValidSchedule {
       int minStartTime = Integer.MAX_VALUE;
 
       // Try assigning the task to each processor and pick the best
-      for (int i = 0; i < numProcessors; i++) {
-        int earliestStartTime = processorAvailableTime[i];
+      for (int currentProcessor = 1; currentProcessor <= numProcessors; currentProcessor++) {
+        int earliestStartTime = processorAvailableTime[currentProcessor - 1]; // -1 because array is 0-indexed
 
-        // Calculate earliest start time on processor i, considering dependencies
+        // Calculate earliest start time on processor currentProcessor, considering dependencies
         for (DefaultWeightedEdge incomingEdge : graph.incomingEdgesOf(task)) {
           Task predecessor = graph.getEdgeSource(incomingEdge);
           int communicationDelay = (int) graph.getEdgeWeight(incomingEdge);
           int finishTime = predecessor.getStartTime() + predecessor.getTaskLength();
 
-          if (predecessor.getProcessor() != i) {
+          if (predecessor.getProcessor() != currentProcessor) {
             finishTime += communicationDelay;
           }
           earliestStartTime = Math.max(earliestStartTime, finishTime);
@@ -41,7 +41,7 @@ public class ValidSchedule {
         // Update if this processor allows an earlier start time
         if (earliestStartTime < minStartTime) {
           minStartTime = earliestStartTime;
-          chosenProcessor = i;
+          chosenProcessor = currentProcessor;
         }
       }
 
@@ -50,7 +50,7 @@ public class ValidSchedule {
       task.setProcessor(chosenProcessor);
 
       // Update processor availability time
-      processorAvailableTime[chosenProcessor] = minStartTime + task.getTaskLength();
+      processorAvailableTime[chosenProcessor - 1] = minStartTime + task.getTaskLength(); // -1 because array is 0-indexed
     }
   }
 }
