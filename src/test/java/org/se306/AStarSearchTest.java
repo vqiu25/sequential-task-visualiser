@@ -236,6 +236,7 @@ public class AStarSearchTest {
 
         // Won't always be true though also since these graph inputs are so small sometimes it's not more efficent
         assertTrue(durationCustomHeuristic <= durationZeroHeuristic, "Custom heuristic should be faster or equal in performance");
+        System.out.println("Lowkey I dont know how useful this test is i think graph is too small for any significant difference in efficency with heursitic");
     }
 
 
@@ -392,6 +393,71 @@ public class AStarSearchTest {
 
         assertNotNull(optimalOrder);
         System.out.println("Optimal Task Execution Order: " + optimalOrder);
+    }
+
+    @Test
+    public void testCompare() {
+        //Create a directed, weighted graph
+        Graph<String, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+
+        //Add vertex
+        graph.addVertex("0");
+        graph.addVertex("1");
+        graph.addVertex("2");
+        graph.addVertex("3");
+        graph.addVertex("4");
+        graph.addVertex("5");
+        graph.addVertex("6");
+        graph.addVertex("7");
+        graph.addVertex("8");
+
+
+        graph.setEdgeWeight(graph.addEdge("0", "2"), 51);
+        graph.setEdgeWeight(graph.addEdge("0", "3"), 22);
+        graph.setEdgeWeight(graph.addEdge("0", "4"), 44);
+        graph.setEdgeWeight(graph.addEdge("2", "6"), 59);
+        graph.setEdgeWeight(graph.addEdge("2", "7"), 15);
+        graph.setEdgeWeight(graph.addEdge("2", "8"), 59);
+        graph.setEdgeWeight(graph.addEdge("3", "1"), 59);
+        graph.setEdgeWeight(graph.addEdge("4", "1"), 66);
+        graph.setEdgeWeight(graph.addEdge("5", "1"), 37);
+        graph.setEdgeWeight(graph.addEdge("6", "5"), 22);
+        graph.setEdgeWeight(graph.addEdge("7", "5"), 59);
+        graph.setEdgeWeight(graph.addEdge("8", "5"), 59);
+
+        Map<String, Double> taskExecutionTimes = new HashMap<>();
+        taskExecutionTimes.put("0", 10.0);
+        taskExecutionTimes.put("1", 7.0);
+        taskExecutionTimes.put("2", 6.0);
+        taskExecutionTimes.put("3", 7.0);
+        taskExecutionTimes.put("4", 5.0);
+        taskExecutionTimes.put("5", 9.0);
+        taskExecutionTimes.put("6", 2.0);
+        taskExecutionTimes.put("7", 2.0);
+        taskExecutionTimes.put("8", 7.0);
+
+        TopologicalOrderIterator<String, DefaultWeightedEdge> topologicalOrderIterator = new TopologicalOrderIterator<>(graph);
+        List<String> topologicalOrder = new ArrayList<>();
+        while (topologicalOrderIterator.hasNext()) {
+            topologicalOrder.add(topologicalOrderIterator.next());
+        }
+
+
+        assertNotNull(topologicalOrder);
+        System.out.println("Topological Task Execution Order: " + topologicalOrder);
+
+
+        AStarSearch.Heuristic<String> customHeuristic = (node, goal) -> 0.0;
+
+
+        AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph, customHeuristic, taskExecutionTimes);
+
+
+        List<String> optimalOrder = aStarSearch.findOptimalTaskOrder();
+
+
+        assertNotNull(optimalOrder);
+        System.out.println("A* Search Optimal Task Execution Order: " + optimalOrder);
     }
 
 }
