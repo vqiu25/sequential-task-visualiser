@@ -39,4 +39,32 @@ public class Task {
   public int getFinishTime() {
     return startTime + taskLength;
   }
+
+  @Override
+  public String toString() {
+    return id;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    Task other = (Task) obj;
+    if (id == null) {
+      return false;
+    }
+    return id.equals(other.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return id.hashCode();
+  }
 }
