@@ -68,7 +68,7 @@ public class GraphParser {
    * @param dotFileUrl The String URL of the dot file, relative to the root directory
    */
   public static void graphToDot(Graph<Task, DefaultWeightedEdge> graph, String dotFileUrl) {
-    DOTExporter<Task, DefaultWeightedEdge> exporter = new DOTExporter<>();
+    DOTExporter<Task, DefaultWeightedEdge> exporter = new DOTExporter<>(task -> task.getId());
 
     // How to write vertex attributes: Weight
     exporter.setVertexAttributeProvider(
