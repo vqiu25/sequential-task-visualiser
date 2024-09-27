@@ -235,8 +235,7 @@ public class AStarSearchTest {
         System.out.println("Execution time with Custom Heuristic (ns): " + durationCustomHeuristic);
 
         // Won't always be true though also since these graph inputs are so small sometimes it's not more efficent
-        assertTrue(durationCustomHeuristic <= durationZeroHeuristic, "Custom heuristic should be faster or equal in performance");
-        System.out.println("Lowkey I dont know how useful this test is i think graph is too small for any significant difference in efficency with heursitic");
+        System.out.println("Lowkey I dont know how useful this test is i think graph is too small for any significant difference in efficency with heursitic and it seems random");
     }
 
 
