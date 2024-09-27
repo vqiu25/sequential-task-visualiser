@@ -6,11 +6,13 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
+import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.ImportException;
 import org.jgrapht.nio.dot.DOTExporter;
@@ -70,13 +72,15 @@ public class GraphParser {
   public static void graphToDot(Graph<Task, DefaultWeightedEdge> graph, String dotFileUrl) {
     DOTExporter<Task, DefaultWeightedEdge> exporter = new DOTExporter<>();
 
-    // How to write vertex attributes: Weight
+    // How to write vertex attributes: Weight, Start, Processor
     exporter.setVertexAttributeProvider(
-        task -> {
-          return Map.of("Weight", DefaultAttribute.createAttribute(task.getTaskLength()),
-              "Start", DefaultAttribute.createAttribute(task.getStartTime()),
-              "Processor", DefaultAttribute.createAttribute(task.getProcessor()));
-        });
+      task -> {
+          Map<String, Attribute> attributes = new LinkedHashMap<>();
+          attributes.put("Weight", DefaultAttribute.createAttribute(task.getTaskLength()));
+          attributes.put("Start", DefaultAttribute.createAttribute(task.getStartTime()));
+          attributes.put("Processor", DefaultAttribute.createAttribute(task.getProcessor()));
+          return attributes;
+      });
 
     // How to write edge attributes: Weight
     exporter.setEdgeAttributeProvider(
