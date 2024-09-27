@@ -15,20 +15,21 @@ public class AStarSearch<V, E> {
     public AStarSearch(Graph<V, E> graph, Heuristic<V> heuristic, Map<V, Double> taskExecutionTime) {
         this.graph = graph;
         this.heuristic = heuristic;
-        this.taskExecutionTime = taskExecutionTime;  // Assign node execution times
+        this.taskExecutionTime = taskExecutionTime;
     }
 
     // This method returns the shortest path from the "start" node to the "goal" node
     public List<V> findPath(V start, V goal) {
-        Set<V> closedSet = new HashSet<>();  // Set of explored nodes
+        //Nodes that have already been visited
+        Set<V> closedSet = new HashSet<>();
         PriorityQueue<Node<V>> openSet = new PriorityQueue<>(Comparator.comparingDouble(n -> n.fScore));
         //This allows us to reconstruct the path later by knowing where it originated
-        Map<V, V> cameFrom = new HashMap<>();  // To reconstruct the path
+        Map<V, V> cameFrom = new HashMap<>();
         //The path cost
         Map<V, Double> gScore = new HashMap<>();
         gScore.put(start, 0.0);
         //The fScore is the A* accounting for both path cost and heuristic
-        Map<V, Double> fScore = new HashMap<>();  // Estimated total cost (g + h)
+        Map<V, Double> fScore = new HashMap<>();
         fScore.put(start, heuristic.estimate(start, goal));
 
         openSet.add(new Node<>(start, fScore.get(start)));
