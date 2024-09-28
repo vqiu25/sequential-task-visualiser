@@ -12,6 +12,14 @@ public class Task {
     this.taskLength = taskLength;
   }
 
+  // Constructor for testing purposes
+  public Task(String id, int taskLength, int startTime, int processor) {
+    this.id = id;
+    this.taskLength = taskLength;
+    this.startTime = startTime;
+    this.processor = processor;
+  }
+
   public String getId() {
     return id;
   }

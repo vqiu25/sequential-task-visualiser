@@ -25,23 +25,39 @@ public class GraphParser {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GraphParser.class);
 
+  public static Graph<Task, DefaultWeightedEdge> dotToGraph(InputStream dotFileInputStream) {
+    return dotToGraph(dotFileInputStream, false);
+  }
+
   /**
    * Reads a dot file and returns a graph
    *
    * @param dotFileInputStream The InputStream opened from the dot file
    * @return The JGraphT SimpleDirectedWeightedGraph
    */
-  public static Graph<Task, DefaultWeightedEdge> dotToGraph(InputStream dotFileInputStream) {
+  public static Graph<Task, DefaultWeightedEdge> dotToGraph(InputStream dotFileInputStream, boolean isTesting) {
     Graph<Task, DefaultWeightedEdge> graph =
         new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
     DOTImporter<Task, DefaultWeightedEdge> importer = new DOTImporter<>();
 
-    // How to read vertex attributes: Weight
-    importer.setVertexWithAttributesFactory(
-        (id, attributes) -> {
-          int weight = Integer.parseInt(attributes.get("Weight").getValue());
-          return new Task(id, weight);
-        });
+    // How to read vertex attributes
+    if (isTesting) {
+      // Testing: get all of the attributes (Weight, Start, Processor)
+      importer.setVertexWithAttributesFactory(
+          (id, attributes) -> {
+            int weight = Integer.parseInt(attributes.get("Weight").getValue());
+            int startTime = Integer.parseInt(attributes.get("Start").getValue());
+            int processor = Integer.parseInt(attributes.get("Processor").getValue());
+            return new Task(id, weight, startTime, processor);
+          });
+    } else {
+      // Normal case: just Weight
+      importer.setVertexWithAttributesFactory(
+          (id, attributes) -> {
+            int weight = Integer.parseInt(attributes.get("Weight").getValue());
+            return new Task(id, weight);
+          });
+    }
 
     // How to read edge attributes: Weight
     importer.setEdgeWithAttributesFactory(
