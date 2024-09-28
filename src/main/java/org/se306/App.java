@@ -3,13 +3,11 @@ package org.se306;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.se306.algorithms.ValidSchedule;
 import org.se306.utils.GraphParser;
 import org.se306.utils.SchedulerCommand;
 import org.se306.visualisation.FxApp;
 import org.slf4j.Logger;
-
 import picocli.CommandLine;
 
 /** Hello world! */
@@ -40,7 +38,8 @@ public class App {
 
     // execute visualisation if indicated
     if (command.toVisualise()) {
-      FxApp.launch(FxApp.class); // Note: this is blocking, but we're allowed to use extra threads for JavaFX
+      // Note: this is blocking, but we're allowed to use extra threads for JavaFX
+      FxApp.launch(FxApp.class);
     }
 
     // output graph to dot file
