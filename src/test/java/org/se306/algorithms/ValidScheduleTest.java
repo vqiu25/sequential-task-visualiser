@@ -18,6 +18,6 @@ public class ValidScheduleTest {
     Graph<Task, DefaultWeightedEdge> expected = GraphParser
         .dotToGraph(getClass().getResourceAsStream("expected/Graph2_5.dot"), true);
 
-    GraphTester.assertEquals(expected, actual); // Doesn't work yet
+    GraphTester.assertGraphEquals(expected, actual); // Doesn't work yet
   }
 }
