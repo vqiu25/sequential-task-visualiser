@@ -2,14 +2,28 @@ package org.se306;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
+import org.jgrapht.nio.ImportException;
+import org.jgrapht.nio.dot.DOTImporter;
 import org.se306.domain.Task;
+import org.slf4j.Logger;
 public class GraphTester {
 
+  private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(GraphTester.class);
+
+  /**
+   * Asserts that two graphs are equal. This method compares the vertices and
+   * edges of the two graphs.
+   *
+   * @param expected The expected graph
+   * @param actual   The actual graph
+   */
   public static void assertGraphEquals(Graph<Task, DefaultWeightedEdge> expected,
       Graph<Task, DefaultWeightedEdge> actual) {
 
@@ -49,5 +63,45 @@ public class GraphTester {
       assertEquals(expected.getEdgeTarget(expectedEdge), actual.getEdgeTarget(actualEdge)); // Target
       assertEquals(expected.getEdgeWeight(expectedEdge), actual.getEdgeWeight(actualEdge)); // Weight
     }
+  }
+
+  /**
+   * Reads a dot file and returns a graph, containing all attributes
+   *
+   * @param dotFileInputStream The InputStream opened from the dot file
+   * @return The JGraphT SimpleDirectedWeightedGraph
+   */
+  public static Graph<Task, DefaultWeightedEdge> dotToGraphAllAttributes(InputStream dotFileInputStream) {
+    Graph<Task, DefaultWeightedEdge> graph = new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+    DOTImporter<Task, DefaultWeightedEdge> importer = new DOTImporter<>();
+
+    // How to read vertex attributes
+    // Testing: get all of the attributes (Weight, Start, Processor)
+    importer.setVertexWithAttributesFactory(
+        (id, attributes) -> {
+          int weight = Integer.parseInt(attributes.get("Weight").getValue());
+          int startTime = Integer.parseInt(attributes.get("Start").getValue());
+          int processor = Integer.parseInt(attributes.get("Processor").getValue());
+          return new Task(id, weight, startTime, processor);
+        });
+
+    // How to read edge attributes: Weight
+    importer.setEdgeWithAttributesFactory(
+        (attributes) -> {
+          int weight = Integer.parseInt(attributes.get("Weight").getValue());
+          DefaultWeightedEdge edge = new DefaultWeightedEdge();
+          graph.setEdgeWeight(edge, weight);
+          return edge;
+        });
+
+    // Store graph
+    try {
+      importer.importGraph(graph, dotFileInputStream);
+    } catch (ImportException e) {
+      LOGGER.error("Error storing graph from dot file", e);
+      throw new RuntimeException(e);
+    }
+
+    return graph;
   }
 }

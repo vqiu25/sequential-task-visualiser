@@ -15,8 +15,8 @@ public class ValidScheduleTest {
         .dotToGraph(getClass().getResourceAsStream("input/Graph2.dot"));
     ValidSchedule.findValidSchedule(actual, 5);
 
-    Graph<Task, DefaultWeightedEdge> expected = GraphParser
-        .dotToGraph(getClass().getResourceAsStream("expected/Graph2_5.dot"), true);
+    Graph<Task, DefaultWeightedEdge> expected = GraphTester
+        .dotToGraphAllAttributes(getClass().getResourceAsStream("expected/Graph2_5.dot"));
 
     GraphTester.assertGraphEquals(expected, actual);
   }
@@ -27,8 +27,8 @@ public class ValidScheduleTest {
         .dotToGraph(getClass().getResourceAsStream("input/Graph1.dot"));
     ValidSchedule.findValidSchedule(actual, 1);
 
-    Graph<Task, DefaultWeightedEdge> expected = GraphParser
-        .dotToGraph(getClass().getResourceAsStream("expected/Graph1_1.dot"), true);
+    Graph<Task, DefaultWeightedEdge> expected = GraphTester
+        .dotToGraphAllAttributes(getClass().getResourceAsStream("expected/Graph1_1.dot"));
 
     GraphTester.assertGraphEquals(expected, actual);
   }
@@ -39,8 +39,8 @@ public class ValidScheduleTest {
         .dotToGraph(getClass().getResourceAsStream("input/Graph1.dot"));
     ValidSchedule.findValidSchedule(actual, 2);
 
-    Graph<Task, DefaultWeightedEdge> expected = GraphParser
-        .dotToGraph(getClass().getResourceAsStream("expected/Graph1_2.dot"), true);
+    Graph<Task, DefaultWeightedEdge> expected = GraphTester
+        .dotToGraphAllAttributes(getClass().getResourceAsStream("expected/Graph1_2.dot"));
 
     GraphTester.assertGraphEquals(expected, actual);
   }
@@ -51,8 +51,8 @@ public class ValidScheduleTest {
         .dotToGraph(getClass().getResourceAsStream("input/Graph1.dot"));
     ValidSchedule.findValidSchedule(actual, 3);
 
-    Graph<Task, DefaultWeightedEdge> expected = GraphParser
-        .dotToGraph(getClass().getResourceAsStream("expected/Graph1_3.dot"), true);
+    Graph<Task, DefaultWeightedEdge> expected = GraphTester
+        .dotToGraphAllAttributes(getClass().getResourceAsStream("expected/Graph1_3.dot"));
 
     GraphTester.assertGraphEquals(expected, actual);
   }
