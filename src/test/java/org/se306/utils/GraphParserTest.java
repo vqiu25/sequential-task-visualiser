@@ -1,15 +1,15 @@
 package org.se306.utils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.se306.AppTest;
 import org.se306.domain.Task;
@@ -19,32 +19,32 @@ public class GraphParserTest {
 
   @Test
   public void testOutTreeFile() throws IOException, URISyntaxException {
-    testGraphParser("dot/Nodes_7_OutTree.dot");
+    testGraphParser("utils/input/Nodes_7_OutTree.dot");
   }
 
   @Test
   public void testRandomFile() throws IOException, URISyntaxException {
-    testGraphParser("dot/Nodes_8_Random.dot");
+    testGraphParser("utils/input/Nodes_8_Random.dot");
   }
 
   @Test
   public void testSeriesParallelFile() throws IOException, URISyntaxException {
-    testGraphParser("dot/Nodes_9_SeriesParallel.dot");
+    testGraphParser("utils/input/Nodes_9_SeriesParallel.dot");
   }
 
   @Test
   public void testRandom2File() throws IOException, URISyntaxException {
-    testGraphParser("dot/Nodes_10_Random.dot");
+    testGraphParser("utils/input/Nodes_10_Random.dot");
   }
 
   @Test
   public void testOutTree2File() throws IOException, URISyntaxException {
-    testGraphParser("dot/Nodes_11_OutTree.dot");
+    testGraphParser("utils/input/Nodes_11_OutTree.dot");
   }
 
   private void testGraphParser(String dotFileUrl) throws IOException, URISyntaxException {
-    URI expectedPath = AppTest.class.getResource(dotFileUrl.replace("dot/", "expected/")).toURI();
-    String testPath = "out/" + dotFileUrl.replace("dot/", "");
+    URI expectedPath = AppTest.class.getResource(dotFileUrl.replace("input/", "expected/")).toURI();
+    String testPath = "out/" + dotFileUrl;
 
     // Read
     InputStream dotFileInputStream = AppTest.class.getResourceAsStream(dotFileUrl);
