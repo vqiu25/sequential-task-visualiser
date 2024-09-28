@@ -13,6 +13,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.ImportException;
 import org.jgrapht.nio.dot.DOTExporter;
@@ -86,24 +87,28 @@ public class GraphParser {
    * @param dotFileUrl The String URL of the dot file, relative to the root directory
    */
   public static void graphToDot(Graph<Task, DefaultWeightedEdge> graph, String dotFileUrl) {
-    DOTExporter<Task, DefaultWeightedEdge> exporter = new DOTExporter<>(task -> task.getId());
+    DOTExporter<Task, DefaultWeightedEdge> exporter = new DOTExporter<>(Task::getId);
 
-    // How to write vertex attributes: Weight, Start, Processor
+    // Vertex attributes with specified types
     exporter.setVertexAttributeProvider(
-      task -> {
+        task -> {
           Map<String, Attribute> attributes = new LinkedHashMap<>();
-          attributes.put("Weight", DefaultAttribute.createAttribute(task.getTaskLength()));
-          attributes.put("Start", DefaultAttribute.createAttribute(task.getStartTime()));
-          attributes.put("Processor", DefaultAttribute.createAttribute(task.getProcessor()));
+          attributes.put(
+              "Weight",
+              new DefaultAttribute<>(task.getTaskLength() + ",", AttributeType.IDENTIFIER));
+          attributes.put(
+              "Start", new DefaultAttribute<>(task.getStartTime() + ",", AttributeType.IDENTIFIER));
+          attributes.put(
+              "Processor", new DefaultAttribute<>(task.getProcessor(), AttributeType.IDENTIFIER));
           return attributes;
-      });
-
-    // How to write edge attributes: Weight
-    exporter.setEdgeAttributeProvider(
-        edge -> {
-          return Map.of(
-              "Weight", DefaultAttribute.createAttribute((int) graph.getEdgeWeight(edge)));
         });
+
+    // Edge attributes with specified types
+    exporter.setEdgeAttributeProvider(
+        edge ->
+            Map.of(
+                "Weight",
+                new DefaultAttribute<>((int) graph.getEdgeWeight(edge), AttributeType.IDENTIFIER)));
 
     // Write to file
     createFileIfNotExists(dotFileUrl);
