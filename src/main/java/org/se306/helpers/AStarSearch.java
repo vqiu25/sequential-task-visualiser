@@ -1,163 +1,308 @@
 package org.se306.helpers;
 
 import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.se306.domain.Task;
 
 import java.util.*;
 
-public class AStarSearch<V, E> {
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import java.util.*;
+import java.util.function.Function;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-    // Graph, heuristic, and task execution times
-    private Graph<V, E> graph;
-    private Heuristic<V> heuristic;
-    private Map<V, Double> taskExecutionTime;
+public class AStarSearch {
 
-    // Constructor to initiate everything for our A*Search
-    public AStarSearch(Graph<V, E> graph, Heuristic<V> heuristic, Map<V, Double> taskExecutionTime) {
-        this.graph = graph;
-        this.heuristic = heuristic;
-        this.taskExecutionTime = taskExecutionTime;
-    }
+    // Method to find the optimal schedule using A* search (ignore the name)
+    public static void findValidSchedule(Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
+        // Initialize the open set as a priority queue (A* search frontier)
+        PriorityQueue<State> openSet = new PriorityQueue<>(Comparator.comparingDouble(s -> s.fScore));
+        Map<String, Double> closedSet = new HashMap<>();
 
-    // This method returns the shortest path from the "start" node to the "goal" node
-    public List<V> findPath(V start, V goal) {
-        //Nodes that have already been visited
-        Set<V> closedSet = new HashSet<>();
-        PriorityQueue<Node<V>> openSet = new PriorityQueue<>(Comparator.comparingDouble(n -> n.fScore));
-        //This allows us to reconstruct the path later by knowing where it originated
-        Map<V, V> cameFrom = new HashMap<>();
-        //The path cost
-        Map<V, Double> gScore = new HashMap<>();
-        gScore.put(start, 0.0);
-        //The fScore is the A* accounting for both path cost and heuristic
-        Map<V, Double> fScore = new HashMap<>();
-        fScore.put(start, heuristic.estimate(start, goal));
+        // Initial state: no tasks scheduled yet
+        State initialState = new State(numProcessors);
 
-        openSet.add(new Node<>(start, fScore.get(start)));
+        // Initialize unscheduled tasks with all task IDs from the graph
+        for (Task task : graph.vertexSet()) {
+            initialState.unscheduledTasks.add(task.getId());
+        }
+
+        openSet.add(initialState);
 
         while (!openSet.isEmpty()) {
-            V current = openSet.poll().vertex;
+            State currentState = openSet.poll();
 
-            if (current.equals(goal)) {
-                return reconstructPath(cameFrom, current, start);  // Goal reached
+            // If all tasks are scheduled, update the graph with the schedule and return
+            if (currentState.unscheduledTasks.isEmpty()) {
+                // Update tasks in the graph with scheduled times and processors
+                for (Task task : graph.vertexSet()) {
+                    TaskInfo info = currentState.taskInfoMap.get(task.getId());
+                    task.setStartTime((int) info.startTime);
+                    task.setProcessor(info.processor + 1); // Processors are 1-indexed
+                }
+                return;
             }
 
-            closedSet.add(current);
+            // Generate a unique key for the current state
+            String stateKey = currentState.getStateKey();
 
-            for (E edge : graph.outgoingEdgesOf(current)) {
-                V neighbor = graph.getEdgeTarget(edge);
+            // Check if this state has already been explored with a lower gScore
+            if (closedSet.containsKey(stateKey) && currentState.gScore >= closedSet.get(stateKey)) {
+                continue;
+            }
 
-                //skip already explored nodes
-                if (closedSet.contains(neighbor)) {
-                    continue;
-                }
+            // Add current state to closed set
+            closedSet.put(stateKey, currentState.gScore);
 
-                // Calculate tentativeGScore as: g(current) + edge weight + node weight of neighbor
-                double tentativeGScore = gScore.getOrDefault(current, Double.POSITIVE_INFINITY)
-                        + graph.getEdgeWeight(edge)  // Communication cost
-                        + taskExecutionTime.getOrDefault(neighbor, 0.0);  // Node execution time
+            // Get all tasks that are ready to be scheduled (all predecessors are scheduled)
+            List<Task> readyTasks = currentState.getReadyTasks(graph);
 
-                // If this path to neighbor is shorter, update path cost and fScore
-                if (!gScore.containsKey(neighbor) || tentativeGScore < gScore.get(neighbor)) {
-                    cameFrom.put(neighbor, current);
-                    gScore.put(neighbor, tentativeGScore);
-                    fScore.put(neighbor, tentativeGScore + heuristic.estimate(neighbor, goal));
-                    openSet.add(new Node<>(neighbor, fScore.get(neighbor)));
+            for (Task task : readyTasks) {
+                // For each processor, schedule the task and create a new state
+                for (int processor = 0; processor < numProcessors; processor++) {
+                    State newState = currentState.scheduleTask(task, processor, graph);
+
+                    // Calculate gScore (makespan of the new state)
+                    double tentativeGScore = newState.getMakespan();
+
+                    // Calculate fScore
+                    double tentativeFScore = tentativeGScore + heuristicEstimate(newState, graph);
+
+                    // Generate a unique key for the new state (so we don't explore the same state)
+                    String newStateKey = newState.getStateKey();
+
+                    // If this state has already been explored with a lower gScore skip it
+                    if (closedSet.containsKey(newStateKey) && tentativeGScore >= closedSet.get(newStateKey)) {
+                        continue;
+                    }
+
+                    // Set the scores and add the new state to the open set
+                    newState.gScore = tentativeGScore;
+                    newState.fScore = tentativeFScore;
+                    openSet.add(newState);
                 }
             }
         }
-        //If no path exists then return an empty list
-        return Collections.emptyList();
+
+        // If no valid schedule is found exception
+        throw new RuntimeException("No valid schedule found.");
     }
 
-    //This method uses the logic of A* to find the "optimal" task order (depends on a lot of factors though)
-    public List<V> findOptimalTaskOrder() {
-        // Perform A* on the graph to find the best task order following dependencies
-        PriorityQueue<Node<V>> openSet = new PriorityQueue<>(Comparator.comparingDouble(n -> n.fScore));
-        Set<V> closedSet = new HashSet<>();
-        Map<V, V> cameFrom = new HashMap<>();
-        Map<V, Double> gScore = new HashMap<>();
+    // State class with each state representing a partial schedule
+    private static class State {
+        Map<String, TaskInfo> taskInfoMap;
+        Set<String> unscheduledTasks;
+        double gScore;
+        double fScore;
+        int numProcessors;
+        double[] processorAvailableTime;
 
-        //For testing purposes
-        int nodesExpanded = 0;
-
-        // We will start from tasks with no incoming dependencies (root)
-        for (V startTask : graph.vertexSet()) {
-            if (graph.incomingEdgesOf(startTask).isEmpty()) {
-                gScore.put(startTask, 0.0);
-                openSet.add(new Node<>(startTask, heuristic.estimate(startTask, null)));
-            }
+        // Initial state constructor
+        State(int numProcessors) {
+            this.taskInfoMap = new HashMap<>();
+            this.unscheduledTasks = new HashSet<>();
+            this.gScore = 0.0;
+            this.fScore = 0.0;
+            this.numProcessors = numProcessors;
+            this.processorAvailableTime = new double[numProcessors];
+            Arrays.fill(this.processorAvailableTime, 0.0);
         }
 
-        List<V> taskOrder = new ArrayList<>();
-        while (!openSet.isEmpty()) {
-            V currentTask = openSet.poll().vertex;
+        // Copy constructor
+        State(State other) {
+            this.taskInfoMap = new HashMap<>(other.taskInfoMap);
+            this.unscheduledTasks = new HashSet<>(other.unscheduledTasks);
+            this.gScore = other.gScore;
+            this.fScore = other.fScore;
+            this.numProcessors = other.numProcessors;
+            this.processorAvailableTime = Arrays.copyOf(other.processorAvailableTime, other.numProcessors);
+        }
 
-            if (closedSet.contains(currentTask)) continue;
-            closedSet.add(currentTask);
-            taskOrder.add(currentTask);
-            nodesExpanded++;
+        // Get a unique key representing the state
+        String getStateKey() {
+            // Key based on scheduled tasks and their assignments
+            StringBuilder keyBuilder = new StringBuilder();
+            taskInfoMap.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .forEach(entry -> keyBuilder.append(entry.getKey()).append(":")
+                            .append(entry.getValue().processor).append(":")
+                            .append(entry.getValue().startTime).append("|"));
+            return keyBuilder.toString();
+        }
 
-            // Expand neighbors (outgoing tasks)
-            for (E edge : graph.outgoingEdgesOf(currentTask)) {
-                V neighbor = graph.getEdgeTarget(edge);
-
-                // Check if all predecessors of neighbor have been scheduled
+        // Get tasks that are ready to be scheduled
+        List<Task> getReadyTasks(Graph<Task, DefaultWeightedEdge> graph) {
+            List<Task> readyTasks = new ArrayList<>();
+            for (String taskId : unscheduledTasks) {
+                Task task = getTaskById(taskId, graph);
                 boolean allPredecessorsScheduled = true;
-                for (E incomingEdge : graph.incomingEdgesOf(neighbor)) {
-                    V predecessor = graph.getEdgeSource(incomingEdge);
-                    if (!closedSet.contains(predecessor)) {
+                for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
+                    Task predecessor = graph.getEdgeSource(edge);
+                    if (!taskInfoMap.containsKey(predecessor.getId())) {
                         allPredecessorsScheduled = false;
                         break;
                     }
                 }
-                //If not skip for now
-                if (!allPredecessorsScheduled) {
-                    continue;
-                }
-                //account for communication cost and weight as well
-                double tentativeGScore = gScore.getOrDefault(currentTask, Double.POSITIVE_INFINITY)
-                        + graph.getEdgeWeight(edge)
-                        + taskExecutionTime.getOrDefault(neighbor, 0.0);
-
-                if (!gScore.containsKey(neighbor) || tentativeGScore < gScore.get(neighbor)) {
-                    cameFrom.put(neighbor, currentTask);
-                    gScore.put(neighbor, tentativeGScore);
-                    openSet.add(new Node<>(neighbor, tentativeGScore + heuristic.estimate(neighbor, null)));
+                if (allPredecessorsScheduled) {
+                    readyTasks.add(task);
                 }
             }
+            return readyTasks;
         }
-        System.out.println("Nodes Expanded: " + nodesExpanded);
-        //Return task order based on the A* logic
-        return taskOrder;
+
+        // Schedule a task and return a new state
+        State scheduleTask(Task task, int processor, Graph<Task, DefaultWeightedEdge> graph) {
+            State newState = new State(this);
+
+            // Determine earliest start time
+            double earliestStartTime = newState.processorAvailableTime[processor];
+
+            // Consider dependencies
+            for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
+                Task predecessor = graph.getEdgeSource(edge);
+                TaskInfo predecessorInfo = newState.taskInfoMap.get(predecessor.getId());
+
+                // Check if predecessorInfo is null (should not happen)
+                if (predecessorInfo == null) {
+                    throw new RuntimeException("Predecessor " + predecessor.getId() + " not scheduled yet.");
+                }
+
+                double finishTime = predecessorInfo.startTime + predecessorInfo.duration;
+                double communicationDelay = graph.getEdgeWeight(edge);
+
+                if (predecessorInfo.processor != processor) {
+                    finishTime += communicationDelay;
+                }
+
+                earliestStartTime = Math.max(earliestStartTime, finishTime);
+            }
+
+            // Schedule the task
+            double taskDuration = task.getTaskLength();
+            newState.taskInfoMap.put(task.getId(), new TaskInfo(processor, earliestStartTime, taskDuration));
+            newState.processorAvailableTime[processor] = earliestStartTime + taskDuration;
+            newState.unscheduledTasks.remove(task.getId());
+
+            // Update gScore (makespan)
+            newState.gScore = newState.getMakespan();
+
+            return newState;
+        }
+
+        // Get the makespan of the current schedule
+        double getMakespan() {
+            return Arrays.stream(processorAvailableTime).max().orElse(0.0);
+        }
+
+        // Calculate idle time for all processors (this is important for oliver's heurstiic)
+        public double getIdleTime() {
+            double makespan = getMakespan();
+            double totalUsedTime = 0.0;
+            for (double availableTime : processorAvailableTime) {
+                totalUsedTime += availableTime;
+            }
+            // Idle time is the difference between makespan * number of processors and total used time
+            return (makespan * numProcessors) - totalUsedTime;
+        }
+
+        // Helper method to get Task by ID
+        private Task getTaskById(String id, Graph<Task, DefaultWeightedEdge> graph) {
+            for (Task task : graph.vertexSet()) {
+                if (task.getId().equals(id)) {
+                    return task;
+                }
+            }
+            return null;
+        }
     }
 
+    // Task scheduling information
+    private static class TaskInfo {
+        int processor;       // Processor index (0-based)
+        double startTime;    // Start time of the task
+        double duration;     // Duration of the task
 
-    // Helper method to reconstruct the path from the start node to the goal node
-    private List<V> reconstructPath(Map<V, V> cameFrom, V current, V start) {
-        List<V> path = new ArrayList<>();
-        while (cameFrom.containsKey(current)) {
-            path.add(current);
-            current = cameFrom.get(current);
-        }
-        path.add(start);
-        Collections.reverse(path);
-        return path;
-    }
-
-    // Node class for priority queue
-    private static class Node<V> {
-        V vertex;
-        double fScore;
-
-        Node(V vertex, double fScore) {
-            this.vertex = vertex;
-            this.fScore = fScore;
+        TaskInfo(int processor, double startTime, double duration) {
+            this.processor = processor;
+            this.startTime = startTime;
+            this.duration = duration;
         }
     }
 
-    // Heuristic interface where we can make our A* more efficent with the right heursitic
-    // Must be careful with this though
-    public interface Heuristic<V> {
-        double estimate(V node, V goal);
+    // THIS HEURSITIC IS BASED ON OLIVER PAPER I DONT UNDERSTAND IT I JUST COPIED HIM
+    private static double heuristicEstimate(State state, Graph<Task, DefaultWeightedEdge> graph) {
+        double idleTimeEstimate = estimateIdleTime(state, graph);
+        double bottomLevelEstimate = estimateBottomLevel(state, graph);
+        double dataReadyTimeEstimate = estimateDataReadyTime(state, graph);
+
+        // Return the maximum of the three components (as written in Oliver's paper)
+        return Math.max(Math.max(idleTimeEstimate, bottomLevelEstimate), dataReadyTimeEstimate);
+    }
+
+    // Estimate the idle time based on the current state
+    private static double estimateIdleTime(State state, Graph<Task, DefaultWeightedEdge> graph) {
+        double totalComputationTime = 0.0;
+        for (Task task : graph.vertexSet()) {
+            totalComputationTime += task.getTaskLength();
+        }
+
+        // Return the idle time estimate based on the total computation time divided by the number of processors
+        return (totalComputationTime + state.getIdleTime()) / state.numProcessors;
+    }
+
+    // Estimate the bottom level for tasks already scheduled
+    private static double estimateBottomLevel(State state, Graph<Task, DefaultWeightedEdge> graph) {
+        double maxBottomLevel = 0.0;
+        for (TaskInfo taskInfo : state.taskInfoMap.values()) {
+            Task task = state.getTaskById(taskInfo.processor + "", graph);
+            double bottomLevel = calculateBottomLevel(task, state, graph);
+            maxBottomLevel = Math.max(maxBottomLevel, taskInfo.startTime + bottomLevel);
+        }
+        return maxBottomLevel;
+    }
+
+    // Estimate the data ready time for unscheduled tasks
+    private static double estimateDataReadyTime(State state, Graph<Task, DefaultWeightedEdge> graph) {
+        double maxDRT = 0.0;
+        for (String taskId : state.unscheduledTasks) {
+            Task task = state.getTaskById(taskId, graph);
+            double minDRT = Double.MAX_VALUE;
+            for (int processor = 0; processor < state.numProcessors; processor++) {
+                double drt = calculateDataReadyTime(task, processor, state, graph);
+                minDRT = Math.min(minDRT, drt);
+            }
+            double bottomLevel = calculateBottomLevel(task, state, graph);
+            maxDRT = Math.max(maxDRT, minDRT + bottomLevel);
+        }
+        return maxDRT;
+    }
+
+    // Helper method to calculate the bottom level (critical path) of a task
+    private static double calculateBottomLevel(Task task, State state, Graph<Task, DefaultWeightedEdge> graph) {
+        double longestPath = 0.0;
+        for (DefaultWeightedEdge edge : graph.outgoingEdgesOf(task)) {
+            Task successor = graph.getEdgeTarget(edge);
+            double pathLength = task.getTaskLength() + calculateBottomLevel(successor, state, graph);
+            longestPath = Math.max(longestPath, pathLength);
+        }
+        return longestPath;
+    }
+
+    // Helper method to calculate the data ready time for a task on a specific processor
+    private static double calculateDataReadyTime(Task task, int processor, State state, Graph<Task, DefaultWeightedEdge> graph) {
+        double maxReadyTime = 0.0;
+        for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
+            Task predecessor = graph.getEdgeSource(edge);
+            TaskInfo predecessorInfo = state.taskInfoMap.get(predecessor.getId());
+            double finishTime = predecessorInfo != null ? predecessorInfo.startTime + predecessorInfo.duration : predecessor.getTaskLength();
+            double communicationDelay = graph.getEdgeWeight(edge);
+            if (predecessorInfo == null || predecessorInfo.processor != processor) {
+                finishTime += communicationDelay;
+            }
+            maxReadyTime = Math.max(maxReadyTime, finishTime);
+        }
+        return maxReadyTime;
     }
 }
