@@ -48,7 +48,7 @@ public class FxApp extends Application {
     stage.getIcons().add(ResourceUtils.loadImage("oliver.png"));
 
     // Set up fullscreen
-    stage.setFullScreen(true);
+    // stage.setFullScreen(true);
     stage.setFullScreenExitHint("Press F11 to exit full screen mode.");
     scene.setOnKeyPressed(
         event -> {

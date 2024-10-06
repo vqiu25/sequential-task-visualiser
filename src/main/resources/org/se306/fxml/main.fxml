@@ -1,18 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="panRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.se306.visualisation.controllers.MainController">
+<AnchorPane fx:id="panRoot" maxHeight="480.0" maxWidth="640.0" minHeight="480.0" minWidth="640.0" prefHeight="480" prefWidth="640" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.se306.visualisation.controllers.MainController">
   <children>
-    <AnchorPane fx:id="panLayout" prefHeight="1080.0" prefWidth="1920.0" style="-fx-border-color: black;">
+    <Group fx:id="header">
       <children>
-        <AnchorPane fx:id="panPage" prefHeight="1080.0" prefWidth="1920.0" />
-        <AnchorPane maxHeight="100.0">
-          <children>
-            <fx:include source="header/header.fxml" />
-          </children>
-        </AnchorPane>
+        <fx:include source="header/header.fxml" />
       </children>
-    </AnchorPane>
+    </Group>
+    <Group fx:id="schedule">
+      <children>
+        <fx:include layoutY="80.0" source="schedule/schedule.fxml" />
+      </children>
+    </Group>
+    <Group fx:id="taskGraph">
+      <children>
+        <fx:include layoutX="250.0" layoutY="80.0" source="taskgraph/task-graph.fxml" />
+      </children>
+    </Group>
+    <Group fx:id="stateGraph">
+      <children>
+        <fx:include layoutY="280.0" source="stategraph/state-graph.fxml" />
+      </children>
+    </Group>
+    <Group fx:id="stats">
+      <children>
+        <fx:include layoutX="500.0" layoutY="80.0" source="stats/stats.fxml" />
+      </children>
+    </Group>
   </children>
+  <stylesheets>
+    <URL value="@../css/globals.css" />
+    <URL value="@../css/dev.css" />
+  </stylesheets>
 </AnchorPane>
