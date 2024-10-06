@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="panRoot" maxHeight="200.0" maxWidth="500.0" minHeight="200.0" minWidth="500.0" prefHeight="200.0" prefWidth="500.0" stylesheets="@../../css/globals.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="panRoot" maxHeight="200.0" maxWidth="500.0" minHeight="200.0" minWidth="500.0" prefHeight="200.0" prefWidth="500.0" stylesheets="@../../css/globals.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.se306.visualisation.controllers.stategraph.StateGraphController">
   <children>
     <Label alignment="CENTER" contentDisplay="CENTER" layoutX="188.0" layoutY="88.0" prefHeight="24.0" prefWidth="125.0" text="STATE GRAPH" textAlignment="CENTER">
       <font>
