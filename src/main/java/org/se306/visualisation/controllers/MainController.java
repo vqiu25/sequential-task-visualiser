@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 
 public class MainController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(WrapperController.class);
 
   @FXML
   private void initialize() {

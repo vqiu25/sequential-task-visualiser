@@ -2,7 +2,7 @@ package org.se306.visualisation;
 
 import java.io.IOException;
 
-import org.se306.visualisation.controllers.MainController;
+import org.se306.visualisation.controllers.WrapperController;
 import org.se306.visualisation.utils.ControllerUtils;
 import org.se306.visualisation.utils.ResourceUtils;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class FxApp extends Application {
     // Load scene
     scene = new Scene(new AnchorPane(), 640, 480);
     stage.setScene(scene);
-    Pair<Parent, MainController> main = ControllerUtils.loadFxml("main.fxml");
+    Pair<Parent, WrapperController> main = ControllerUtils.loadFxml("wrapper.fxml");
     scene.setRoot(main.getKey());
 
     // Load resources
