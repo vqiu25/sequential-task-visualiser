@@ -8,7 +8,8 @@ import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 
 public class ResourceUtils {
-  private static final Logger logger = LoggerFactory.getLogger(ResourceUtils.class);
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ResourceUtils.class);
 
   /**
    * Load a resource (e.g. image, css) and retrive its contents as a string. Urls
