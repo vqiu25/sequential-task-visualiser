@@ -2,6 +2,13 @@ AnchorPane {
   -fx-background-color: #1B1C24;
 }
 
+Rectangle {
+  -fx-fill: #292A34;
+  -fx-stroke: none;
+  -fx-arc-width: 20;
+  -fx-arc-height: 20;
+}
+
 Label {
   -fx-text-fill: #B6B9E2;
 }
