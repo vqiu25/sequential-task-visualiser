@@ -1,19 +1,19 @@
 package org.se306.domain;
 
-public class Task {
+public class IOTask {
 
   private final String id;
   private final int taskLength;
   private int startTime = -1; // -1 means not scheduled
   private int processor = -1; // -1 means not scheduled
 
-  public Task(String id, int taskLength) {
+  public IOTask(String id, int taskLength) {
     this.id = id;
     this.taskLength = taskLength;
   }
 
   // Constructor for testing purposes
-  public Task(String id, int taskLength, int startTime, int processor) {
+  public IOTask(String id, int taskLength, int startTime, int processor) {
     this.id = id;
     this.taskLength = taskLength;
     this.startTime = startTime;
@@ -64,7 +64,7 @@ public class Task {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    Task other = (Task) obj;
+    IOTask other = (IOTask) obj;
     if (id == null) {
       return false;
     }

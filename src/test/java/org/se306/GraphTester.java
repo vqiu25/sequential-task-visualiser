@@ -10,7 +10,7 @@ import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.jgrapht.nio.ImportException;
 import org.jgrapht.nio.dot.DOTImporter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.se306.domain.Task;
+import org.se306.domain.IOTask;
 import org.slf4j.Logger;
 
 public class GraphTester {
@@ -25,21 +25,21 @@ public class GraphTester {
    * @param actual The actual graph
    */
   public static void assertGraphEquals(
-      Graph<Task, DefaultWeightedEdge> expected, Graph<Task, DefaultWeightedEdge> actual) {
+      Graph<IOTask, DefaultWeightedEdge> expected, Graph<IOTask, DefaultWeightedEdge> actual) {
 
     // Check the number of vertices
     assertEquals(expected.vertexSet().size(), actual.vertexSet().size(), "Number of vertices not equal");
 
     // Arrange vertices in order of ID
-    List<Task> expectedVertices = new ArrayList<>(expected.vertexSet());
-    List<Task> actualVertices = new ArrayList<>(actual.vertexSet());
+    List<IOTask> expectedVertices = new ArrayList<>(expected.vertexSet());
+    List<IOTask> actualVertices = new ArrayList<>(actual.vertexSet());
     expectedVertices.sort((a, b) -> a.getId().compareTo(b.getId()));
     actualVertices.sort((a, b) -> a.getId().compareTo(b.getId()));
 
     // Check each vertex
     for (int i = 0; i < expectedVertices.size(); i++) {
-      Task expectedVertex = expectedVertices.get(i);
-      Task actualVertex = actualVertices.get(i);
+      IOTask expectedVertex = expectedVertices.get(i);
+      IOTask actualVertex = actualVertices.get(i);
       assertEquals(expectedVertex.getId(), actualVertex.getId(), "Vertex " + expectedVertex + " IDs not equal");
       assertEquals(expectedVertex.getTaskLength(), actualVertex.getTaskLength(), "Vertex " + expectedVertex + " task lengths not equal");
       assertEquals(expectedVertex.getStartTime(), actualVertex.getStartTime(), "Vertex " + expectedVertex + " start times not equal");
@@ -74,11 +74,11 @@ public class GraphTester {
    * @param dotFileInputStream The InputStream opened from the dot file
    * @return The JGraphT SimpleDirectedWeightedGraph
    */
-  public static Graph<Task, DefaultWeightedEdge> dotToGraphAllAttributes(
+  public static Graph<IOTask, DefaultWeightedEdge> dotToGraphAllAttributes(
       InputStream dotFileInputStream) {
-    Graph<Task, DefaultWeightedEdge> graph =
+    Graph<IOTask, DefaultWeightedEdge> graph =
         new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
-    DOTImporter<Task, DefaultWeightedEdge> importer = new DOTImporter<>();
+    DOTImporter<IOTask, DefaultWeightedEdge> importer = new DOTImporter<>();
 
     // How to read vertex attributes
     // Testing: get all of the attributes (Weight, Start, Processor)
@@ -87,7 +87,7 @@ public class GraphTester {
           int weight = Integer.parseInt(attributes.get("Weight").getValue());
           int startTime = Integer.parseInt(attributes.get("Start").getValue());
           int processor = Integer.parseInt(attributes.get("Processor").getValue());
-          return new Task(id, weight, startTime, processor);
+          return new IOTask(id, weight, startTime, processor);
         });
 
     // How to read edge attributes: Weight

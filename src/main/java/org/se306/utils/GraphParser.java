@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
@@ -17,7 +18,7 @@ import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.ImportException;
 import org.jgrapht.nio.dot.DOTExporter;
 import org.jgrapht.nio.dot.DOTImporter;
-import org.se306.domain.Task;
+import org.se306.domain.IOTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,16 +32,16 @@ public class GraphParser {
    * @param dotFileInputStream The InputStream opened from the dot file
    * @return The JGraphT SimpleDirectedWeightedGraph
    */
-  public static Graph<Task, DefaultWeightedEdge> dotToGraph(InputStream dotFileInputStream) {
-    Graph<Task, DefaultWeightedEdge> graph =
+  public static Graph<IOTask, DefaultWeightedEdge> dotToGraph(InputStream dotFileInputStream) {
+    Graph<IOTask, DefaultWeightedEdge> graph =
         new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
-    DOTImporter<Task, DefaultWeightedEdge> importer = new DOTImporter<>();
+    DOTImporter<IOTask, DefaultWeightedEdge> importer = new DOTImporter<>();
 
     // How to read vertex attributes: Weight
     importer.setVertexWithAttributesFactory(
         (id, attributes) -> {
           int weight = Integer.parseInt(attributes.get("Weight").getValue());
-          return new Task(id, weight);
+          return new IOTask(id, weight);
         });
 
     // How to read edge attributes: Weight
@@ -69,8 +70,8 @@ public class GraphParser {
    * @param graph The JGraphT graph
    * @param dotFileUrl The String URL of the dot file, relative to the root directory
    */
-  public static void graphToDot(Graph<Task, DefaultWeightedEdge> graph, String dotFileUrl) {
-    DOTExporter<Task, DefaultWeightedEdge> exporter = new DOTExporter<>(Task::getId);
+  public static void graphToDot(Graph<IOTask, DefaultWeightedEdge> graph, String dotFileUrl) {
+    DOTExporter<IOTask, DefaultWeightedEdge> exporter = new DOTExporter<>(IOTask::getId);
 
     // Vertex attributes with specified types
     exporter.setVertexAttributeProvider(

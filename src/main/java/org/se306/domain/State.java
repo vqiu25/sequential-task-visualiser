@@ -12,7 +12,8 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class State {
-  private Map<String, TaskInfo> taskInfoMap;
+
+  private Map<String, StateTask> taskInfoMap;
   private Set<String> unscheduledTasks;
   private int gScore;
   private int fScore;
@@ -58,13 +59,13 @@ public class State {
   }
 
   // Get tasks that are ready to be scheduled
-  public List<Task> getReadyTasks(Graph<Task, DefaultWeightedEdge> graph) {
-    List<Task> readyTasks = new ArrayList<>();
+  public List<IOTask> getReadyTasks(Graph<IOTask, DefaultWeightedEdge> graph) {
+    List<IOTask> readyTasks = new ArrayList<>();
     for (String taskId : unscheduledTasks) {
-      Task task = getTaskById(taskId, graph);
+      IOTask task = getTaskById(taskId, graph);
       boolean allPredecessorsScheduled = true;
       for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
-        Task predecessor = graph.getEdgeSource(edge);
+        IOTask predecessor = graph.getEdgeSource(edge);
         if (!taskInfoMap.containsKey(predecessor.getId())) {
           allPredecessorsScheduled = false;
           break;
@@ -78,7 +79,7 @@ public class State {
   }
 
   // Schedule a task and return a new state
-  public State scheduleTask(Task task, int processor, Graph<Task, DefaultWeightedEdge> graph) {
+  public State scheduleTask(IOTask task, int processor, Graph<IOTask, DefaultWeightedEdge> graph) {
     State newState = this.copyOf();
 
     // Determine earliest start time
@@ -86,8 +87,8 @@ public class State {
 
     // Consider dependencies
     for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
-      Task predecessor = graph.getEdgeSource(edge);
-      TaskInfo predecessorInfo = newState.taskInfoMap.get(predecessor.getId());
+      IOTask predecessor = graph.getEdgeSource(edge);
+      StateTask predecessorInfo = newState.taskInfoMap.get(predecessor.getId());
 
       // Check if predecessorInfo is null (should not happen)
       if (predecessorInfo == null) {
@@ -107,7 +108,7 @@ public class State {
     // Schedule the task
     int taskDuration = task.getTaskLength();
     newState.taskInfoMap.put(
-        task.getId(), new TaskInfo(processor, earliestStartTime, taskDuration));
+        task.getId(), new StateTask(processor, earliestStartTime, taskDuration));
     newState.processorAvailableTime[processor] = earliestStartTime + taskDuration;
     newState.unscheduledTasks.remove(task.getId());
 
@@ -134,8 +135,8 @@ public class State {
   }
 
   // Helper method to get Task by ID
-  public Task getTaskById(String id, Graph<Task, DefaultWeightedEdge> graph) {
-    for (Task task : graph.vertexSet()) {
+  public IOTask getTaskById(String id, Graph<IOTask, DefaultWeightedEdge> graph) {
+    for (IOTask task : graph.vertexSet()) {
       if (task.getId().equals(id)) {
         return task;
       }
@@ -143,11 +144,11 @@ public class State {
     return null;
   }
 
-  public Map<String, TaskInfo> getTaskInfoMap() {
+  public Map<String, StateTask> getTaskInfoMap() {
     return taskInfoMap;
   }
 
-  public void setTaskMap(Map<String, TaskInfo> taskInfoMap) {
+  public void setTaskMap(Map<String, StateTask> taskInfoMap) {
     this.taskInfoMap = taskInfoMap;
   }
 

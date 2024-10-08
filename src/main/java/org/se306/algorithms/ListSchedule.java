@@ -3,7 +3,7 @@ package org.se306.algorithms;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
-import org.se306.domain.Task;
+import org.se306.domain.IOTask;
 
 /**
  * This class performs a (non-optimal) list scheduling algorithm on the task
@@ -11,17 +11,17 @@ import org.se306.domain.Task;
  * Currently unused, but may be useful for optimisation 3.4.
  */
 public class ListSchedule{
-  
-  public static void findValidSchedule(Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
+
+  public static void findValidSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
     // Perform topological sorting
-    TopologicalOrderIterator<Task, DefaultWeightedEdge> iterator = new TopologicalOrderIterator<>(graph);
+    TopologicalOrderIterator<IOTask, DefaultWeightedEdge> iterator = new TopologicalOrderIterator<>(graph);
 
     // Tracks the time each processor is available to start a new task
     int[] processorAvailableTime = new int[numProcessors];
 
     // Process tasks in topological order
     while (iterator.hasNext()) {
-      Task task = iterator.next();
+      IOTask task = iterator.next();
 
       // Initialise variables for processor assignment
       int chosenProcessor = -1;
@@ -34,7 +34,7 @@ public class ListSchedule{
         // Calculate earliest start time on processor currentProcessor, considering
         // dependencies
         for (DefaultWeightedEdge incomingEdge : graph.incomingEdgesOf(task)) {
-          Task predecessor = graph.getEdgeSource(incomingEdge);
+          IOTask predecessor = graph.getEdgeSource(incomingEdge);
           int communicationDelay = (int) graph.getEdgeWeight(incomingEdge);
           int finishTime = predecessor.getStartTime() + predecessor.getTaskLength();
 

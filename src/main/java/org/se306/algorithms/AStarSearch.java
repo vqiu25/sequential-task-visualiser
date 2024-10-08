@@ -8,14 +8,14 @@ import java.util.PriorityQueue;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.se306.domain.IOTask;
 import org.se306.domain.State;
-import org.se306.domain.Task;
-import org.se306.domain.TaskInfo;
+import org.se306.domain.StateTask;
 
 public class AStarSearch {
 
   // Method to find the optimal schedule using A* search (ignore the name)
-  public static void findValidSchedule(Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
+  public static void findValidSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
 
     // Initialize the open set as a priority queue (A* search frontier)
     PriorityQueue<State> openSet = new PriorityQueue<>(Comparator.comparingDouble(s -> s.getfScore()));
@@ -25,7 +25,7 @@ public class AStarSearch {
     State initialState = new State(numProcessors);
 
     // Initialize unscheduled tasks with all task IDs from the graph
-    for (Task task : graph.vertexSet()) {
+    for (IOTask task : graph.vertexSet()) {
       initialState.getUnscheduledTasks().add(task.getId());
     }
 
@@ -37,8 +37,8 @@ public class AStarSearch {
       // If all tasks are scheduled, update the graph with the schedule and return
       if (currentState.getUnscheduledTasks().isEmpty()) {
         // Update tasks in the graph with scheduled times and processors
-        for (Task task : graph.vertexSet()) {
-          TaskInfo info = currentState.getTaskInfoMap().get(task.getId());
+        for (IOTask task : graph.vertexSet()) {
+          StateTask info = currentState.getTaskInfoMap().get(task.getId());
           task.setStartTime((int) info.startTime);
           task.setProcessor(info.processor + 1); // Processors are 1-indexed
         }
@@ -57,9 +57,9 @@ public class AStarSearch {
       closedSet.put(stateKey, currentState.getgScore());
 
       // Get all tasks that are ready to be scheduled (all predecessors are scheduled)
-      List<Task> readyTasks = currentState.getReadyTasks(graph);
+      List<IOTask> readyTasks = currentState.getReadyTasks(graph);
 
-      for (Task task : readyTasks) {
+      for (IOTask task : readyTasks) {
         // For each processor, schedule the task and create a new state
         for (int processor = 0; processor < numProcessors; processor++) {
           State newState = currentState.scheduleTask(task, processor, graph);
@@ -92,7 +92,7 @@ public class AStarSearch {
 
   // THIS HEURSITIC IS BASED ON OLIVER PAPER I DONT UNDERSTAND IT I JUST COPIED
   // HIM
-  private static int heuristicEstimate(State state, Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
+  private static int heuristicEstimate(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
     int idleTimeEstimate = estimateIdleTime(state, graph, numProcessors);
     int bottomLevelEstimate = estimateBottomLevel(state, graph);
     int dataReadyTimeEstimate = estimateDataReadyTime(state, graph, numProcessors);
@@ -102,9 +102,9 @@ public class AStarSearch {
   }
 
   // Estimate the idle time based on the current state
-  private static int estimateIdleTime(State state, Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
+  private static int estimateIdleTime(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
     int totalComputationTime = 0;
-    for (Task task : graph.vertexSet()) {
+    for (IOTask task : graph.vertexSet()) {
       totalComputationTime += task.getTaskLength();
     }
 
@@ -115,10 +115,10 @@ public class AStarSearch {
   }
 
   // Estimate the bottom level for tasks already scheduled
-  private static int estimateBottomLevel(State state, Graph<Task, DefaultWeightedEdge> graph) {
+  private static int estimateBottomLevel(State state, Graph<IOTask, DefaultWeightedEdge> graph) {
     int maxBottomLevel = 0;
-    for (TaskInfo taskInfo : state.getTaskInfoMap().values()) {
-      Task task = state.getTaskById(taskInfo.processor + "", graph);
+    for (StateTask taskInfo : state.getTaskInfoMap().values()) {
+      IOTask task = state.getTaskById(taskInfo.processor + "", graph);
       int bottomLevel = calculateBottomLevel(task, state, graph);
       maxBottomLevel = Math.max(maxBottomLevel, taskInfo.startTime + bottomLevel);
     }
@@ -126,10 +126,10 @@ public class AStarSearch {
   }
 
   // Estimate the data ready time for unscheduled tasks
-  private static int estimateDataReadyTime(State state, Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
+  private static int estimateDataReadyTime(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
     int maxDRT = 0;
     for (String taskId : state.getUnscheduledTasks()) {
-      Task task = state.getTaskById(taskId, graph);
+      IOTask task = state.getTaskById(taskId, graph);
       int minDRT = Integer.MAX_VALUE;
       for (int processor = 0; processor < numProcessors; processor++) {
         int drt = calculateDataReadyTime(task, processor, state, graph);
@@ -143,10 +143,10 @@ public class AStarSearch {
 
   // Helper method to calculate the bottom level (critical path) of a task
   private static int calculateBottomLevel(
-      Task task, State state, Graph<Task, DefaultWeightedEdge> graph) {
+      IOTask task, State state, Graph<IOTask, DefaultWeightedEdge> graph) {
     int longestPath = 0;
     for (DefaultWeightedEdge edge : graph.outgoingEdgesOf(task)) {
-      Task successor = graph.getEdgeTarget(edge);
+      IOTask successor = graph.getEdgeTarget(edge);
       int pathLength = task.getTaskLength() + calculateBottomLevel(successor, state, graph);
       longestPath = Math.max(longestPath, pathLength);
     }
@@ -156,11 +156,11 @@ public class AStarSearch {
   // Helper method to calculate the data ready time for a task on a specific
   // processor
   private static int calculateDataReadyTime(
-      Task task, int processor, State state, Graph<Task, DefaultWeightedEdge> graph) {
+      IOTask task, int processor, State state, Graph<IOTask, DefaultWeightedEdge> graph) {
     int maxReadyTime = 0;
     for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
-      Task predecessor = graph.getEdgeSource(edge);
-      TaskInfo predecessorInfo = state.getTaskInfoMap().get(predecessor.getId());
+      IOTask predecessor = graph.getEdgeSource(edge);
+      StateTask predecessorInfo = state.getTaskInfoMap().get(predecessor.getId());
       int finishTime = predecessorInfo != null
           ? predecessorInfo.startTime + predecessorInfo.duration
           : predecessor.getTaskLength();
