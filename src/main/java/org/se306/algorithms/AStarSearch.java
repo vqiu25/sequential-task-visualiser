@@ -68,7 +68,7 @@ public class AStarSearch {
           int tentativeGScore = newState.getMakespan();
 
           // Calculate fScore
-          int tentativeFScore = tentativeGScore + heuristicEstimate(newState, graph);
+          int tentativeFScore = tentativeGScore + heuristicEstimate(newState, graph, numProcessors);
 
           // Generate a unique key for the new state (so we don't explore the same state)
           String newStateKey = newState.getStateKey();
@@ -92,17 +92,17 @@ public class AStarSearch {
 
   // THIS HEURSITIC IS BASED ON OLIVER PAPER I DONT UNDERSTAND IT I JUST COPIED
   // HIM
-  private static int heuristicEstimate(State state, Graph<Task, DefaultWeightedEdge> graph) {
-    int idleTimeEstimate = estimateIdleTime(state, graph);
+  private static int heuristicEstimate(State state, Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
+    int idleTimeEstimate = estimateIdleTime(state, graph, numProcessors);
     int bottomLevelEstimate = estimateBottomLevel(state, graph);
-    int dataReadyTimeEstimate = estimateDataReadyTime(state, graph);
+    int dataReadyTimeEstimate = estimateDataReadyTime(state, graph, numProcessors);
 
     // Return the maximum of the three components (as written in Oliver's paper)
     return Math.max(Math.max(idleTimeEstimate, bottomLevelEstimate), dataReadyTimeEstimate);
   }
 
   // Estimate the idle time based on the current state
-  private static int estimateIdleTime(State state, Graph<Task, DefaultWeightedEdge> graph) {
+  private static int estimateIdleTime(State state, Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
     int totalComputationTime = 0;
     for (Task task : graph.vertexSet()) {
       totalComputationTime += task.getTaskLength();
@@ -111,7 +111,7 @@ public class AStarSearch {
     // Return the idle time estimate based on the total computation time divided by
     // the number of
     // processors
-    return (totalComputationTime + state.getIdleTime()) / state.getNumProcessors();
+    return (totalComputationTime + state.getIdleTime()) / numProcessors;
   }
 
   // Estimate the bottom level for tasks already scheduled
@@ -126,12 +126,12 @@ public class AStarSearch {
   }
 
   // Estimate the data ready time for unscheduled tasks
-  private static int estimateDataReadyTime(State state, Graph<Task, DefaultWeightedEdge> graph) {
+  private static int estimateDataReadyTime(State state, Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
     int maxDRT = 0;
     for (String taskId : state.getUnscheduledTasks()) {
       Task task = state.getTaskById(taskId, graph);
       int minDRT = Integer.MAX_VALUE;
-      for (int processor = 0; processor < state.getNumProcessors(); processor++) {
+      for (int processor = 0; processor < numProcessors; processor++) {
         int drt = calculateDataReadyTime(task, processor, state, graph);
         minDRT = Math.min(minDRT, drt);
       }

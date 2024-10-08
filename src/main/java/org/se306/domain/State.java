@@ -16,7 +16,6 @@ public class State {
   private Set<String> unscheduledTasks;
   private int gScore;
   private int fScore;
-  private int numProcessors;
   private int[] processorAvailableTime;
 
   // Initial state constructor
@@ -25,19 +24,19 @@ public class State {
     this.unscheduledTasks = new HashSet<>();
     this.gScore = 0;
     this.fScore = 0;
-    this.numProcessors = numProcessors;
     this.processorAvailableTime = new int[numProcessors];
     Arrays.fill(this.processorAvailableTime, 0);
   }
 
   // Copy constructor
-  public State(State other) {
-    this.taskInfoMap = new HashMap<>(other.taskInfoMap);
-    this.unscheduledTasks = new HashSet<>(other.unscheduledTasks);
-    this.gScore = other.gScore;
-    this.fScore = other.fScore;
-    this.numProcessors = other.numProcessors;
-    this.processorAvailableTime = Arrays.copyOf(other.processorAvailableTime, other.numProcessors);
+  public State copyOf() {
+    State newState = new State(this.getNumProcessors());
+    newState.taskInfoMap = new HashMap<>(this.taskInfoMap);
+    newState.unscheduledTasks = new HashSet<>(this.unscheduledTasks);
+    newState.gScore = this.gScore;
+    newState.fScore = this.fScore;
+    newState.processorAvailableTime = Arrays.copyOf(this.processorAvailableTime, this.getNumProcessors());
+    return newState;
   }
 
   // Get a unique key representing the state
@@ -80,7 +79,7 @@ public class State {
 
   // Schedule a task and return a new state
   public State scheduleTask(Task task, int processor, Graph<Task, DefaultWeightedEdge> graph) {
-    State newState = new State(this);
+    State newState = this.copyOf();
 
     // Determine earliest start time
     int earliestStartTime = newState.processorAvailableTime[processor];
@@ -131,7 +130,7 @@ public class State {
       totalUsedTime += availableTime;
     }
     // Idle time is the difference between makespan * number of processors and total used time
-    return (makespan * numProcessors) - totalUsedTime;
+    return (makespan * getNumProcessors()) - totalUsedTime;
   }
 
   // Helper method to get Task by ID
@@ -176,19 +175,15 @@ public class State {
     this.fScore = fScore;
   }
 
-  public int getNumProcessors() {
-    return numProcessors;
-  }
-
-  public void setNumProcessors(int numProcessors) {
-    this.numProcessors = numProcessors;
-  }
-
   public int[] getProcessorAvailableTime() {
     return processorAvailableTime;
   }
 
   public void setProcessorAvailableTime(int[] processorAvailableTime) {
     this.processorAvailableTime = processorAvailableTime;
+  }
+
+  private int getNumProcessors() {
+    return processorAvailableTime.length;
   }
 }
