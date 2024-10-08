@@ -37,12 +37,7 @@ public class AStarSearch {
 
       // If all tasks are scheduled, update the graph with the schedule and return
       if (currentState.getUnscheduledTaskIds().isEmpty()) {
-        // Update tasks in the graph with scheduled times and processors
-        for (IOTask task : graph.vertexSet()) {
-          StateTask info = currentState.getIdsToStateTasks().get(task.getId());
-          task.setStartTime(info.getStartTime());
-          task.setProcessor(info.getProcessor() + 1); // Processors are 1-indexed
-        }
+        updateTaskGraph(graph, currentState);
         return;
       }
 
@@ -83,6 +78,18 @@ public class AStarSearch {
 
     // If no valid schedule is found exception
     throw new RuntimeException("No valid schedule found.");
+  }
+
+  /**
+   * Update the task graph with the schedule from the final state of the A*
+   * search. Ran after A* completes.
+   */
+  private static void updateTaskGraph(Graph<IOTask, DefaultWeightedEdge> taskGraph, State goalState) {
+    for (IOTask ioTask : taskGraph.vertexSet()) {
+      StateTask stateTask = goalState.getStateTaskFromIOTask(ioTask);
+      ioTask.setStartTime(stateTask.getStartTime());
+      ioTask.setProcessor(stateTask.getProcessor() + 1); // Output processors are 1-indexed
+    }
   }
 
   // THIS HEURSITIC IS BASED ON OLIVER PAPER I DONT UNDERSTAND IT I JUST COPIED

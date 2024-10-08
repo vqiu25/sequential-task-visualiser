@@ -166,6 +166,13 @@ public class State {
     return processorAvailableTimes.length;
   }
 
+  /**
+   * Helper method to get StateTask by IOTask
+   */
+  public StateTask getStateTaskFromIOTask(IOTask task) {
+    return idsToStateTasks.get(task.getId());
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;

@@ -24,7 +24,7 @@ public class IOTask {
   // --- The following fields are for outputting as a file only ---
   // -1 means unassigned
   private int startTime = -1;
-  private int processor = -1;
+  private int processor = -1; // 1-indexed
 
   // --- The following fields are used for dynamic programming only ---
   // -1 means unassigned

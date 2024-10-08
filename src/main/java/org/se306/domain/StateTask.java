@@ -12,7 +12,7 @@ package org.se306.domain;
 public class StateTask {
 
   private final IOTask ioTask;
-  private final int processor;
+  private final int processor; // 0-indexed
   private final int startTime;
 
   public StateTask(IOTask ioTask, int processor, int startTime) {
