@@ -12,12 +12,12 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class State {
-  public Map<String, TaskInfo> taskInfoMap;
-  public Set<String> unscheduledTasks;
-  public int gScore;
-  public int fScore;
-  public int numProcessors;
-  public int[] processorAvailableTime;
+  private Map<String, TaskInfo> taskInfoMap;
+  private Set<String> unscheduledTasks;
+  private int gScore;
+  private int fScore;
+  private int numProcessors;
+  private int[] processorAvailableTime;
 
   // Initial state constructor
   public State(int numProcessors) {

@@ -16,8 +16,9 @@ public class AStarSearch {
 
   // Method to find the optimal schedule using A* search (ignore the name)
   public static void findValidSchedule(Graph<Task, DefaultWeightedEdge> graph, int numProcessors) {
+
     // Initialize the open set as a priority queue (A* search frontier)
-    PriorityQueue<State> openSet = new PriorityQueue<>(Comparator.comparingDouble(s -> s.fScore));
+    PriorityQueue<State> openSet = new PriorityQueue<>(Comparator.comparingDouble(s -> s.getfScore()));
     Map<String, Integer> closedSet = new HashMap<>();
 
     // Initial state: no tasks scheduled yet
@@ -25,7 +26,7 @@ public class AStarSearch {
 
     // Initialize unscheduled tasks with all task IDs from the graph
     for (Task task : graph.vertexSet()) {
-      initialState.unscheduledTasks.add(task.getId());
+      initialState.getUnscheduledTasks().add(task.getId());
     }
 
     openSet.add(initialState);
@@ -34,10 +35,10 @@ public class AStarSearch {
       State currentState = openSet.poll();
 
       // If all tasks are scheduled, update the graph with the schedule and return
-      if (currentState.unscheduledTasks.isEmpty()) {
+      if (currentState.getUnscheduledTasks().isEmpty()) {
         // Update tasks in the graph with scheduled times and processors
         for (Task task : graph.vertexSet()) {
-          TaskInfo info = currentState.taskInfoMap.get(task.getId());
+          TaskInfo info = currentState.getTaskInfoMap().get(task.getId());
           task.setStartTime((int) info.startTime);
           task.setProcessor(info.processor + 1); // Processors are 1-indexed
         }
@@ -48,12 +49,12 @@ public class AStarSearch {
       String stateKey = currentState.getStateKey();
 
       // Check if this state has already been explored with a lower gScore
-      if (closedSet.containsKey(stateKey) && currentState.gScore >= closedSet.get(stateKey)) {
+      if (closedSet.containsKey(stateKey) && currentState.getgScore() >= closedSet.get(stateKey)) {
         continue;
       }
 
       // Add current state to closed set
-      closedSet.put(stateKey, currentState.gScore);
+      closedSet.put(stateKey, currentState.getgScore());
 
       // Get all tasks that are ready to be scheduled (all predecessors are scheduled)
       List<Task> readyTasks = currentState.getReadyTasks(graph);
@@ -78,8 +79,8 @@ public class AStarSearch {
           }
 
           // Set the scores and add the new state to the open set
-          newState.gScore = tentativeGScore;
-          newState.fScore = tentativeFScore;
+          newState.setgScore(tentativeGScore);
+          newState.setfScore(tentativeFScore);
           openSet.add(newState);
         }
       }
@@ -110,13 +111,13 @@ public class AStarSearch {
     // Return the idle time estimate based on the total computation time divided by
     // the number of
     // processors
-    return (totalComputationTime + state.getIdleTime()) / state.numProcessors;
+    return (totalComputationTime + state.getIdleTime()) / state.getNumProcessors();
   }
 
   // Estimate the bottom level for tasks already scheduled
   private static int estimateBottomLevel(State state, Graph<Task, DefaultWeightedEdge> graph) {
     int maxBottomLevel = 0;
-    for (TaskInfo taskInfo : state.taskInfoMap.values()) {
+    for (TaskInfo taskInfo : state.getTaskInfoMap().values()) {
       Task task = state.getTaskById(taskInfo.processor + "", graph);
       int bottomLevel = calculateBottomLevel(task, state, graph);
       maxBottomLevel = Math.max(maxBottomLevel, taskInfo.startTime + bottomLevel);
@@ -127,10 +128,10 @@ public class AStarSearch {
   // Estimate the data ready time for unscheduled tasks
   private static int estimateDataReadyTime(State state, Graph<Task, DefaultWeightedEdge> graph) {
     int maxDRT = 0;
-    for (String taskId : state.unscheduledTasks) {
+    for (String taskId : state.getUnscheduledTasks()) {
       Task task = state.getTaskById(taskId, graph);
       int minDRT = Integer.MAX_VALUE;
-      for (int processor = 0; processor < state.numProcessors; processor++) {
+      for (int processor = 0; processor < state.getNumProcessors(); processor++) {
         int drt = calculateDataReadyTime(task, processor, state, graph);
         minDRT = Math.min(minDRT, drt);
       }
@@ -159,7 +160,7 @@ public class AStarSearch {
     int maxReadyTime = 0;
     for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
       Task predecessor = graph.getEdgeSource(edge);
-      TaskInfo predecessorInfo = state.taskInfoMap.get(predecessor.getId());
+      TaskInfo predecessorInfo = state.getTaskInfoMap().get(predecessor.getId());
       int finishTime = predecessorInfo != null
           ? predecessorInfo.startTime + predecessorInfo.duration
           : predecessor.getTaskLength();
