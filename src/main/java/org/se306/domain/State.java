@@ -22,14 +22,17 @@ public class State {
   /** Indexes represent 0-indexed processors, value is the finish time of last scheduled task on the processor */
   private int[] processorAvailableTimes;
 
-  private int gScore;
+  /** fScore = idleTime + bottomLevel + dataReadyTime */
   private int fScore;
+
+  // --- The following fields are used for dynamic programming only ---
+  private int makespan;
 
   /** Initial state constructor */
   public State(int numProcessors) {
     this.idsToStateTasks = new HashMap<>();
     this.unscheduledTaskIds = new HashSet<>();
-    this.gScore = 0;
+    this.makespan = 0;
     this.fScore = 0;
     this.processorAvailableTimes = new int[numProcessors];
     Arrays.fill(this.processorAvailableTimes, 0);
@@ -40,13 +43,14 @@ public class State {
     State newState = new State(this.getNumProcessors());
     newState.idsToStateTasks = new HashMap<>(this.idsToStateTasks);
     newState.unscheduledTaskIds = new HashSet<>(this.unscheduledTaskIds);
-    newState.gScore = this.gScore;
+    newState.makespan = this.makespan;
     newState.fScore = this.fScore;
     newState.processorAvailableTimes = Arrays.copyOf(this.processorAvailableTimes, this.getNumProcessors());
     return newState;
   }
 
   // Get tasks that are ready to be scheduled
+  // TODO: track number of remaining parents in StateTask
   public List<IOTask> getReadyTasks(Graph<IOTask, DefaultWeightedEdge> graph) {
     List<IOTask> readyTasks = new ArrayList<>();
     for (String taskId : unscheduledTaskIds) {
@@ -67,6 +71,7 @@ public class State {
   }
 
   // Schedule a task and return a new state
+  // TODO: track DRT(processor) in StateTask
   public State scheduleTask(IOTask task, int processor, Graph<IOTask, DefaultWeightedEdge> graph) {
     State newState = this.copyOf();
 
@@ -99,18 +104,15 @@ public class State {
     newState.processorAvailableTimes[processor] = earliestStartTime + task.getTaskLength();
     newState.unscheduledTaskIds.remove(task.getId());
 
-    // Update gScore (makespan)
-    newState.gScore = newState.getMakespan();
+    // Update makespan (gScore) efficiently
+    newState.makespan = Math.max(this.makespan, newState.getProcessorAvailableTimes()[processor]);
 
     return newState;
   }
 
-  // Get the makespan of the current schedule
-  public int getMakespan() {
-    return Arrays.stream(processorAvailableTimes).max().orElse(0);
-  }
-
-  // Calculate idle time for all processors (this is important for oliver's heurstiic)
+  // Calculate idle time for all processors (this is important for oliver's
+  // heurstic)
+  // TODO: bug, I don't think this calculates idle time correctly
   public int getIdleTime() {
     int makespan = getMakespan();
     int totalUsedTime = 0;
@@ -122,6 +124,7 @@ public class State {
   }
 
   // Helper method to get Task by ID
+  // TODO: move to a utility class + optimise with hashmap
   public IOTask getTaskById(String id, Graph<IOTask, DefaultWeightedEdge> graph) {
     for (IOTask task : graph.vertexSet()) {
       if (task.getId().equals(id)) {
@@ -135,24 +138,16 @@ public class State {
     return idsToStateTasks;
   }
 
-  public void setTaskMap(Map<String, StateTask> taskInfoMap) {
-    this.idsToStateTasks = taskInfoMap;
-  }
-
   public Set<String> getUnscheduledTaskIds() {
     return unscheduledTaskIds;
   }
 
-  public void setUnscheduledTaskIds(Set<String> unscheduledTasks) {
-    this.unscheduledTaskIds = unscheduledTasks;
+  public int getMakespan() {
+    return makespan;
   }
 
-  public int getgScore() {
-    return gScore;
-  }
-
-  public void setgScore(int gScore) {
-    this.gScore = gScore;
+  public void setMakespan(int gScore) {
+    this.makespan = gScore;
   }
 
   public int getfScore() {
@@ -165,10 +160,6 @@ public class State {
 
   public int[] getProcessorAvailableTimes() {
     return processorAvailableTimes;
-  }
-
-  public void setProcessorAvailableTimes(int[] processorAvailableTime) {
-    this.processorAvailableTimes = processorAvailableTime;
   }
 
   private int getNumProcessors() {

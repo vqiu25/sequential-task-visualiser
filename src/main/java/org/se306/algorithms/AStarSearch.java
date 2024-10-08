@@ -18,21 +18,22 @@ public class AStarSearch {
   public static void findValidSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
 
     // Initialize the open set as a priority queue (A* search frontier)
-    PriorityQueue<State> openSet = new PriorityQueue<>(Comparator.comparingDouble(s -> s.getfScore()));
-    Map<State, Integer> closedSet = new HashMap<>();
+    PriorityQueue<State> openQueue = new PriorityQueue<>(Comparator.comparingDouble(s -> s.getfScore()));
+    Map<State, Integer> closedMap = new HashMap<>();
 
     // Initial state: no tasks scheduled yet
     State initialState = new State(numProcessors);
 
     // Initialize unscheduled tasks with all task IDs from the graph
+    // TODO: will be removed if/when we switch from tracking unscheduled tasks to ready tasks
     for (IOTask task : graph.vertexSet()) {
       initialState.getUnscheduledTaskIds().add(task.getId());
     }
 
-    openSet.add(initialState);
+    openQueue.add(initialState);
 
-    while (!openSet.isEmpty()) {
-      State currentState = openSet.poll();
+    while (!openQueue.isEmpty()) {
+      State currentState = openQueue.poll();
 
       // If all tasks are scheduled, update the graph with the schedule and return
       if (currentState.getUnscheduledTaskIds().isEmpty()) {
@@ -46,12 +47,12 @@ public class AStarSearch {
       }
 
       // Check if this state has already been explored with a lower gScore
-      if (closedSet.containsKey(currentState) && currentState.getgScore() >= closedSet.get(currentState)) {
+      if (closedMap.containsKey(currentState) && currentState.getMakespan() >= closedMap.get(currentState)) {
         continue;
       }
 
       // Add current state to closed set
-      closedSet.put(currentState, currentState.getgScore());
+      closedMap.put(currentState, currentState.getMakespan());
 
       // Get all tasks that are ready to be scheduled (all predecessors are scheduled)
       List<IOTask> readyTasks = currentState.getReadyTasks(graph);
@@ -68,14 +69,14 @@ public class AStarSearch {
           int tentativeFScore = tentativeGScore + heuristicEstimate(newState, graph, numProcessors);
 
           // If this state has already been explored with a lower gScore skip it
-          if (closedSet.containsKey(newState) && tentativeGScore >= closedSet.get(newState)) {
+          if (closedMap.containsKey(newState) && tentativeGScore >= closedMap.get(newState)) {
             continue;
           }
 
           // Set the scores and add the new state to the open set
-          newState.setgScore(tentativeGScore);
+          newState.setMakespan(tentativeGScore);
           newState.setfScore(tentativeFScore);
-          openSet.add(newState);
+          openQueue.add(newState);
         }
       }
     }
