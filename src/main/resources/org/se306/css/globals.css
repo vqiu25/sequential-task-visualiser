@@ -12,3 +12,12 @@ Rectangle {
 Label {
   -fx-text-fill: #B6B9E2;
 }
+
+.progress-bar .track {
+  -fx-background-radius: 20;
+}
+
+.progress-bar .bar {
+  -fx-background-color: #B6B9E2;
+  -fx-background-radius: 20;
+}

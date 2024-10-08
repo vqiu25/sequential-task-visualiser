@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="panRoot" maxHeight="390.0" maxWidth="180.0" minHeight="390.0" minWidth="180.0" prefHeight="390.0" prefWidth="180.0" stylesheets="@../../css/globals.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.se306.visualisation.controllers.stats.StatsController">
    <children>
@@ -12,7 +17,27 @@
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="85.0" stroke="BLACK" strokeType="INSIDE" width="160.0" />
             <Separator opacity="0.0" orientation="VERTICAL" prefHeight="200.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="65.0" stroke="BLACK" strokeType="INSIDE" width="160.0" />
+            <StackPane prefHeight="150.0" prefWidth="200.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="65.0" stroke="BLACK" strokeType="INSIDE" width="160.0" />
+                  <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-padding: 10;">
+                     <children>
+                        <HBox>
+                           <children>
+                              <Label prefHeight="17.0" prefWidth="110.0" text="CPU">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="116.0" text="X%" textAlignment="RIGHT" />
+                           </children>
+                        </HBox>
+                        <Separator maxHeight="3.0" minHeight="3.0" opacity="0.0" orientation="VERTICAL" prefHeight="3.0" />
+                        <ProgressBar prefWidth="200.0" progress="0.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
             <Separator opacity="0.0" orientation="VERTICAL" prefHeight="200.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="65.0" stroke="BLACK" strokeType="INSIDE" width="160.0" />
             <Separator opacity="0.0" orientation="VERTICAL" prefHeight="200.0" />
