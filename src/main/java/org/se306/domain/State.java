@@ -162,7 +162,7 @@ public class State {
     return processorAvailableTimes;
   }
 
-  private int getNumProcessors() {
+  public int getNumProcessors() {
     return processorAvailableTimes.length;
   }
 

@@ -22,16 +22,8 @@ public class AStarSearch {
     PriorityQueue<State> openQueue = new PriorityQueue<>(Comparator.comparingDouble(s -> s.getfScore()));
     Map<State, Integer> closedMap = new HashMap<>();
 
-    // Initial state: no tasks scheduled yet
-    State initialState = new State(numProcessors);
-
-    // Initialize unscheduled tasks with all task IDs from the graph
-    // TODO: will be removed if/when we switch from tracking unscheduled tasks to ready tasks
-    for (IOTask task : graph.vertexSet()) {
-      initialState.getUnscheduledTaskIds().add(task.getId());
-    }
-
-    openQueue.add(initialState);
+    // Add s_init to kick off A*
+    addInitialState(openQueue, numProcessors, graph);
 
     while (!openQueue.isEmpty()) {
       State currentState = openQueue.poll();
@@ -42,43 +34,71 @@ public class AStarSearch {
         return;
       }
 
-      // Check if this state has already been explored with a lower gScore
+      // Check if this state has already been explored with a lower makespan
       if (closedMap.containsKey(currentState) && currentState.getMakespan() >= closedMap.get(currentState)) {
         continue;
       }
 
-      // Add current state to closed set
+      // Expand state & move to closed set
+      expandState(currentState, openQueue, closedMap, graph);
       closedMap.put(currentState, currentState.getMakespan());
-
-      // Get all tasks that are ready to be scheduled (all predecessors are scheduled)
-      List<IOTask> readyTasks = currentState.getReadyTasks(graph);
-
-      for (IOTask task : readyTasks) {
-        // For each processor, schedule the task and create a new state
-        for (int processor = 0; processor < numProcessors; processor++) {
-          State newState = currentState.scheduleTask(task, processor, graph);
-
-          // Calculate gScore (makespan of the new state)
-          int tentativeGScore = newState.getMakespan();
-
-          // Calculate fScore
-          int tentativeFScore = tentativeGScore + FFunction.heuristicEstimate(newState, graph, numProcessors);
-
-          // If this state has already been explored with a lower gScore skip it
-          if (closedMap.containsKey(newState) && tentativeGScore >= closedMap.get(newState)) {
-            continue;
-          }
-
-          // Set the scores and add the new state to the open set
-          newState.setMakespan(tentativeGScore);
-          newState.setfScore(tentativeFScore);
-          openQueue.add(newState);
-        }
-      }
     }
 
     // If no valid schedule is found exception
     throw new RuntimeException("No valid schedule found.");
+  }
+
+  /**
+   * Add the initial state to the open queue at the start of the A* search.
+   */
+  private static void addInitialState(PriorityQueue<State> openQueue, int numProcessors,
+      Graph<IOTask, DefaultWeightedEdge> taskGraph) {
+
+    State initialState = new State(numProcessors); // No tasks
+
+    // Initialize unscheduled tasks with all task IDs from the graph
+    // TODO: will be removed if/when we switch from tracking unscheduled tasks to
+    // ready tasks
+    for (IOTask task : taskGraph.vertexSet()) {
+      initialState.getUnscheduledTaskIds().add(task.getId());
+    }
+
+    openQueue.add(initialState);
+  }
+
+  /**
+   * Expand the current state by scheduling all tasks that are ready to be
+   * scheduled. Creates a new state for each task and processor combination
+   * (|n|x|P| total) and adds them to the open queue.
+   */
+  private static void expandState(State currentState, PriorityQueue<State> openQueue, Map<State, Integer> closedMap,
+      Graph<IOTask, DefaultWeightedEdge> taskGraph) {
+
+    // Get all tasks that are ready to be scheduled (all predecessors are scheduled)
+    List<IOTask> readyTasks = currentState.getReadyTasks(taskGraph);
+    int numProcessors = currentState.getNumProcessors();
+
+    // Schedule each ready task on each processor -> |n|x|P| new states
+    for (IOTask task : readyTasks) {
+      for (int processor = 0; processor < currentState.getNumProcessors(); processor++) {
+        State newState = currentState.scheduleTask(task, processor, taskGraph);
+
+        // Calculate the fScore for the new state
+        int makespan = newState.getMakespan(); // 'Distance' from s_init (start state)
+        int heuristic = FFunction.heuristicEstimate(newState, taskGraph, numProcessors); // 'ETA' to goal
+        int fScore = makespan + heuristic; // Estimated total 'distance' f(s) = g(s) + h(s)
+
+        // If this state has already been explored with a lower makespan skip it
+        if (closedMap.containsKey(newState) && makespan >= closedMap.get(newState)) {
+          continue;
+        }
+
+        // Record scores and add to OPEN
+        newState.setMakespan(makespan);
+        newState.setfScore(fScore);
+        openQueue.add(newState);
+      }
+    }
   }
 
   /**
