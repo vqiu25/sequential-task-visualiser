@@ -13,42 +13,48 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class State {
 
-  private Map<String, StateTask> taskInfoMap;
-  private Set<String> unscheduledTasks;
+  /** IOTask IDs --> StateTasks */
+  private Map<String, StateTask> idsToStateTasks;
+
+  /** IOTask IDs of unscheduled tasks */
+  private Set<String> unscheduledTaskIds;
+
+  /** Indexes represent 0-indexed processors, value is the finish time of last scheduled task on the processor */
+  private int[] processorAvailableTimes;
+
   private int gScore;
   private int fScore;
-  private int[] processorAvailableTime;
 
   /** Initial state constructor */
   public State(int numProcessors) {
-    this.taskInfoMap = new HashMap<>();
-    this.unscheduledTasks = new HashSet<>();
+    this.idsToStateTasks = new HashMap<>();
+    this.unscheduledTaskIds = new HashSet<>();
     this.gScore = 0;
     this.fScore = 0;
-    this.processorAvailableTime = new int[numProcessors];
-    Arrays.fill(this.processorAvailableTime, 0);
+    this.processorAvailableTimes = new int[numProcessors];
+    Arrays.fill(this.processorAvailableTimes, 0);
   }
 
   /** Returns deep clone of this state */
   public State copyOf() {
     State newState = new State(this.getNumProcessors());
-    newState.taskInfoMap = new HashMap<>(this.taskInfoMap);
-    newState.unscheduledTasks = new HashSet<>(this.unscheduledTasks);
+    newState.idsToStateTasks = new HashMap<>(this.idsToStateTasks);
+    newState.unscheduledTaskIds = new HashSet<>(this.unscheduledTaskIds);
     newState.gScore = this.gScore;
     newState.fScore = this.fScore;
-    newState.processorAvailableTime = Arrays.copyOf(this.processorAvailableTime, this.getNumProcessors());
+    newState.processorAvailableTimes = Arrays.copyOf(this.processorAvailableTimes, this.getNumProcessors());
     return newState;
   }
 
   // Get tasks that are ready to be scheduled
   public List<IOTask> getReadyTasks(Graph<IOTask, DefaultWeightedEdge> graph) {
     List<IOTask> readyTasks = new ArrayList<>();
-    for (String taskId : unscheduledTasks) {
+    for (String taskId : unscheduledTaskIds) {
       IOTask task = getTaskById(taskId, graph);
       boolean allPredecessorsScheduled = true;
       for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
         IOTask predecessor = graph.getEdgeSource(edge);
-        if (!taskInfoMap.containsKey(predecessor.getId())) {
+        if (!idsToStateTasks.containsKey(predecessor.getId())) {
           allPredecessorsScheduled = false;
           break;
         }
@@ -65,12 +71,12 @@ public class State {
     State newState = this.copyOf();
 
     // Determine earliest start time
-    int earliestStartTime = newState.processorAvailableTime[processor];
+    int earliestStartTime = newState.processorAvailableTimes[processor];
 
     // Consider dependencies
     for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
       IOTask predecessor = graph.getEdgeSource(edge);
-      StateTask predecessorInfo = newState.taskInfoMap.get(predecessor.getId());
+      StateTask predecessorInfo = newState.idsToStateTasks.get(predecessor.getId());
 
       // Check if predecessorInfo is null (should not happen)
       if (predecessorInfo == null) {
@@ -88,10 +94,10 @@ public class State {
     }
 
     // Schedule the task
-    newState.taskInfoMap.put(
+    newState.idsToStateTasks.put(
         task.getId(), new StateTask(task, processor, earliestStartTime));
-    newState.processorAvailableTime[processor] = earliestStartTime + task.getTaskLength();
-    newState.unscheduledTasks.remove(task.getId());
+    newState.processorAvailableTimes[processor] = earliestStartTime + task.getTaskLength();
+    newState.unscheduledTaskIds.remove(task.getId());
 
     // Update gScore (makespan)
     newState.gScore = newState.getMakespan();
@@ -101,14 +107,14 @@ public class State {
 
   // Get the makespan of the current schedule
   public int getMakespan() {
-    return Arrays.stream(processorAvailableTime).max().orElse(0);
+    return Arrays.stream(processorAvailableTimes).max().orElse(0);
   }
 
   // Calculate idle time for all processors (this is important for oliver's heurstiic)
   public int getIdleTime() {
     int makespan = getMakespan();
     int totalUsedTime = 0;
-    for (int availableTime : processorAvailableTime) {
+    for (int availableTime : processorAvailableTimes) {
       totalUsedTime += availableTime;
     }
     // Idle time is the difference between makespan * number of processors and total used time
@@ -125,20 +131,20 @@ public class State {
     return null;
   }
 
-  public Map<String, StateTask> getTaskInfoMap() {
-    return taskInfoMap;
+  public Map<String, StateTask> getIdsToStateTasks() {
+    return idsToStateTasks;
   }
 
   public void setTaskMap(Map<String, StateTask> taskInfoMap) {
-    this.taskInfoMap = taskInfoMap;
+    this.idsToStateTasks = taskInfoMap;
   }
 
-  public Set<String> getUnscheduledTasks() {
-    return unscheduledTasks;
+  public Set<String> getUnscheduledTaskIds() {
+    return unscheduledTaskIds;
   }
 
-  public void setUnscheduledTasks(Set<String> unscheduledTasks) {
-    this.unscheduledTasks = unscheduledTasks;
+  public void setUnscheduledTaskIds(Set<String> unscheduledTasks) {
+    this.unscheduledTaskIds = unscheduledTasks;
   }
 
   public int getgScore() {
@@ -157,23 +163,23 @@ public class State {
     this.fScore = fScore;
   }
 
-  public int[] getProcessorAvailableTime() {
-    return processorAvailableTime;
+  public int[] getProcessorAvailableTimes() {
+    return processorAvailableTimes;
   }
 
-  public void setProcessorAvailableTime(int[] processorAvailableTime) {
-    this.processorAvailableTime = processorAvailableTime;
+  public void setProcessorAvailableTimes(int[] processorAvailableTime) {
+    this.processorAvailableTimes = processorAvailableTime;
   }
 
   private int getNumProcessors() {
-    return processorAvailableTime.length;
+    return processorAvailableTimes.length;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((taskInfoMap == null) ? 0 : taskInfoMap.hashCode());
+    result = prime * result + ((idsToStateTasks == null) ? 0 : idsToStateTasks.hashCode());
     return result;
   }
 
@@ -186,10 +192,10 @@ public class State {
     if (getClass() != obj.getClass())
       return false;
     State other = (State) obj;
-    if (taskInfoMap == null) {
-      if (other.taskInfoMap != null)
+    if (idsToStateTasks == null) {
+      if (other.idsToStateTasks != null)
         return false;
-    } else if (!taskInfoMap.equals(other.taskInfoMap))
+    } else if (!idsToStateTasks.equals(other.idsToStateTasks))
       return false;
     return true;
   }

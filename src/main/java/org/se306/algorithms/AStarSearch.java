@@ -26,7 +26,7 @@ public class AStarSearch {
 
     // Initialize unscheduled tasks with all task IDs from the graph
     for (IOTask task : graph.vertexSet()) {
-      initialState.getUnscheduledTasks().add(task.getId());
+      initialState.getUnscheduledTaskIds().add(task.getId());
     }
 
     openSet.add(initialState);
@@ -35,10 +35,10 @@ public class AStarSearch {
       State currentState = openSet.poll();
 
       // If all tasks are scheduled, update the graph with the schedule and return
-      if (currentState.getUnscheduledTasks().isEmpty()) {
+      if (currentState.getUnscheduledTaskIds().isEmpty()) {
         // Update tasks in the graph with scheduled times and processors
         for (IOTask task : graph.vertexSet()) {
-          StateTask info = currentState.getTaskInfoMap().get(task.getId());
+          StateTask info = currentState.getIdsToStateTasks().get(task.getId());
           task.setStartTime(info.getStartTime());
           task.setProcessor(info.getProcessor() + 1); // Processors are 1-indexed
         }
@@ -111,7 +111,7 @@ public class AStarSearch {
   // Estimate the bottom level for tasks already scheduled
   private static int estimateBottomLevel(State state, Graph<IOTask, DefaultWeightedEdge> graph) {
     int maxBottomLevel = 0;
-    for (StateTask taskInfo : state.getTaskInfoMap().values()) {
+    for (StateTask taskInfo : state.getIdsToStateTasks().values()) {
       IOTask task = state.getTaskById(taskInfo.getProcessor() + "", graph);
       int bottomLevel = calculateBottomLevel(task, state, graph);
       maxBottomLevel = Math.max(maxBottomLevel, taskInfo.getStartTime() + bottomLevel);
@@ -122,7 +122,7 @@ public class AStarSearch {
   // Estimate the data ready time for unscheduled tasks
   private static int estimateDataReadyTime(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
     int maxDRT = 0;
-    for (String taskId : state.getUnscheduledTasks()) {
+    for (String taskId : state.getUnscheduledTaskIds()) {
       IOTask task = state.getTaskById(taskId, graph);
       int minDRT = Integer.MAX_VALUE;
       for (int processor = 0; processor < numProcessors; processor++) {
@@ -154,7 +154,7 @@ public class AStarSearch {
     int maxReadyTime = 0;
     for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
       IOTask predecessor = graph.getEdgeSource(edge);
-      StateTask predecessorInfo = state.getTaskInfoMap().get(predecessor.getId());
+      StateTask predecessorInfo = state.getIdsToStateTasks().get(predecessor.getId());
       int finishTime = predecessorInfo != null
           ? predecessorInfo.getStartTime() + predecessorInfo.getDuration()
           : predecessor.getTaskLength();
