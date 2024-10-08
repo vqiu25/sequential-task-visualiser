@@ -51,9 +51,9 @@ public class State {
                 keyBuilder
                     .append(entry.getKey())
                     .append(":")
-                    .append(entry.getValue().processor)
+                    .append(entry.getValue().getProcessor())
                     .append(":")
-                    .append(entry.getValue().startTime)
+                    .append(entry.getValue().getStartTime())
                     .append("|"));
     return keyBuilder.toString();
   }
@@ -95,10 +95,10 @@ public class State {
         throw new RuntimeException("Predecessor " + predecessor.getId() + " not scheduled yet.");
       }
 
-      int finishTime = predecessorInfo.startTime + predecessorInfo.duration;
+      int finishTime = predecessorInfo.getStartTime() + predecessorInfo.getDuration();
       int communicationDelay = (int) graph.getEdgeWeight(edge);
 
-      if (predecessorInfo.processor != processor) {
+      if (predecessorInfo.getProcessor() != processor) {
         finishTime += communicationDelay;
       }
 

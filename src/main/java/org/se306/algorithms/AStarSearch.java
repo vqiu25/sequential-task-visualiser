@@ -39,8 +39,8 @@ public class AStarSearch {
         // Update tasks in the graph with scheduled times and processors
         for (IOTask task : graph.vertexSet()) {
           StateTask info = currentState.getTaskInfoMap().get(task.getId());
-          task.setStartTime((int) info.startTime);
-          task.setProcessor(info.processor + 1); // Processors are 1-indexed
+          task.setStartTime(info.getStartTime());
+          task.setProcessor(info.getProcessor() + 1); // Processors are 1-indexed
         }
         return;
       }
@@ -118,9 +118,9 @@ public class AStarSearch {
   private static int estimateBottomLevel(State state, Graph<IOTask, DefaultWeightedEdge> graph) {
     int maxBottomLevel = 0;
     for (StateTask taskInfo : state.getTaskInfoMap().values()) {
-      IOTask task = state.getTaskById(taskInfo.processor + "", graph);
+      IOTask task = state.getTaskById(taskInfo.getProcessor() + "", graph);
       int bottomLevel = calculateBottomLevel(task, state, graph);
-      maxBottomLevel = Math.max(maxBottomLevel, taskInfo.startTime + bottomLevel);
+      maxBottomLevel = Math.max(maxBottomLevel, taskInfo.getStartTime() + bottomLevel);
     }
     return maxBottomLevel;
   }
@@ -162,10 +162,10 @@ public class AStarSearch {
       IOTask predecessor = graph.getEdgeSource(edge);
       StateTask predecessorInfo = state.getTaskInfoMap().get(predecessor.getId());
       int finishTime = predecessorInfo != null
-          ? predecessorInfo.startTime + predecessorInfo.duration
+          ? predecessorInfo.getStartTime() + predecessorInfo.getDuration()
           : predecessor.getTaskLength();
       int communicationDelay = (int) graph.getEdgeWeight(edge);
-      if (predecessorInfo == null || predecessorInfo.processor != processor) {
+      if (predecessorInfo == null || predecessorInfo.getProcessor() != processor) {
         finishTime += communicationDelay;
       }
       maxReadyTime = Math.max(maxReadyTime, finishTime);
