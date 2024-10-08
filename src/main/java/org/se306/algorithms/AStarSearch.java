@@ -15,8 +15,8 @@ import org.se306.helpers.FFunction;
 
 public class AStarSearch {
 
-  // Method to find the optimal schedule using A* search (ignore the name)
-  public static void findValidSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
+  // Method to find the optimal schedule using A* search
+  public static void findSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
 
     // Initialize the open set as a priority queue (A* search frontier)
     PriorityQueue<State> openQueue = new PriorityQueue<>(Comparator.comparingDouble(s -> s.getfScore()));

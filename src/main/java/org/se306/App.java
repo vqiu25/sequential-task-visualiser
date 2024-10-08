@@ -36,7 +36,7 @@ public class App {
     }
 
     // run scheduler here, using command.getProcessors(), command.getCores(), and state.getGraph()
-    AStarSearch.findValidSchedule(state.getGraph(), command.getProcessors());
+    AStarSearch.findSchedule(state.getGraph(), command.getProcessors());
 
     // execute visualisation if indicated
     if (command.toVisualise()) {

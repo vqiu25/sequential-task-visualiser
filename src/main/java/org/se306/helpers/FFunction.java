@@ -6,6 +6,11 @@ import org.se306.domain.IOTask;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
 
+/**
+ * Helper class to calculate the heuristic estimate f(s) for the A* search
+ * algorithm.
+ */
+// TODO: need to optimize all the methods in this class
 public class FFunction {
 
   // THIS HEURSITIC IS BASED ON OLIVER PAPER I DONT UNDERSTAND IT I JUST COPIED
