@@ -106,10 +106,9 @@ public class State {
     }
 
     // Schedule the task
-    int taskDuration = task.getTaskLength();
     newState.taskInfoMap.put(
-        task.getId(), new StateTask(processor, earliestStartTime, taskDuration));
-    newState.processorAvailableTime[processor] = earliestStartTime + taskDuration;
+        task.getId(), new StateTask(task, processor, earliestStartTime));
+    newState.processorAvailableTime[processor] = earliestStartTime + task.getTaskLength();
     newState.unscheduledTasks.remove(task.getId());
 
     // Update gScore (makespan)

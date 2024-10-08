@@ -2,14 +2,14 @@ package org.se306.domain;
 
 public class StateTask {
 
+  private final IOTask ioTask;
   private final int processor;
   private final int startTime;
-  private final int duration;
 
-  public StateTask(int processor, int startTime, int duration) {
+  public StateTask(IOTask ioTask, int processor, int startTime) {
+    this.ioTask = ioTask;
     this.processor = processor;
     this.startTime = startTime;
-    this.duration = duration;
   }
 
   public int getProcessor() {
@@ -21,11 +21,11 @@ public class StateTask {
   }
 
   public int getDuration() {
-    return duration;
+    return ioTask.getTaskLength();
   }
 
   public int getEndTime() {
-    return startTime + duration;
+    return startTime + getDuration();
   }
 
 }
