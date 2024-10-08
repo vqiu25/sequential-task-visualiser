@@ -19,7 +19,7 @@ public class State {
   private int fScore;
   private int[] processorAvailableTime;
 
-  // Initial state constructor
+  /** Initial state constructor */
   public State(int numProcessors) {
     this.taskInfoMap = new HashMap<>();
     this.unscheduledTasks = new HashSet<>();
@@ -29,7 +29,7 @@ public class State {
     Arrays.fill(this.processorAvailableTime, 0);
   }
 
-  // Copy constructor
+  /** Returns deep clone of this state */
   public State copyOf() {
     State newState = new State(this.getNumProcessors());
     newState.taskInfoMap = new HashMap<>(this.taskInfoMap);
@@ -38,24 +38,6 @@ public class State {
     newState.fScore = this.fScore;
     newState.processorAvailableTime = Arrays.copyOf(this.processorAvailableTime, this.getNumProcessors());
     return newState;
-  }
-
-  // Get a unique key representing the state
-  public String getStateKey() {
-    // Key based on scheduled tasks and their assignments
-    StringBuilder keyBuilder = new StringBuilder();
-    taskInfoMap.entrySet().stream()
-        .sorted(Map.Entry.comparingByKey())
-        .forEach(
-            entry ->
-                keyBuilder
-                    .append(entry.getKey())
-                    .append(":")
-                    .append(entry.getValue().getProcessor())
-                    .append(":")
-                    .append(entry.getValue().getStartTime())
-                    .append("|"));
-    return keyBuilder.toString();
   }
 
   // Get tasks that are ready to be scheduled
@@ -186,4 +168,30 @@ public class State {
   private int getNumProcessors() {
     return processorAvailableTime.length;
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((taskInfoMap == null) ? 0 : taskInfoMap.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    State other = (State) obj;
+    if (taskInfoMap == null) {
+      if (other.taskInfoMap != null)
+        return false;
+    } else if (!taskInfoMap.equals(other.taskInfoMap))
+      return false;
+    return true;
+  }
+
 }

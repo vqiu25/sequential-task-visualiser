@@ -19,7 +19,7 @@ public class AStarSearch {
 
     // Initialize the open set as a priority queue (A* search frontier)
     PriorityQueue<State> openSet = new PriorityQueue<>(Comparator.comparingDouble(s -> s.getfScore()));
-    Map<String, Integer> closedSet = new HashMap<>();
+    Map<State, Integer> closedSet = new HashMap<>();
 
     // Initial state: no tasks scheduled yet
     State initialState = new State(numProcessors);
@@ -45,16 +45,13 @@ public class AStarSearch {
         return;
       }
 
-      // Generate a unique key for the current state
-      String stateKey = currentState.getStateKey();
-
       // Check if this state has already been explored with a lower gScore
-      if (closedSet.containsKey(stateKey) && currentState.getgScore() >= closedSet.get(stateKey)) {
+      if (closedSet.containsKey(currentState) && currentState.getgScore() >= closedSet.get(currentState)) {
         continue;
       }
 
       // Add current state to closed set
-      closedSet.put(stateKey, currentState.getgScore());
+      closedSet.put(currentState, currentState.getgScore());
 
       // Get all tasks that are ready to be scheduled (all predecessors are scheduled)
       List<IOTask> readyTasks = currentState.getReadyTasks(graph);
@@ -70,11 +67,8 @@ public class AStarSearch {
           // Calculate fScore
           int tentativeFScore = tentativeGScore + heuristicEstimate(newState, graph, numProcessors);
 
-          // Generate a unique key for the new state (so we don't explore the same state)
-          String newStateKey = newState.getStateKey();
-
           // If this state has already been explored with a lower gScore skip it
-          if (closedSet.containsKey(newStateKey) && tentativeGScore >= closedSet.get(newStateKey)) {
+          if (closedSet.containsKey(newState) && tentativeGScore >= closedSet.get(newState)) {
             continue;
           }
 
