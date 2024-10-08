@@ -13,8 +13,8 @@ public class WrapperController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WrapperController.class);
 
-  private static final int DEFAULT_WIDTH = 640;
-  private static final int DEFAULT_HEIGHT = 480;
+  private static final int DEFAULT_WIDTH = 800;
+  private static final int DEFAULT_HEIGHT = 450;
 
   private double zoom = 1;
 
