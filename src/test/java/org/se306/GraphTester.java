@@ -1,15 +1,15 @@
 package org.se306;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.jgrapht.nio.ImportException;
 import org.jgrapht.nio.dot.DOTImporter;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.se306.domain.Task;
 import org.slf4j.Logger;
 
@@ -28,7 +28,7 @@ public class GraphTester {
       Graph<Task, DefaultWeightedEdge> expected, Graph<Task, DefaultWeightedEdge> actual) {
 
     // Check the number of vertices
-    assertEquals(expected.vertexSet().size(), actual.vertexSet().size());
+    assertEquals(expected.vertexSet().size(), actual.vertexSet().size(), "Number of vertices not equal");
 
     // Arrange vertices in order of ID
     List<Task> expectedVertices = new ArrayList<>(expected.vertexSet());
@@ -40,14 +40,14 @@ public class GraphTester {
     for (int i = 0; i < expectedVertices.size(); i++) {
       Task expectedVertex = expectedVertices.get(i);
       Task actualVertex = actualVertices.get(i);
-      assertEquals(expectedVertex.getId(), actualVertex.getId()); // ID
-      assertEquals(expectedVertex.getTaskLength(), actualVertex.getTaskLength()); // TaskLength
-      assertEquals(expectedVertex.getStartTime(), actualVertex.getStartTime()); // StartTime
-      assertEquals(expectedVertex.getProcessor(), actualVertex.getProcessor()); // Processor
+      assertEquals(expectedVertex.getId(), actualVertex.getId(), "Vertex " + expectedVertex + " IDs not equal");
+      assertEquals(expectedVertex.getTaskLength(), actualVertex.getTaskLength(), "Vertex " + expectedVertex + " task lengths not equal");
+      assertEquals(expectedVertex.getStartTime(), actualVertex.getStartTime(), "Vertex " + expectedVertex + " start times not equal");
+      assertEquals(expectedVertex.getProcessor(), actualVertex.getProcessor(), "Vertex " + expectedVertex + " processors not equal");
     }
 
     // Check the number of edges
-    assertEquals(expected.edgeSet().size(), actual.edgeSet().size());
+    assertEquals(expected.edgeSet().size(), actual.edgeSet().size(), "Number of edges not equal");
 
     // Arrange edges in order of toString
     List<DefaultWeightedEdge> expectedEdges = new ArrayList<>(expected.edgeSet());
@@ -60,11 +60,11 @@ public class GraphTester {
       DefaultWeightedEdge expectedEdge = expectedEdges.get(i);
       DefaultWeightedEdge actualEdge = actualEdges.get(i);
       assertEquals(
-          expected.getEdgeSource(expectedEdge), actual.getEdgeSource(actualEdge)); // Source
+          expected.getEdgeSource(expectedEdge), actual.getEdgeSource(actualEdge), "Edge " + expectedEdge + " sources not equal");
       assertEquals(
-          expected.getEdgeTarget(expectedEdge), actual.getEdgeTarget(actualEdge)); // Target
+          expected.getEdgeTarget(expectedEdge), actual.getEdgeTarget(actualEdge), "Edge " + expectedEdge + " targets not equal");
       assertEquals(
-          expected.getEdgeWeight(expectedEdge), actual.getEdgeWeight(actualEdge)); // Weight
+          expected.getEdgeWeight(expectedEdge), actual.getEdgeWeight(actualEdge), "Edge " + expectedEdge + " weights not equal");
     }
   }
 
