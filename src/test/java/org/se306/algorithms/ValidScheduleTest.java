@@ -13,7 +13,7 @@ public class ValidScheduleTest {
   public void testGraph2Processors5() {
     Graph<Task, DefaultWeightedEdge> actual =
         GraphParser.dotToGraph(getClass().getResourceAsStream("input/Graph2.dot"));
-    ValidSchedule.findValidSchedule(actual, 5);
+    ListSchedule.findValidSchedule(actual, 5);
 
     Graph<Task, DefaultWeightedEdge> expected =
         GraphTester.dotToGraphAllAttributes(
@@ -26,7 +26,7 @@ public class ValidScheduleTest {
   public void testGraph1Processors1() {
     Graph<Task, DefaultWeightedEdge> actual =
         GraphParser.dotToGraph(getClass().getResourceAsStream("input/Graph1.dot"));
-    ValidSchedule.findValidSchedule(actual, 1);
+    ListSchedule.findValidSchedule(actual, 1);
 
     Graph<Task, DefaultWeightedEdge> expected =
         GraphTester.dotToGraphAllAttributes(
@@ -39,7 +39,7 @@ public class ValidScheduleTest {
   public void testGraph1Processors2() {
     Graph<Task, DefaultWeightedEdge> actual =
         GraphParser.dotToGraph(getClass().getResourceAsStream("input/Graph1.dot"));
-    ValidSchedule.findValidSchedule(actual, 2);
+    ListSchedule.findValidSchedule(actual, 2);
 
     Graph<Task, DefaultWeightedEdge> expected =
         GraphTester.dotToGraphAllAttributes(
@@ -52,7 +52,7 @@ public class ValidScheduleTest {
   public void testGraph1Processors3() {
     Graph<Task, DefaultWeightedEdge> actual =
         GraphParser.dotToGraph(getClass().getResourceAsStream("input/Graph1.dot"));
-    ValidSchedule.findValidSchedule(actual, 3);
+    ListSchedule.findValidSchedule(actual, 3);
 
     Graph<Task, DefaultWeightedEdge> expected =
         GraphTester.dotToGraphAllAttributes(

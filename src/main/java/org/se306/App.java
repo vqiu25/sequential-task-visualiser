@@ -3,11 +3,13 @@ package org.se306;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.se306.algorithms.ValidSchedule;
+
+import org.se306.algorithms.ListSchedule;
 import org.se306.utils.GraphParser;
 import org.se306.utils.SchedulerCommand;
 import org.se306.visualisation.FxApp;
 import org.slf4j.Logger;
+
 import picocli.CommandLine;
 
 /** Hello world! */
@@ -34,7 +36,7 @@ public class App {
     }
 
     // run scheduler here, using command.getProcessors(), command.getCores(), and state.getGraph()
-    ValidSchedule.findValidSchedule(state.getGraph(), command.getProcessors());
+    ListSchedule.findValidSchedule(state.getGraph(), command.getProcessors());
 
     // execute visualisation if indicated
     if (command.toVisualise()) {

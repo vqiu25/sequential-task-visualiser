@@ -1,4 +1,4 @@
-package org.se306.helpers;
+package org.se306.algorithms;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -89,7 +89,8 @@ public class AStarSearch {
     throw new RuntimeException("No valid schedule found.");
   }
 
-  // THIS HEURSITIC IS BASED ON OLIVER PAPER I DONT UNDERSTAND IT I JUST COPIED HIM
+  // THIS HEURSITIC IS BASED ON OLIVER PAPER I DONT UNDERSTAND IT I JUST COPIED
+  // HIM
   private static int heuristicEstimate(State state, Graph<Task, DefaultWeightedEdge> graph) {
     int idleTimeEstimate = estimateIdleTime(state, graph);
     int bottomLevelEstimate = estimateBottomLevel(state, graph);
@@ -106,7 +107,8 @@ public class AStarSearch {
       totalComputationTime += task.getTaskLength();
     }
 
-    // Return the idle time estimate based on the total computation time divided by the number of
+    // Return the idle time estimate based on the total computation time divided by
+    // the number of
     // processors
     return (totalComputationTime + state.getIdleTime()) / state.numProcessors;
   }
@@ -150,17 +152,17 @@ public class AStarSearch {
     return longestPath;
   }
 
-  // Helper method to calculate the data ready time for a task on a specific processor
+  // Helper method to calculate the data ready time for a task on a specific
+  // processor
   private static int calculateDataReadyTime(
       Task task, int processor, State state, Graph<Task, DefaultWeightedEdge> graph) {
     int maxReadyTime = 0;
     for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
       Task predecessor = graph.getEdgeSource(edge);
       TaskInfo predecessorInfo = state.taskInfoMap.get(predecessor.getId());
-      int finishTime =
-          predecessorInfo != null
-              ? predecessorInfo.startTime + predecessorInfo.duration
-              : predecessor.getTaskLength();
+      int finishTime = predecessorInfo != null
+          ? predecessorInfo.startTime + predecessorInfo.duration
+          : predecessor.getTaskLength();
       int communicationDelay = (int) graph.getEdgeWeight(edge);
       if (predecessorInfo == null || predecessorInfo.processor != processor) {
         finishTime += communicationDelay;
