@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="panRoot" maxHeight="60.0" maxWidth="800.0" minHeight="60.0" minWidth="800.0" prefHeight="60.0" prefWidth="800.0" stylesheets="@../../css/globals.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.se306.visualisation.controllers.header.HeaderController">
+  <children>
+    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="334.0" layoutY="19.0" prefHeight="24.0" prefWidth="125.0" text="HEADER" textAlignment="CENTER">
+      <font>
+        <Font name="System Bold" size="12.0" />
+      </font>
+    </Label>
+  </children>
+</AnchorPane>
