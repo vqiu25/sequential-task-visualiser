@@ -22,6 +22,42 @@ public class AStarSearchTest {
   }
 
   @Test
+  public void testGraph1_2() {
+    Graph<IOTask, DefaultWeightedEdge> actual = GraphParser
+        .dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph1.dot"));
+    AStarSearch.findValidSchedule(actual, 2);
+
+    Graph<IOTask, DefaultWeightedEdge> expected = GraphTester.dotToGraphAllAttributes(
+        getClass().getResourceAsStream("astarsearch/expected/Graph1_2.dot"));
+
+    GraphTester.assertGraphEquals(expected, actual);
+  }
+
+  @Test
+  public void testGraph1_3() {
+    Graph<IOTask, DefaultWeightedEdge> actual = GraphParser
+        .dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph1.dot"));
+    AStarSearch.findValidSchedule(actual, 3);
+
+    Graph<IOTask, DefaultWeightedEdge> expected = GraphTester.dotToGraphAllAttributes(
+        getClass().getResourceAsStream("astarsearch/expected/Graph1_3.dot"));
+
+    GraphTester.assertGraphEquals(expected, actual);
+  }
+
+  @Test
+  public void testGraph2_1() {
+    Graph<IOTask, DefaultWeightedEdge> actual = GraphParser
+        .dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph2.dot"));
+    AStarSearch.findValidSchedule(actual, 1);
+
+    Graph<IOTask, DefaultWeightedEdge> expected = GraphTester.dotToGraphAllAttributes(
+        getClass().getResourceAsStream("astarsearch/expected/Graph2_1.dot"));
+
+    GraphTester.assertGraphEquals(expected, actual);
+  }
+
+  @Test
   public void testGraph2_2() {
     Graph<IOTask, DefaultWeightedEdge> actual = GraphParser
         .dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph2.dot"));
@@ -34,6 +70,42 @@ public class AStarSearchTest {
   }
 
   @Test
+  public void testGraph2_3() {
+    Graph<IOTask, DefaultWeightedEdge> actual = GraphParser
+        .dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph2.dot"));
+    AStarSearch.findValidSchedule(actual, 3);
+
+    Graph<IOTask, DefaultWeightedEdge> expected = GraphTester.dotToGraphAllAttributes(
+        getClass().getResourceAsStream("astarsearch/expected/Graph2_3.dot"));
+
+    GraphTester.assertGraphEquals(expected, actual);
+  }
+
+  @Test
+  public void testGraph3_1() {
+    Graph<IOTask, DefaultWeightedEdge> actual = GraphParser
+        .dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph3.dot"));
+    AStarSearch.findValidSchedule(actual, 1);
+
+    Graph<IOTask, DefaultWeightedEdge> expected = GraphTester.dotToGraphAllAttributes(
+        getClass().getResourceAsStream("astarsearch/expected/Graph3_1.dot"));
+
+    GraphTester.assertGraphEquals(expected, actual);
+  }
+
+  @Test
+  public void testGraph3_2() {
+    Graph<IOTask, DefaultWeightedEdge> actual = GraphParser
+        .dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph3.dot"));
+    AStarSearch.findValidSchedule(actual, 2);
+
+    Graph<IOTask, DefaultWeightedEdge> expected = GraphTester.dotToGraphAllAttributes(
+        getClass().getResourceAsStream("astarsearch/expected/Graph3_2.dot"));
+
+    GraphTester.assertGraphEquals(expected, actual);
+  }
+
+  @Test
   public void testGraph3_3() {
     Graph<IOTask, DefaultWeightedEdge> actual = GraphParser
         .dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph3.dot"));
@@ -41,6 +113,30 @@ public class AStarSearchTest {
 
     Graph<IOTask, DefaultWeightedEdge> expected = GraphTester.dotToGraphAllAttributes(
         getClass().getResourceAsStream("astarsearch/expected/Graph3_3.dot"));
+
+    GraphTester.assertGraphEquals(expected, actual);
+  }
+
+  @Test
+  public void testGraph3_4() {
+    Graph<IOTask, DefaultWeightedEdge> actual = GraphParser
+        .dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph3.dot"));
+    AStarSearch.findValidSchedule(actual, 4);
+
+    Graph<IOTask, DefaultWeightedEdge> expected = GraphTester.dotToGraphAllAttributes(
+        getClass().getResourceAsStream("astarsearch/expected/Graph3_4.dot"));
+
+    GraphTester.assertGraphEquals(expected, actual);
+  }
+
+  @Test
+  public void testGraph3_5() {
+    Graph<IOTask, DefaultWeightedEdge> actual = GraphParser
+        .dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph3.dot"));
+    AStarSearch.findValidSchedule(actual, 5);
+
+    Graph<IOTask, DefaultWeightedEdge> expected = GraphTester.dotToGraphAllAttributes(
+        getClass().getResourceAsStream("astarsearch/expected/Graph3_5.dot"));
 
     GraphTester.assertGraphEquals(expected, actual);
   }

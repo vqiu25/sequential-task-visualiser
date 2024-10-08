@@ -35,6 +35,7 @@ public class AStarSearch {
       }
 
       // Check if this state has already been explored with a lower makespan
+      // TODO: dunno what this is
       if (closedMap.containsKey(currentState) && currentState.getMakespan() >= closedMap.get(currentState)) {
         continue;
       }
@@ -89,6 +90,7 @@ public class AStarSearch {
         int fScore = makespan + heuristic; // Estimated total 'distance' f(s) = g(s) + h(s)
 
         // If this state has already been explored with a lower makespan skip it
+        // TODO: dunno what this is
         if (closedMap.containsKey(newState) && makespan >= closedMap.get(newState)) {
           continue;
         }
