@@ -18,6 +18,5 @@ Label {
 }
 
 .progress-bar .bar {
-  -fx-background-color: #B6B9E2;
   -fx-background-radius: 20;
 }
