@@ -4,29 +4,29 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="panRoot" maxHeight="480.0" maxWidth="640.0" minHeight="480.0" minWidth="640.0" prefHeight="480" prefWidth="640" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.se306.visualisation.controllers.MainController">
+<AnchorPane fx:id="panRoot" maxHeight="450.0" maxWidth="800.0" minHeight="450.0" minWidth="800.0" prefHeight="450.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.se306.visualisation.controllers.MainController">
   <children>
     <Group fx:id="header">
       <children>
         <fx:include source="header/header.fxml" />
       </children>
     </Group>
-    <Group fx:id="schedule">
+    <Group fx:id="schedule" layoutY="-20.0">
       <children>
         <fx:include layoutY="80.0" source="schedule/schedule.fxml" />
       </children>
     </Group>
-    <Group fx:id="taskGraph">
+    <Group fx:id="taskGraph" layoutX="60.0" layoutY="-20.0">
       <children>
         <fx:include layoutX="250.0" layoutY="80.0" source="taskgraph/task-graph.fxml" />
       </children>
     </Group>
-    <Group fx:id="stateGraph">
+    <Group fx:id="stateGraph" layoutY="-20.0">
       <children>
         <fx:include layoutY="280.0" source="stategraph/state-graph.fxml" />
       </children>
     </Group>
-    <Group fx:id="stats">
+    <Group fx:id="stats" layoutX="120.0" layoutY="-20.0">
       <children>
         <fx:include layoutX="500.0" layoutY="80.0" source="stats/stats.fxml" />
       </children>

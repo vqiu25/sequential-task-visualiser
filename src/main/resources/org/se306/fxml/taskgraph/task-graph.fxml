@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="panRoot" maxHeight="200.0" maxWidth="250.0" minHeight="200.0" minWidth="250.0" prefHeight="200.0" prefWidth="250.0" stylesheets="@../../css/globals.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.se306.visualisation.controllers.taskgraph.TaskGraphController">
+<AnchorPane fx:id="panRoot" maxHeight="200.0" maxWidth="310.0" minHeight="200.0" minWidth="310.0" prefHeight="200.0" prefWidth="310.0" stylesheets="@../../css/globals.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.se306.visualisation.controllers.taskgraph.TaskGraphController">
   <children>
-    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="63.0" layoutY="88.0" prefHeight="24.0" prefWidth="125.0" text="TASK GRAPH" textAlignment="CENTER">
+    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="95.0" layoutY="88.0" prefHeight="24.0" prefWidth="125.0" text="TASK GRAPH" textAlignment="CENTER">
       <font>
         <Font name="System Bold" size="12.0" />
       </font>
