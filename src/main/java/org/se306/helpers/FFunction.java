@@ -13,15 +13,16 @@ import org.se306.domain.StateTask;
 // TODO: need to optimize all the methods in this class
 public class FFunction {
 
-  // THIS HEURSITIC IS BASED ON OLIVER PAPER I DONT UNDERSTAND IT I JUST COPIED
-  // HIM
+  /** Calculates the h(s) part of f(s) = g(s) + h(s) */
   public static int heuristicEstimate(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
-    int idleTimeEstimate = estimateIdleTime(state, graph, numProcessors);
-    int bottomLevelEstimate = estimateBottomLevel(state, graph);
-    int dataReadyTimeEstimate = estimateDataReadyTime(state, graph, numProcessors);
+    return 0;
 
-    // Return the maximum of the three components (as written in Oliver's paper)
-    return Math.max(Math.max(idleTimeEstimate, bottomLevelEstimate), dataReadyTimeEstimate);
+    // int idleTimeEstimate = estimateIdleTime(state, graph, numProcessors);
+    // int bottomLevelEstimate = estimateBottomLevel(state, graph);
+    // int dataReadyTimeEstimate = estimateDataReadyTime(state, graph, numProcessors);
+
+    // // Return the maximum of the three components (as written in Oliver's paper)
+    // return Math.max(Math.max(idleTimeEstimate, bottomLevelEstimate), dataReadyTimeEstimate);
   }
 
   // Estimate the idle time based on the current state

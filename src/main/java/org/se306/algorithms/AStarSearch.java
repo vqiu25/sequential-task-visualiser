@@ -19,7 +19,7 @@ public class AStarSearch {
   public static void findSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
 
     // Initialize the open set as a priority queue (A* search frontier)
-    PriorityQueue<State> openQueue = new PriorityQueue<>(Comparator.comparingDouble(s -> s.getfScore()));
+    PriorityQueue<State> openQueue = new PriorityQueue<>(Comparator.comparingInt(s -> s.getfScore()));
     Map<State, Integer> closedMap = new HashMap<>();
 
     // Add s_init to kick off A*
