@@ -41,7 +41,7 @@ This should help you understand which styles you can apply.
 
 .edge {
     -fx-stroke-width: 2;
-    -fx-stroke: #FF6D66;
+    -fx-stroke: #B6B9E2;
     -fx-stroke-dash-array: 2 5 2 5;
     /* remove for clean lines */
     -fx-fill: transparent;
@@ -84,7 +84,7 @@ This should help you understand which styles you can apply.
  */
 .myEdge {
     -fx-stroke-width: 2;
-    -fx-stroke: red;
+    -fx-stroke: #B6B9E2;
     -fx-opacity: 1;
     -fx-fill: transparent;
     /* important to keep for curved edges */
