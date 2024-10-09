@@ -18,6 +18,8 @@ public class AStarSearch {
   // Method to find the optimal schedule using A* search
   public static void findSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
 
+    int totalComputeTime = getTotalComputeTime(graph);
+
     // Initialize the open set as a priority queue (A* search frontier)
     PriorityQueue<State> openQueue = new PriorityQueue<>(Comparator.comparingInt(s -> s.getfScore()));
     Map<State, Integer> closedMap = new HashMap<>();
@@ -41,12 +43,20 @@ public class AStarSearch {
       }
 
       // Expand state & move to closed set
-      expandState(currentState, openQueue, closedMap, graph);
+      expandState(currentState, openQueue, closedMap, graph, totalComputeTime);
       closedMap.put(currentState, currentState.getMakespan());
     }
 
     // If no valid schedule is found exception
     throw new RuntimeException("No valid schedule found.");
+  }
+
+  private static int getTotalComputeTime(Graph<IOTask, DefaultWeightedEdge> graph) {
+    int totalComputeTime = 0;
+    for (IOTask task : graph.vertexSet()) {
+      totalComputeTime += task.getTaskLength();
+    }
+    return totalComputeTime;
   }
 
   /**
@@ -73,7 +83,7 @@ public class AStarSearch {
    * (|n|x|P| total) and adds them to the open queue.
    */
   private static void expandState(State currentState, PriorityQueue<State> openQueue, Map<State, Integer> closedMap,
-      Graph<IOTask, DefaultWeightedEdge> taskGraph) {
+      Graph<IOTask, DefaultWeightedEdge> taskGraph, int totalComputeTime) {
 
     // Get all tasks that are ready to be scheduled (all predecessors are scheduled)
     List<IOTask> readyTasks = currentState.getReadyTasks(taskGraph);
@@ -86,7 +96,8 @@ public class AStarSearch {
 
         // Calculate the fScore for the new state
         int makespan = newState.getMakespan(); // 'Distance' from s_init (start state)
-        int heuristic = FFunction.heuristicEstimate(newState, taskGraph, numProcessors); // 'ETA' to goal
+        int heuristic = FFunction.heuristicEstimate(newState, taskGraph, numProcessors, totalComputeTime); // 'ETA' to
+                                                                                                           // goal
         int fScore = makespan + heuristic; // Estimated total 'distance' f(s) = g(s) + h(s)
 
         // If this state has already been explored with a lower makespan skip it

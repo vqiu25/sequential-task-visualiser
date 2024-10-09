@@ -5,6 +5,8 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.domain.IOTask;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class to calculate the heuristic estimate f(s) for the A* search
@@ -13,29 +15,37 @@ import org.se306.domain.StateTask;
 // TODO: need to optimize all the methods in this class
 public class FFunction {
 
-  /** Calculates the h(s) part of f(s) = g(s) + h(s) */
-  public static int heuristicEstimate(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
-    return 0;
+  private static final Logger LOGGER = LoggerFactory.getLogger(FFunction.class);
 
-    // int idleTimeEstimate = estimateIdleTime(state, graph, numProcessors);
+  /**
+   * Calculates the h(s) part of f(s) = g(s) + h(s)
+   *
+   * - f(s) is the ETA of the current state s
+   * - g(s) is the makespan of the current state s
+   * - h(s) is the heuristic estimate of the remaining time to complete the schedule
+   */
+  public static int heuristicEstimate(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors,
+      int totalComputeTime) {
+    int idleTimeEstimate = estimateIdleTime(state, graph, numProcessors, totalComputeTime);
     // int bottomLevelEstimate = estimateBottomLevel(state, graph);
     // int dataReadyTimeEstimate = estimateDataReadyTime(state, graph, numProcessors);
 
     // // Return the maximum of the three components (as written in Oliver's paper)
+    return idleTimeEstimate;
     // return Math.max(Math.max(idleTimeEstimate, bottomLevelEstimate), dataReadyTimeEstimate);
   }
 
-  // Estimate the idle time based on the current state
-  private static int estimateIdleTime(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
-    int totalComputationTime = 0;
-    for (IOTask task : graph.vertexSet()) {
-      totalComputationTime += task.getTaskLength();
-    }
+  /**
+   * Estimate the difference between the ETA calculated from the idle-time
+   * estimate and the current makespan.
+   *
+   * @return The estimated idle time or 0 if the idle time estimate is less than the current makespan
+   */
+  private static int estimateIdleTime(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors,
+      int totalComputationTime) {
 
-    // Return the idle time estimate based on the total computation time divided by
-    // the number of
-    // processors
-    return (totalComputationTime + state.getIdleTime()) / numProcessors;
+    int idleTimeEtaEstimate = (totalComputationTime + state.getIdleTime()) / numProcessors; // ETA based on idle time
+    return Math.max(idleTimeEtaEstimate - state.getMakespan(), 0);
   }
 
   // Estimate the bottom level for tasks already scheduled

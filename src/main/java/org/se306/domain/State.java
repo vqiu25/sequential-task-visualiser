@@ -27,13 +27,15 @@ public class State {
 
   // --- The following fields are used for dynamic programming only ---
   private int makespan;
+  private int idleTime; // Sum of idle time (so far) on all processors
 
   /** Initial state constructor */
   public State(int numProcessors) {
     this.idsToStateTasks = new HashMap<>();
     this.unscheduledTaskIds = new HashSet<>();
-    this.makespan = 0;
     this.fScore = 0;
+    this.makespan = 0;
+    this.idleTime = 0;
     this.processorAvailableTimes = new int[numProcessors];
     Arrays.fill(this.processorAvailableTimes, 0);
   }
@@ -43,8 +45,9 @@ public class State {
     State newState = new State(this.getNumProcessors());
     newState.idsToStateTasks = new HashMap<>(this.idsToStateTasks);
     newState.unscheduledTaskIds = new HashSet<>(this.unscheduledTaskIds);
-    newState.makespan = this.makespan;
     newState.fScore = this.fScore;
+    newState.makespan = this.makespan;
+    newState.idleTime = this.idleTime;
     newState.processorAvailableTimes = Arrays.copyOf(this.processorAvailableTimes, this.getNumProcessors());
     return newState;
   }
@@ -101,26 +104,14 @@ public class State {
     // Schedule the task
     newState.idsToStateTasks.put(
         task.getId(), new StateTask(task, processor, earliestStartTime));
-    newState.processorAvailableTimes[processor] = earliestStartTime + task.getTaskLength();
     newState.unscheduledTaskIds.remove(task.getId());
 
-    // Update makespan (gScore) efficiently
+    // Update bookkeeping
+    newState.idleTime += earliestStartTime - newState.processorAvailableTimes[processor];
+    newState.processorAvailableTimes[processor] = earliestStartTime + task.getTaskLength();
     newState.makespan = Math.max(this.makespan, newState.getProcessorAvailableTimes()[processor]);
 
     return newState;
-  }
-
-  // Calculate idle time for all processors (this is important for oliver's
-  // heurstic)
-  // TODO: bug, I don't think this calculates idle time correctly
-  public int getIdleTime() {
-    int makespan = getMakespan();
-    int totalUsedTime = 0;
-    for (int availableTime : processorAvailableTimes) {
-      totalUsedTime += availableTime;
-    }
-    // Idle time is the difference between makespan * number of processors and total used time
-    return (makespan * getNumProcessors()) - totalUsedTime;
   }
 
   // Helper method to get Task by ID
@@ -142,6 +133,14 @@ public class State {
     return unscheduledTaskIds;
   }
 
+  public int getfScore() {
+    return fScore;
+  }
+
+  public void setfScore(int fScore) {
+    this.fScore = fScore;
+  }
+
   public int getMakespan() {
     return makespan;
   }
@@ -150,12 +149,8 @@ public class State {
     this.makespan = gScore;
   }
 
-  public int getfScore() {
-    return fScore;
-  }
-
-  public void setfScore(int fScore) {
-    this.fScore = fScore;
+  public int getIdleTime() {
+    return idleTime;
   }
 
   public int[] getProcessorAvailableTimes() {
