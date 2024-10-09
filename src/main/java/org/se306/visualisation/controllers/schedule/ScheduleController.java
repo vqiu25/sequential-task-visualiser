@@ -16,6 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 
 public class ScheduleController {
 
@@ -30,14 +31,13 @@ public class ScheduleController {
     LOGGER.debug("ScheduleController initialized");
 
     // Example call to add rectangles and labels (adjust the number as needed)
-    createHBoxWithRectanglesAndLabels(6, 100);
+    createHBoxWithRectanglesAndLabels(5, 100);
     ArrayList<Task> tasks = new ArrayList<>();
 
     // Add sample tasks to the list
     tasks.add(new Task("T1", 100, 0, 1));
     tasks.add(new Task("T2", 20, 10, 2));
-    tasks.add(new Task("T3", 50, 40, 2));
-    tasks.add(new Task("T4", 50, 40, 3));
+    tasks.add(new Task("T3", 50, 30, 2));
     tasks.add(new Task("T5", 20, 80, 4));
 
     populateTaskRectangles(tasks, 100);
@@ -143,6 +143,9 @@ public class ScheduleController {
       // Create the task rectangle
       Rectangle taskRectangle = new Rectangle(paneWidth - 4, taskHeight);
       taskRectangle.setFill(Color.web("#b1dff7"));
+      taskRectangle.setStroke(Color.web("#61b5f1"));
+      taskRectangle.setStrokeType(StrokeType.INSIDE);
+      taskRectangle.setStrokeWidth(2);
       taskRectangle.setArcWidth(17);
       taskRectangle.setArcHeight(17);
 
