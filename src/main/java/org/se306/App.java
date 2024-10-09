@@ -3,11 +3,15 @@ package org.se306;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.Instant;
+
 import org.se306.algorithms.ValidSchedule;
 import org.se306.utils.GraphParser;
 import org.se306.utils.SchedulerCommand;
 import org.se306.visualisation.FxApp;
 import org.slf4j.Logger;
+
 import picocli.CommandLine;
 
 /** Hello world! */
@@ -26,6 +30,7 @@ public class App {
     logCommandInfo(command);
 
     AppState state = AppState.getInstance();
+    state.setCommand(command);
     try (InputStream inputStream = new FileInputStream(command.getInputFileName())) {
       state.setGraph(GraphParser.dotToGraph(inputStream));
     } catch (IOException e) {
@@ -33,17 +38,23 @@ public class App {
       return;
     }
 
-    // run scheduler here, using command.getProcessors(), command.getCores(), and state.getGraph()
-    ValidSchedule.findValidSchedule(state.getGraph(), command.getProcessors());
-
-    // execute visualisation if indicated
+    // execute scheduler in visualisation mode if indicated
     if (command.toVisualise()) {
-      // Note: this is blocking, but we're allowed to use extra threads for JavaFX
+      LOGGER.info("Visualisation starting...");
       FxApp.launch(FxApp.class);
-    }
+    } else {
+      // run scheduler standalone and output graph to dot file
+      LOGGER.info("Scheduler running...");
+      Instant startTime = Instant.now();
 
-    // output graph to dot file
-    GraphParser.graphToDot(state.getGraph(), command.getOutputFileName());
+      ValidSchedule.findValidSchedule(state.getGraph(), command.getProcessors());
+
+      Instant endTime = Instant.now();
+      Duration duration = Duration.between(startTime, endTime);
+      LOGGER.info("Scheduler finished in {}ms", duration.toMillis());
+
+      GraphParser.graphToDot(state.getGraph(), command.getOutputFileName());
+    }
   }
 
   private static void logArgs(String[] args) {
