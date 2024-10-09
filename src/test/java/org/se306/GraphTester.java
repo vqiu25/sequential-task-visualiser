@@ -69,6 +69,23 @@ public class GraphTester {
   }
 
   /**
+   * Returns the makespan of a task graph (unefficient implementation)
+   *
+   * @param graph The task graph
+   * @return The makespan (latest end time of all tasks)
+   */
+  public static int getMakespan(Graph<IOTask, DefaultWeightedEdge> graph) {
+    int makespan = 0;
+    for (IOTask task : graph.vertexSet()) {
+      int taskEndTime = task.getEndTime();
+      if (taskEndTime > makespan) {
+        makespan = taskEndTime;
+      }
+    }
+    return makespan;
+  }
+
+  /**
    * Reads a dot file and returns a graph, containing all attributes
    *
    * @param dotFileInputStream The InputStream opened from the dot file

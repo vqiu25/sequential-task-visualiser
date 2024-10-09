@@ -63,6 +63,10 @@ public class IOTask {
     return processor;
   }
 
+  public int getEndTime() {
+    return startTime + taskLength;
+  }
+
   public void setProcessor(int processor) {
     this.processor = processor;
   }
