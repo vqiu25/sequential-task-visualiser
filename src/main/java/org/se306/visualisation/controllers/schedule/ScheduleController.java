@@ -34,11 +34,11 @@ public class ScheduleController {
     ArrayList<Task> tasks = new ArrayList<>();
 
     // Add sample tasks to the list
-    tasks.add(new Task("T1", 100, 0, 0));
-    tasks.add(new Task("T2", 20, 10, 1));
-    tasks.add(new Task("T3", 50, 40, 1));
-    tasks.add(new Task("T4", 50, 40, 2));
-    tasks.add(new Task("T5", 20, 80, 3));
+    tasks.add(new Task("T1", 100, 0, 1));
+    tasks.add(new Task("T2", 20, 10, 2));
+    tasks.add(new Task("T3", 50, 40, 2));
+    tasks.add(new Task("T4", 50, 40, 3));
+    tasks.add(new Task("T5", 20, 80, 4));
 
     populateTaskRectangles(tasks, 100);
   }
@@ -120,7 +120,7 @@ public class ScheduleController {
   // Method to populate task rectangles within processor panes
   private void populateTaskRectangles(ArrayList<Task> tasks, int maxYValue) {
     for (Task task : tasks) {
-      int processorIndex = task.getProcessor(); // Assuming processors are 0-based
+      int processorIndex = task.getProcessor() - 1;
       if (processorIndex < 0 || processorIndex >= processorPanes.size()) {
         LOGGER.warn("Task {} has invalid processor index {}", task.getId(), processorIndex);
         continue;
