@@ -1,16 +1,16 @@
 package org.se306;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.jgrapht.nio.ImportException;
 import org.jgrapht.nio.dot.DOTImporter;
-import org.se306.domain.Task;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.se306.domain.IOTask;
 import org.slf4j.Logger;
 
 public class GraphTester {
@@ -25,29 +25,29 @@ public class GraphTester {
    * @param actual The actual graph
    */
   public static void assertGraphEquals(
-      Graph<Task, DefaultWeightedEdge> expected, Graph<Task, DefaultWeightedEdge> actual) {
+      Graph<IOTask, DefaultWeightedEdge> expected, Graph<IOTask, DefaultWeightedEdge> actual) {
 
     // Check the number of vertices
-    assertEquals(expected.vertexSet().size(), actual.vertexSet().size());
+    assertEquals(expected.vertexSet().size(), actual.vertexSet().size(), "Number of vertices not equal");
 
     // Arrange vertices in order of ID
-    List<Task> expectedVertices = new ArrayList<>(expected.vertexSet());
-    List<Task> actualVertices = new ArrayList<>(actual.vertexSet());
+    List<IOTask> expectedVertices = new ArrayList<>(expected.vertexSet());
+    List<IOTask> actualVertices = new ArrayList<>(actual.vertexSet());
     expectedVertices.sort((a, b) -> a.getId().compareTo(b.getId()));
     actualVertices.sort((a, b) -> a.getId().compareTo(b.getId()));
 
     // Check each vertex
     for (int i = 0; i < expectedVertices.size(); i++) {
-      Task expectedVertex = expectedVertices.get(i);
-      Task actualVertex = actualVertices.get(i);
-      assertEquals(expectedVertex.getId(), actualVertex.getId()); // ID
-      assertEquals(expectedVertex.getTaskLength(), actualVertex.getTaskLength()); // TaskLength
-      assertEquals(expectedVertex.getStartTime(), actualVertex.getStartTime()); // StartTime
-      assertEquals(expectedVertex.getProcessor(), actualVertex.getProcessor()); // Processor
+      IOTask expectedVertex = expectedVertices.get(i);
+      IOTask actualVertex = actualVertices.get(i);
+      assertEquals(expectedVertex.getId(), actualVertex.getId(), "Vertex " + expectedVertex + " IDs not equal");
+      assertEquals(expectedVertex.getTaskLength(), actualVertex.getTaskLength(), "Vertex " + expectedVertex + " task lengths not equal");
+      assertEquals(expectedVertex.getStartTime(), actualVertex.getStartTime(), "Vertex " + expectedVertex + " start times not equal");
+      assertEquals(expectedVertex.getProcessor(), actualVertex.getProcessor(), "Vertex " + expectedVertex + " processors not equal");
     }
 
     // Check the number of edges
-    assertEquals(expected.edgeSet().size(), actual.edgeSet().size());
+    assertEquals(expected.edgeSet().size(), actual.edgeSet().size(), "Number of edges not equal");
 
     // Arrange edges in order of toString
     List<DefaultWeightedEdge> expectedEdges = new ArrayList<>(expected.edgeSet());
@@ -60,12 +60,29 @@ public class GraphTester {
       DefaultWeightedEdge expectedEdge = expectedEdges.get(i);
       DefaultWeightedEdge actualEdge = actualEdges.get(i);
       assertEquals(
-          expected.getEdgeSource(expectedEdge), actual.getEdgeSource(actualEdge)); // Source
+          expected.getEdgeSource(expectedEdge), actual.getEdgeSource(actualEdge), "Edge " + expectedEdge + " sources not equal");
       assertEquals(
-          expected.getEdgeTarget(expectedEdge), actual.getEdgeTarget(actualEdge)); // Target
+          expected.getEdgeTarget(expectedEdge), actual.getEdgeTarget(actualEdge), "Edge " + expectedEdge + " targets not equal");
       assertEquals(
-          expected.getEdgeWeight(expectedEdge), actual.getEdgeWeight(actualEdge)); // Weight
+          expected.getEdgeWeight(expectedEdge), actual.getEdgeWeight(actualEdge), "Edge " + expectedEdge + " weights not equal");
     }
+  }
+
+  /**
+   * Returns the makespan of a task graph (unefficient implementation)
+   *
+   * @param graph The task graph
+   * @return The makespan (latest end time of all tasks)
+   */
+  public static int getMakespan(Graph<IOTask, DefaultWeightedEdge> graph) {
+    int makespan = 0;
+    for (IOTask task : graph.vertexSet()) {
+      int taskEndTime = task.getEndTime();
+      if (taskEndTime > makespan) {
+        makespan = taskEndTime;
+      }
+    }
+    return makespan;
   }
 
   /**
@@ -74,11 +91,11 @@ public class GraphTester {
    * @param dotFileInputStream The InputStream opened from the dot file
    * @return The JGraphT SimpleDirectedWeightedGraph
    */
-  public static Graph<Task, DefaultWeightedEdge> dotToGraphAllAttributes(
+  public static Graph<IOTask, DefaultWeightedEdge> dotToGraphAllAttributes(
       InputStream dotFileInputStream) {
-    Graph<Task, DefaultWeightedEdge> graph =
+    Graph<IOTask, DefaultWeightedEdge> graph =
         new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
-    DOTImporter<Task, DefaultWeightedEdge> importer = new DOTImporter<>();
+    DOTImporter<IOTask, DefaultWeightedEdge> importer = new DOTImporter<>();
 
     // How to read vertex attributes
     // Testing: get all of the attributes (Weight, Start, Processor)
@@ -87,7 +104,7 @@ public class GraphTester {
           int weight = Integer.parseInt(attributes.get("Weight").getValue());
           int startTime = Integer.parseInt(attributes.get("Start").getValue());
           int processor = Integer.parseInt(attributes.get("Processor").getValue());
-          return new Task(id, weight, startTime, processor);
+          return new IOTask(id, weight, startTime, processor);
         });
 
     // How to read edge attributes: Weight

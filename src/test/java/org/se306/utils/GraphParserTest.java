@@ -12,7 +12,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.Test;
 import org.se306.AppTest;
-import org.se306.domain.Task;
+import org.se306.domain.IOTask;
 
 /** Tests GraphParser by reading in dot file then writing it back out and checking output */
 public class GraphParserTest {
@@ -48,7 +48,7 @@ public class GraphParserTest {
 
     // Read
     InputStream dotFileInputStream = AppTest.class.getResourceAsStream(dotFileUrl);
-    Graph<Task, DefaultWeightedEdge> graph = GraphParser.dotToGraph(dotFileInputStream);
+    Graph<IOTask, DefaultWeightedEdge> graph = GraphParser.dotToGraph(dotFileInputStream);
 
     // Write
     GraphParser.graphToDot(graph, testPath);
