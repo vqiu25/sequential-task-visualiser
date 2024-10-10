@@ -28,28 +28,27 @@ public class FFunction {
     int bottomLevelEstimate = estimateBottomLevel(state, graph);
     // int dataReadyTimeEstimate = estimateDataReadyTime(state, graph, numProcessors);
 
-    // // Return the maximum of the three components (as written in Oliver's paper)
-    return Math.max(idleTimeEstimate, bottomLevelEstimate);
-
-    // I feel DRT doesn't add anything! I've looked at Oliver's explanation over and
-    // over and I just feel this just doesn't add anything - it just gets calculated
-    // in the next cycle anyway! I'm probably missing something. - Nate
+    // Return the maximum of the three components (as written in Oliver's paper)
+    // Returns a minimum of 0
+    return Math.max(Math.max(idleTimeEstimate, bottomLevelEstimate), Math.max(0, 0));
   }
 
   /**
    * Estimate the difference between the ETA calculated from the idle-time
    * estimate and the current makespan.
-   *
-   * @return The estimated idle time or 0 if the idle time estimate is less than the current makespan
    */
   private static int estimateIdleTime(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors,
       int totalComputationTime) {
     int idleTimeEtaEstimate = (totalComputationTime + state.getIdleTime()) / numProcessors; // ETA based on idle time
-    return Math.max(idleTimeEtaEstimate - state.getMakespan(), 0);
+    return idleTimeEtaEstimate - state.getMakespan();
   }
 
-  // Estimate the bottom level for tasks already scheduled
+  /**
+   * Estimate the difference between the ETA calculated from the bottom-level
+   * estimate and the current makespan.
+   */
   private static int estimateBottomLevel(State state, Graph<IOTask, DefaultWeightedEdge> graph) {
-    return state.getBottomLevel();
+    return state.getBottomLevelEta() - state.getMakespan();
   }
+
 }

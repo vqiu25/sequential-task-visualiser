@@ -28,7 +28,7 @@ public class State {
   // --- The following fields are used for dynamic programming only ---
   private int makespan;
   private int idleTime; // Sum of idle time (so far) on all processors
-  private int bottomLevel; // Sum of bottom levels of all scheduled tasks
+  private int bottomLevelEta; // Max of start times + bottom levels of all scheduled tasks
 
   /** Initial state constructor */
   public State(int numProcessors) {
@@ -37,7 +37,7 @@ public class State {
     this.fScore = 0;
     this.makespan = 0;
     this.idleTime = 0;
-    this.bottomLevel = -1; // Invalid at first
+    this.bottomLevelEta = -1; // Invalid at first
     this.processorAvailableTimes = new int[numProcessors];
     Arrays.fill(this.processorAvailableTimes, 0);
   }
@@ -112,8 +112,8 @@ public class State {
     newState.idleTime += earliestStartTime - newState.processorAvailableTimes[processor];
     newState.processorAvailableTimes[processor] = earliestStartTime + task.getTaskLength();
     newState.makespan = Math.max(this.makespan, newState.getProcessorAvailableTimes()[processor]);
-    int newPotentialBottomLevel = earliestStartTime + task.getBottomLevel();
-    newState.bottomLevel = Math.max(this.bottomLevel, newPotentialBottomLevel);
+    int newPotentialBottomLevelETA = earliestStartTime + task.getBottomLevel();
+    newState.bottomLevelEta = Math.max(this.bottomLevelEta, newPotentialBottomLevelETA);
 
     return newState;
   }
@@ -165,8 +165,8 @@ public class State {
     return processorAvailableTimes.length;
   }
 
-  public int getBottomLevel() {
-    return bottomLevel;
+  public int getBottomLevelEta() {
+    return bottomLevelEta;
   }
 
   /**
