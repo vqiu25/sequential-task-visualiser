@@ -12,13 +12,14 @@ import org.se306.domain.IOTask;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
 import org.se306.helpers.FFunction;
+import org.se306.helpers.Preprocessing;
 
 public class AStarSearch {
 
   // Method to find the optimal schedule using A* search
   public static void findSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
 
-    int totalComputeTime = getTotalComputeTime(graph);
+    int totalComputeTime = Preprocessing.getTotalComputeTime(graph);
 
     // Initialize the open set as a priority queue (A* search frontier)
     PriorityQueue<State> openQueue = new PriorityQueue<>(Comparator.comparingInt(s -> s.getfScore()));
@@ -49,14 +50,6 @@ public class AStarSearch {
 
     // If no valid schedule is found exception
     throw new RuntimeException("No valid schedule found.");
-  }
-
-  private static int getTotalComputeTime(Graph<IOTask, DefaultWeightedEdge> graph) {
-    int totalComputeTime = 0;
-    for (IOTask task : graph.vertexSet()) {
-      totalComputeTime += task.getTaskLength();
-    }
-    return totalComputeTime;
   }
 
   /**
