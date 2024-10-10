@@ -26,11 +26,11 @@ public class FFunction {
       int totalComputeTime) {
     int idleTimeEstimate = estimateIdleTime(state, graph, numProcessors, totalComputeTime);
     int bottomLevelEstimate = estimateBottomLevel(state, graph);
-    // int dataReadyTimeEstimate = estimateDataReadyTime(state, graph, numProcessors);
+    int dataReadyTimeEstimate = estimateDataReadyTime(state, graph);
 
     // Return the maximum of the three components (as written in Oliver's paper)
-    // Returns a minimum of 0
-    return Math.max(Math.max(idleTimeEstimate, bottomLevelEstimate), Math.max(0, 0));
+    // Returns a minimum of 0 to prevent negative values
+    return Math.max(Math.max(idleTimeEstimate, bottomLevelEstimate), Math.max(dataReadyTimeEstimate, 0));
   }
 
   /**
@@ -49,6 +49,14 @@ public class FFunction {
    */
   private static int estimateBottomLevel(State state, Graph<IOTask, DefaultWeightedEdge> graph) {
     return state.getBottomLevelEta() - state.getMakespan();
+  }
+
+  /**
+   * Estimate the difference between the ETA calculated from the data-ready-time
+   * estimate and the current makespan.
+   */
+  private static int estimateDataReadyTime(State state, Graph<IOTask, DefaultWeightedEdge> graph) {
+    return state.getDRT(graph) - state.getMakespan();
   }
 
 }

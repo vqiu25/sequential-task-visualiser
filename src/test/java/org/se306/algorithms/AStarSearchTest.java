@@ -1,8 +1,9 @@
 package org.se306.algorithms;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.se306.GraphTester;
 import org.se306.domain.IOTask;
