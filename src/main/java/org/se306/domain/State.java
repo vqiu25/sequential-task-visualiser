@@ -176,6 +176,25 @@ public class State {
     return idsToStateTasks.get(task.getId());
   }
 
+  public int getDRT(Graph<IOTask, DefaultWeightedEdge> graph) {
+    int DRTPlusBottomLevel = 0; // Maximise
+    for (IOTask ioTask : getReadyTasks(graph)) {
+      int DRTForNode = Integer.MAX_VALUE; // Minimise
+      for (int processor = 0; processor < getNumProcessors(); processor++) {
+        int DRTForNodeProcessor = 0; // Maximise
+        for (DefaultWeightedEdge inEdge : graph.incomingEdgesOf(ioTask)) {
+          String parentId = graph.getEdgeSource(inEdge).getId();
+          StateTask parent = idsToStateTasks.get(parentId);
+          int communicationDelay = (processor == parent.getProcessor()) ? 0 : (int) graph.getEdgeWeight(inEdge);
+          DRTForNodeProcessor = Math.max(DRTForNodeProcessor, parent.getEndTime() + communicationDelay);
+        }
+        DRTForNode = Math.min(DRTForNode, DRTForNodeProcessor);
+      }
+      DRTPlusBottomLevel = Math.max(DRTPlusBottomLevel, DRTForNode + ioTask.getBottomLevel());
+    }
+    return DRTPlusBottomLevel;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;

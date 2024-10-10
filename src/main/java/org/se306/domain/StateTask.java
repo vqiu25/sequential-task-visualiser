@@ -46,17 +46,6 @@ public class StateTask {
     return ioTask.getBottomLevel();
   }
 
-  public int getDRT(Map<String, StateTask> idsToStateTasks, Graph<IOTask, DefaultWeightedEdge> graph) {
-    int maxDRT = 0;
-    for (DefaultWeightedEdge inEdge : graph.incomingEdgesOf(ioTask)) {
-      String parentId = graph.getEdgeSource(inEdge).getId();
-      StateTask parent = idsToStateTasks.get(parentId);
-      int communicationDelay = (this.processor == parent.processor) ? 0 : (int) graph.getEdgeWeight(inEdge);
-      maxDRT = Math.max(maxDRT, parent.getEndTime() + communicationDelay);
-    }
-    return maxDRT;
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;
