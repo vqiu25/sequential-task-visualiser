@@ -6,15 +6,16 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.se306.domain.IOTask;
 
 /**
- * This class performs a (non-optimal) list scheduling algorithm on the task
- * graph.
- * Currently unused, but may be useful for optimisation 3.4.
+ * This class performs a (non-optimal) list scheduling algorithm on the task graph. Currently
+ * unused, but may be useful for optimisation 3.4.
  */
-public class ListSchedule{
+public class ListSchedule {
 
-  public static void findValidSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
+  public static void findValidSchedule(
+      Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
     // Perform topological sorting
-    TopologicalOrderIterator<IOTask, DefaultWeightedEdge> iterator = new TopologicalOrderIterator<>(graph);
+    TopologicalOrderIterator<IOTask, DefaultWeightedEdge> iterator =
+        new TopologicalOrderIterator<>(graph);
 
     // Tracks the time each processor is available to start a new task
     int[] processorAvailableTime = new int[numProcessors];
@@ -29,7 +30,8 @@ public class ListSchedule{
 
       // Try assigning the task to each processor and pick the best
       for (int currentProcessor = 1; currentProcessor <= numProcessors; currentProcessor++) {
-        int earliestStartTime = processorAvailableTime[currentProcessor - 1]; // -1 because array is 0-indexed
+        int earliestStartTime =
+            processorAvailableTime[currentProcessor - 1]; // -1 because array is 0-indexed
 
         // Calculate earliest start time on processor currentProcessor, considering
         // dependencies
@@ -56,8 +58,9 @@ public class ListSchedule{
       task.setProcessor(chosenProcessor);
 
       // Update processor availability time
-      processorAvailableTime[chosenProcessor - 1] = minStartTime + task.getTaskLength(); // -1 because array is
-                                                                                         // 0-indexed
+      processorAvailableTime[chosenProcessor - 1] =
+          minStartTime + task.getTaskLength(); // -1 because array is
+      // 0-indexed
     }
   }
 }

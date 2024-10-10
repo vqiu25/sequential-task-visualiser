@@ -1,16 +1,14 @@
 package org.se306.visualisation.utils;
 
 import java.io.IOException;
-
-import org.se306.App;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
+import org.se306.App;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ControllerUtils {
 
@@ -42,5 +40,4 @@ public class ControllerUtils {
       throw new RuntimeException(e);
     }
   }
-
 }
