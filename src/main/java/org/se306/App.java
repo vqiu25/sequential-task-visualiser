@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
-import org.se306.algorithms.ValidSchedule;
+import org.se306.algorithms.AStarSearch;
 import org.se306.utils.GraphParser;
 import org.se306.utils.SchedulerCommand;
 import org.se306.visualisation.FxApp;
@@ -49,7 +49,8 @@ public class App {
     Instant startTime = Instant.now();
 
     // TODO: implement so that the algorithm only runs when the user sets app state running to true
-    ValidSchedule.findValidSchedule(state.getGraph(), command.getProcessors());
+    // TODO: implement parallelisation (use command.getCores() to determine number of threads)
+    AStarSearch.findSchedule(state.getGraph(), command.getProcessors());
 
     Instant endTime = Instant.now();
     Duration duration = Duration.between(startTime, endTime);

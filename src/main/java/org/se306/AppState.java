@@ -2,7 +2,7 @@ package org.se306;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.se306.domain.Task;
+import org.se306.domain.IOTask;
 import org.se306.utils.SchedulerCommand;
 
 public class AppState {
@@ -11,7 +11,7 @@ public class AppState {
 
   private boolean running;
 
-  private Graph<Task, DefaultWeightedEdge> graph;
+  private Graph<IOTask, DefaultWeightedEdge> graph;
 
   private SchedulerCommand command;
 
@@ -22,12 +22,12 @@ public class AppState {
     return instance;
   }
 
-  public Graph<Task, DefaultWeightedEdge> getGraph() {
-    return graph;
+  public void setGraph(Graph<IOTask, DefaultWeightedEdge> graph) {
+    this.graph = graph;
   }
 
-  public void setGraph(Graph<Task, DefaultWeightedEdge> graph) {
-    this.graph = graph;
+  public Graph<IOTask, DefaultWeightedEdge> getGraph() {
+    return graph;
   }
 
   public SchedulerCommand getCommand() {
