@@ -1,5 +1,10 @@
 package org.se306.domain;
 
+import java.util.Map;
+
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+
 /**
  * Represents a task in the STATE TREE. Each StateTask points to an IOTask but
  * stores the start time and processor itself to keep track of the schedule
@@ -39,6 +44,17 @@ public class StateTask {
 
   public int getBottomLevel() {
     return ioTask.getBottomLevel();
+  }
+
+  public int getDRT(Map<String, StateTask> idsToStateTasks, Graph<IOTask, DefaultWeightedEdge> graph) {
+    int maxDRT = 0;
+    for (DefaultWeightedEdge inEdge : graph.incomingEdgesOf(ioTask)) {
+      String parentId = graph.getEdgeSource(inEdge).getId();
+      StateTask parent = idsToStateTasks.get(parentId);
+      int communicationDelay = (this.processor == parent.processor) ? 0 : (int) graph.getEdgeWeight(inEdge);
+      maxDRT = Math.max(maxDRT, parent.getEndTime() + communicationDelay);
+    }
+    return maxDRT;
   }
 
   @Override
