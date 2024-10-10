@@ -1,16 +1,17 @@
 package org.se306.visualisation.controllers.taskgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brunomnsilva.smartgraph.graph.Digraph;
 import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TaskGraphController {
 
@@ -46,17 +47,6 @@ public class TaskGraphController {
     graphStackPane.getChildren().add(graphView);
 
     // Delay the graphView initialisation until after the scene has been rendered
-    Platform.runLater(
-        () -> {
-          graphView.init();
-
-          // Apply the custom CSS stylesheet
-          Scene scene = graphStackPane.getScene();
-          if (scene != null) {
-            scene
-                .getStylesheets()
-                .add(getClass().getResource("/org/se306/css/smartgraph.css").toExternalForm());
-          }
-        });
+    Platform.runLater(() -> graphView.init());
   }
 }
