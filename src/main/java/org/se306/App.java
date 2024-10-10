@@ -5,13 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
-
 import org.se306.algorithms.ValidSchedule;
 import org.se306.utils.GraphParser;
 import org.se306.utils.SchedulerCommand;
 import org.se306.visualisation.FxApp;
 import org.slf4j.Logger;
-
 import picocli.CommandLine;
 
 /** Hello world! */
@@ -41,20 +39,23 @@ public class App {
     // execute scheduler in visualisation mode if indicated
     if (command.toVisualise()) {
       LOGGER.info("Visualisation starting...");
+      state.setRunning(false); // user starts the algorithm using the 'play' button instead
       FxApp.launch(FxApp.class);
     } else {
-      // run scheduler standalone and output graph to dot file
-      LOGGER.info("Scheduler running...");
-      Instant startTime = Instant.now();
-
-      ValidSchedule.findValidSchedule(state.getGraph(), command.getProcessors());
-
-      Instant endTime = Instant.now();
-      Duration duration = Duration.between(startTime, endTime);
-      LOGGER.info("Scheduler finished in {}ms", duration.toMillis());
-
-      GraphParser.graphToDot(state.getGraph(), command.getOutputFileName());
+      state.setRunning(true);
     }
+
+    LOGGER.info("Scheduler running...");
+    Instant startTime = Instant.now();
+
+    // TODO: implement so that the algorithm only runs when the user sets app state running to true
+    ValidSchedule.findValidSchedule(state.getGraph(), command.getProcessors());
+
+    Instant endTime = Instant.now();
+    Duration duration = Duration.between(startTime, endTime);
+    LOGGER.info("Scheduler finished in {}ms", duration.toMillis());
+
+    GraphParser.graphToDot(state.getGraph(), command.getOutputFileName());
   }
 
   private static void logArgs(String[] args) {

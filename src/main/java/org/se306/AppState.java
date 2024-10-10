@@ -9,6 +9,8 @@ public class AppState {
 
   private static AppState instance;
 
+  private boolean running;
+
   private Graph<Task, DefaultWeightedEdge> graph;
 
   private SchedulerCommand command;
@@ -34,5 +36,13 @@ public class AppState {
 
   public void setCommand(SchedulerCommand command) {
     this.command = command;
+  }
+
+  public boolean isRunning() {
+    return running;
+  }
+
+  public void setRunning(boolean running) {
+    this.running = running;
   }
 }
