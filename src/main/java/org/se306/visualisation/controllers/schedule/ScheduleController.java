@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
-import org.se306.domain.Task;
+import org.se306.domain.IOTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +30,13 @@ public class ScheduleController {
 
     // Example call to add rectangles and labels (adjust the number as needed)
     createHBoxWithRectanglesAndLabels(5, 100);
-    ArrayList<Task> tasks = new ArrayList<>();
+    ArrayList<IOTask> tasks = new ArrayList<>();
 
     // Add sample tasks to the list
-    tasks.add(new Task("T1", 100, 0, 1));
-    tasks.add(new Task("T2", 20, 10, 2));
-    tasks.add(new Task("T3", 50, 30, 2));
-    tasks.add(new Task("T5", 20, 80, 4));
+    tasks.add(new IOTask("T1", 100, 0, 1));
+    tasks.add(new IOTask("T2", 20, 10, 2));
+    tasks.add(new IOTask("T3", 50, 30, 2));
+    tasks.add(new IOTask("T5", 20, 80, 4));
 
     populateTaskRectangles(tasks, 100);
   }
@@ -116,11 +116,11 @@ public class ScheduleController {
   }
 
   // Method to populate task rectangles within processor panes
-  private void populateTaskRectangles(ArrayList<Task> tasks, int maxYValue) {
-    for (Task task : tasks) {
+  private void populateTaskRectangles(ArrayList<IOTask> tasks, int maxYValue) {
+    for (IOTask task : tasks) {
       int processorIndex = task.getProcessor() - 1;
       if (processorIndex < 0 || processorIndex >= processorPanes.size()) {
-        LOGGER.warn("Task {} has invalid processor index {}", task.getId(), processorIndex);
+        LOGGER.warn("IOTask {} has invalid processor index {}", task.getId(), processorIndex);
         continue;
       }
 
