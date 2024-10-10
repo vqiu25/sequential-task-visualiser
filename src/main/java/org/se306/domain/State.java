@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -19,7 +18,10 @@ public class State {
   /** IOTask IDs of unscheduled tasks */
   private Set<String> unscheduledTaskIds;
 
-  /** Indexes represent 0-indexed processors, value is the finish time of last scheduled task on the processor */
+  /**
+   * Indexes represent 0-indexed processors, value is the finish time of last scheduled task on the
+   * processor
+   */
   private int[] processorAvailableTimes;
 
   /** fScore = idleTime + bottomLevel + dataReadyTime */
@@ -45,7 +47,8 @@ public class State {
     newState.unscheduledTaskIds = new HashSet<>(this.unscheduledTaskIds);
     newState.makespan = this.makespan;
     newState.fScore = this.fScore;
-    newState.processorAvailableTimes = Arrays.copyOf(this.processorAvailableTimes, this.getNumProcessors());
+    newState.processorAvailableTimes =
+        Arrays.copyOf(this.processorAvailableTimes, this.getNumProcessors());
     return newState;
   }
 
@@ -99,8 +102,7 @@ public class State {
     }
 
     // Schedule the task
-    newState.idsToStateTasks.put(
-        task.getId(), new StateTask(task, processor, earliestStartTime));
+    newState.idsToStateTasks.put(task.getId(), new StateTask(task, processor, earliestStartTime));
     newState.processorAvailableTimes[processor] = earliestStartTime + task.getTaskLength();
     newState.unscheduledTaskIds.remove(task.getId());
 
@@ -166,9 +168,7 @@ public class State {
     return processorAvailableTimes.length;
   }
 
-  /**
-   * Helper method to get StateTask by IOTask
-   */
+  /** Helper method to get StateTask by IOTask */
   public StateTask getStateTaskFromIOTask(IOTask task) {
     return idsToStateTasks.get(task.getId());
   }
@@ -183,19 +183,13 @@ public class State {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
     State other = (State) obj;
     if (idsToStateTasks == null) {
-      if (other.idsToStateTasks != null)
-        return false;
-    } else if (!idsToStateTasks.equals(other.idsToStateTasks))
-      return false;
+      if (other.idsToStateTasks != null) return false;
+    } else if (!idsToStateTasks.equals(other.idsToStateTasks)) return false;
     return true;
   }
-
 }

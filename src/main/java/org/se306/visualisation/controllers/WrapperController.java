@@ -1,12 +1,11 @@
 package org.se306.visualisation.controllers;
 
-import org.se306.visualisation.FxApp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import org.se306.visualisation.FxApp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** This controller handles responsiveness when resizing the app */
 public class WrapperController {
@@ -18,10 +17,8 @@ public class WrapperController {
 
   private double zoom = 1;
 
-  @FXML
-  private Pane panLayout; // Responsible for responsiveness
-  @FXML
-  private Pane panPage; // Responsible for swapping pages (unused in this project)
+  @FXML private Pane panLayout; // Responsible for responsiveness
+  @FXML private Pane panPage; // Responsible for swapping pages (unused in this project)
 
   @FXML
   private void initialize() {
@@ -46,11 +43,10 @@ public class WrapperController {
   }
 
   /**
-   * Updates the layout dimensions to fill the scene. Will scale inner contents.
-   * Will maintain
+   * Updates the layout dimensions to fill the scene. Will scale inner contents. Will maintain
    * original aspect ratio, adding borders if neccessary (layout centered).
    *
-   * @param sceneWidth  The current width of the scene.
+   * @param sceneWidth The current width of the scene.
    * @param sceneHeight The current height of the scene.
    */
   private void updateLayoutSize(double sceneWidth, double sceneHeight) {

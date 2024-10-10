@@ -14,13 +14,15 @@
 
 // public class AStarSearchTest {
 
-//     // Heuristic always returns 0 (this basically makes it  Dijkstra's algorithm) for testing purposes
+//     // Heuristic always returns 0 (this basically makes it  Dijkstra's algorithm) for testing
+// purposes
 //     private AStarSearch.Heuristic<String> zeroHeuristic = (node, goal) -> 0.0;
 
 //     @Test
 //     public void testNoPathExists() {
 //         // Create a directed, weighted graph
-//         SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+//         SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph = new
+// SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
 //         // Add vertices
 //         graph.addVertex("A");
@@ -42,7 +44,8 @@
 //         taskExecutionTimes.put("D", 3.0);
 
 //         // Create an A* search instance with a zero heuristic
-//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph, zeroHeuristic, taskExecutionTimes);
+//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph,
+// zeroHeuristic, taskExecutionTimes);
 
 //         // Find the shortest path from A to D, which doesn't exist
 //         var path = aStarSearch.findPath("A", "D");
@@ -55,7 +58,8 @@
 //     @Test
 //     public void testExampleInput() {
 //         // Create a directed, weighted graph
-//         SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+//         SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph = new
+// SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
 //         // Add vertices
 //         graph.addVertex("0");
@@ -100,21 +104,23 @@
 //         AStarSearch.Heuristic<String> heuristic = (node, goal) -> 0.0;
 
 //         // Create an A* search instance
-//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph, heuristic, taskExecutionTimes);
+//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph,
+// heuristic, taskExecutionTimes);
 
 //         // Test the path from node "0" to "10"
 //         var path = aStarSearch.findPath("0", "10");
 
 //         // Expected path: 0 -> 3 -> 10
-//         assertEquals("[0, 3, 10]", path.toString(), "Shortest path from 0 to 10 should be [0, 3, 10]");
+//         assertEquals("[0, 3, 10]", path.toString(), "Shortest path from 0 to 10 should be [0, 3,
+// 10]");
 //         System.out.println("Shortest Path from 0 to 10: " + path);
 //     }
-
 
 //     @Test
 //     public void testExampleInput2() {
 //         // Create a directed, weighted graph
-//         SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+//         SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph = new
+// SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
 //         // Add vertices
 //         graph.addVertex("0");
@@ -159,21 +165,23 @@
 //         AStarSearch.Heuristic<String> heuristic = (node, goal) -> 0.0;
 
 //         // Create an A* search instance
-//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph, heuristic, taskExecutionTimes);
+//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph,
+// heuristic, taskExecutionTimes);
 
 //         // Test the path from node "0" to "5"
 //         var path = aStarSearch.findPath("0", "5");
 
 //         // Expected path: [0, 3, 5]
-//         assertEquals("[0, 3, 5]", path.toString(), "Shortest path from 0 to 5 should be [0, 3, 5]");
+//         assertEquals("[0, 3, 5]", path.toString(), "Shortest path from 0 to 5 should be [0, 3,
+// 5]");
 //         System.out.println("Shortest Path from 0 to 5: " + path);
 //     }
-
 
 //     @Test
 //     public void testHeuristicInfluence() {
 //         // Create a directed, weighted graph
-//         Graph<String, DefaultWeightedEdge> graph = new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+//         Graph<String, DefaultWeightedEdge> graph = new
+// SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
 //         // Add remaining vertices
 //         graph.addVertex("0");
@@ -204,7 +212,8 @@
 
 //         // Measure time for heuristic with a constant 0 for testing
 //         AStarSearch.Heuristic<String> zeroHeuristic = (node, goal) -> 0.0;
-//         AStarSearch<String, DefaultWeightedEdge> aStarWithZeroHeuristic = new AStarSearch<>(graph, zeroHeuristic, taskExecutionTimes);
+//         AStarSearch<String, DefaultWeightedEdge> aStarWithZeroHeuristic = new
+// AStarSearch<>(graph, zeroHeuristic, taskExecutionTimes);
 
 //         //Time with no Heuristic
 //         long startTimeZeroHeuristic = System.nanoTime();
@@ -214,11 +223,14 @@
 //         long durationZeroHeuristic = endTimeZeroHeuristic - startTimeZeroHeuristic;
 
 //         // Ensure the result is the correct output that we know is true
-//         assertEquals(Arrays.asList("0", "3", "5"), pathZeroHeuristic, "Path with zero heuristic should be optimal");
+//         assertEquals(Arrays.asList("0", "3", "5"), pathZeroHeuristic, "Path with zero heuristic
+// should be optimal");
 
 //         // Measure time for custom heuristic here using the goal's execution time as a test
-//         AStarSearch.Heuristic<String> customHeuristic = (node, goal) -> taskExecutionTimes.getOrDefault(goal, 0.0);
-//         AStarSearch<String, DefaultWeightedEdge> aStarWithCustomHeuristic = new AStarSearch<>(graph, customHeuristic, taskExecutionTimes);
+//         AStarSearch.Heuristic<String> customHeuristic = (node, goal) ->
+// taskExecutionTimes.getOrDefault(goal, 0.0);
+//         AStarSearch<String, DefaultWeightedEdge> aStarWithCustomHeuristic = new
+// AStarSearch<>(graph, customHeuristic, taskExecutionTimes);
 
 //         //Time with Custom Heuristic
 //         long startTimeCustomHeuristic = System.nanoTime();  // Start timer
@@ -228,20 +240,24 @@
 //         long durationCustomHeuristic = endTimeCustomHeuristic - startTimeCustomHeuristic;
 
 //         // Ensure the result is the same with the custom heuristic
-//         assertEquals(Arrays.asList("0", "3", "5"), pathCustomHeuristic, "Path with custom heuristic should be optimal");
+//         assertEquals(Arrays.asList("0", "3", "5"), pathCustomHeuristic, "Path with custom
+// heuristic should be optimal");
 
 //         // Output the execution times for comparison
 //         System.out.println("Execution time with Zero Heuristic (ns): " + durationZeroHeuristic);
-//         System.out.println("Execution time with Custom Heuristic (ns): " + durationCustomHeuristic);
+//         System.out.println("Execution time with Custom Heuristic (ns): " +
+// durationCustomHeuristic);
 
-//         // Won't always be true though also since these graph inputs are so small sometimes it's not more efficent
-//         System.out.println("Lowkey I dont know how useful this test is i think graph is too small for any significant difference in efficency with heursitic and it seems random");
+//         // Won't always be true though also since these graph inputs are so small sometimes it's
+// not more efficent
+//         System.out.println("Lowkey I dont know how useful this test is i think graph is too small
+// for any significant difference in efficency with heursitic and it seems random");
 //     }
-
 
 //     @Test
 //     public void testOptimalTaskOrder1() {
-//         Graph<String, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+//         Graph<String, DefaultWeightedEdge> graph = new
+// DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
 //         graph.addVertex("0");
 //         graph.addVertex("1");
@@ -288,7 +304,8 @@
 
 //         AStarSearch.Heuristic<String> zeroHeuristic = (node, goal) -> 0.0;
 
-//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph, zeroHeuristic, taskExecutionTimes);
+//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph,
+// zeroHeuristic, taskExecutionTimes);
 
 //         List<String> optimalOrder = aStarSearch.findOptimalTaskOrder();
 
@@ -298,7 +315,8 @@
 
 //     @Test
 //     public void testOptimalTaskOrder2() {
-//         Graph<String, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+//         Graph<String, DefaultWeightedEdge> graph = new
+// DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
 //         graph.addVertex("0");
 //         graph.addVertex("1");
@@ -338,7 +356,8 @@
 
 //         AStarSearch.Heuristic<String> zeroHeuristic = (node, goal) -> 0.0;
 
-//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph, zeroHeuristic, taskExecutionTimes);
+//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph,
+// zeroHeuristic, taskExecutionTimes);
 
 //         List<String> optimalOrder = aStarSearch.findOptimalTaskOrder();
 
@@ -348,7 +367,8 @@
 
 //     @Test
 //     public void testOptimalTaskOrder3() {
-//         Graph<String, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+//         Graph<String, DefaultWeightedEdge> graph = new
+// DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
 //         graph.addVertex("0");
 //         graph.addVertex("1");
@@ -386,7 +406,8 @@
 
 //         AStarSearch.Heuristic<String> zeroHeuristic = (node, goal) -> 0.0;
 
-//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph, zeroHeuristic, taskExecutionTimes);
+//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph,
+// zeroHeuristic, taskExecutionTimes);
 
 //         List<String> optimalOrder = aStarSearch.findOptimalTaskOrder();
 
@@ -397,7 +418,8 @@
 //     @Test
 //     public void testCompare() {
 //         //Create a directed, weighted graph
-//         Graph<String, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+//         Graph<String, DefaultWeightedEdge> graph = new
+// DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
 //         //Add vertex
 //         graph.addVertex("0");
@@ -409,7 +431,6 @@
 //         graph.addVertex("6");
 //         graph.addVertex("7");
 //         graph.addVertex("8");
-
 
 //         graph.setEdgeWeight(graph.addEdge("0", "2"), 51);
 //         graph.setEdgeWeight(graph.addEdge("0", "3"), 22);
@@ -435,25 +456,22 @@
 //         taskExecutionTimes.put("7", 2.0);
 //         taskExecutionTimes.put("8", 7.0);
 
-//         TopologicalOrderIterator<String, DefaultWeightedEdge> topologicalOrderIterator = new TopologicalOrderIterator<>(graph);
+//         TopologicalOrderIterator<String, DefaultWeightedEdge> topologicalOrderIterator = new
+// TopologicalOrderIterator<>(graph);
 //         List<String> topologicalOrder = new ArrayList<>();
 //         while (topologicalOrderIterator.hasNext()) {
 //             topologicalOrder.add(topologicalOrderIterator.next());
 //         }
 
-
 //         assertNotNull(topologicalOrder);
 //         System.out.println("Topological Task Execution Order: " + topologicalOrder);
 
-
 //         AStarSearch.Heuristic<String> customHeuristic = (node, goal) -> 0.0;
 
-
-//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph, customHeuristic, taskExecutionTimes);
-
+//         AStarSearch<String, DefaultWeightedEdge> aStarSearch = new AStarSearch<>(graph,
+// customHeuristic, taskExecutionTimes);
 
 //         List<String> optimalOrder = aStarSearch.findOptimalTaskOrder();
-
 
 //         assertNotNull(optimalOrder);
 //         System.out.println("A* Search Optimal Task Execution Order: " + optimalOrder);

@@ -1,13 +1,12 @@
 package org.se306.domain;
 
 /**
- * Represents a task in the STATE TREE. Each StateTask points to an IOTask but
- * stores the start time and processor itself to keep track of the schedule
- * individually for each state. Once created by A*, it is never modified.
+ * Represents a task in the STATE TREE. Each StateTask points to an IOTask but stores the start time
+ * and processor itself to keep track of the schedule individually for each state. Once created by
+ * A*, it is never modified.
  *
- * @see org.se306.domain.IOTask In contrast, IOTask is used to represent the
- *      task graph and is the source of truth for the task's length and
- *      predecessors/successors.
+ * @see org.se306.domain.IOTask In contrast, IOTask is used to represent the task graph and is the
+ *     source of truth for the task's length and predecessors/successors.
  */
 public class StateTask {
 
@@ -49,23 +48,15 @@ public class StateTask {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
     StateTask other = (StateTask) obj;
     if (ioTask == null) {
-      if (other.ioTask != null)
-        return false;
-    } else if (!ioTask.equals(other.ioTask))
-      return false;
-    if (processor != other.processor)
-      return false;
-    if (startTime != other.startTime)
-      return false;
+      if (other.ioTask != null) return false;
+    } else if (!ioTask.equals(other.ioTask)) return false;
+    if (processor != other.processor) return false;
+    if (startTime != other.startTime) return false;
     return true;
   }
-
 }
