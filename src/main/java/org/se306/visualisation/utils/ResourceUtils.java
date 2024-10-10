@@ -1,19 +1,17 @@
 package org.se306.visualisation.utils;
 
+import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import org.se306.App;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javafx.scene.image.Image;
-import javafx.scene.text.Font;
 
 public class ResourceUtils {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ResourceUtils.class);
 
   /**
-   * Load a resource (e.g. image, css) and retrive its contents as a string. Urls
-   * are relative to
+   * Load a resource (e.g. image, css) and retrive its contents as a string. Urls are relative to
    * the resources directory (e.g. "css/globals.css").
    *
    * @param url the url of the resource relative to the resources directory
@@ -24,8 +22,7 @@ public class ResourceUtils {
   }
 
   /**
-   * Load a CSS file and return it. Urls are relative to the css directory (e.g.
-   * globals.css).
+   * Load a CSS file and return it. Urls are relative to the css directory (e.g. globals.css).
    *
    * @param url the url of the css file relative to the css directory
    * @return the css file as a string
@@ -35,8 +32,7 @@ public class ResourceUtils {
   }
 
   /**
-   * Load an image and return it. Urls are relative to the images directory (e.g.
-   * logo.png).
+   * Load an image and return it. Urls are relative to the images directory (e.g. logo.png).
    *
    * @param url the url of the image file relative to the images directory
    * @return the image as an Image object
@@ -46,8 +42,7 @@ public class ResourceUtils {
   }
 
   /**
-   * Load a font and register it with JavaFX. Urls are relative to the fonts
-   * directory (e.g.
+   * Load a font and register it with JavaFX. Urls are relative to the fonts directory (e.g.
    * Montserrat-Medium.ttf).
    *
    * @param url the url of the font file relative to the fonts directory

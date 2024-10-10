@@ -6,15 +6,13 @@ import org.se306.domain.IOTask;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
 
-/**
- * Helper class to calculate the heuristic estimate f(s) for the A* search
- * algorithm.
- */
+/** Helper class to calculate the heuristic estimate f(s) for the A* search algorithm. */
 // TODO: need to optimize all the methods in this class
 public class FFunction {
 
   /** Calculates the h(s) part of f(s) = g(s) + h(s) */
-  public static int heuristicEstimate(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
+  public static int heuristicEstimate(
+      State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
     return 0;
 
     // int idleTimeEstimate = estimateIdleTime(state, graph, numProcessors);
@@ -26,7 +24,8 @@ public class FFunction {
   }
 
   // Estimate the idle time based on the current state
-  private static int estimateIdleTime(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
+  private static int estimateIdleTime(
+      State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
     int totalComputationTime = 0;
     for (IOTask task : graph.vertexSet()) {
       totalComputationTime += task.getTaskLength();
@@ -50,7 +49,8 @@ public class FFunction {
   }
 
   // Estimate the data ready time for unscheduled tasks
-  private static int estimateDataReadyTime(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
+  private static int estimateDataReadyTime(
+      State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
     int maxDRT = 0;
     for (String taskId : state.getUnscheduledTaskIds()) {
       IOTask task = state.getTaskById(taskId, graph);
@@ -85,9 +85,10 @@ public class FFunction {
     for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
       IOTask predecessor = graph.getEdgeSource(edge);
       StateTask predecessorInfo = state.getIdsToStateTasks().get(predecessor.getId());
-      int finishTime = predecessorInfo != null
-          ? predecessorInfo.getStartTime() + predecessorInfo.getDuration()
-          : predecessor.getTaskLength();
+      int finishTime =
+          predecessorInfo != null
+              ? predecessorInfo.getStartTime() + predecessorInfo.getDuration()
+              : predecessor.getTaskLength();
       int communicationDelay = (int) graph.getEdgeWeight(edge);
       if (predecessorInfo == null || predecessorInfo.getProcessor() != processor) {
         finishTime += communicationDelay;

@@ -2,7 +2,7 @@ AnchorPane {
   -fx-background-color: #1B1C24;
 }
 
-Rectangle {
+.rectangle-default {
   -fx-fill: #292A34;
   -fx-stroke: none;
   -fx-arc-width: 20;

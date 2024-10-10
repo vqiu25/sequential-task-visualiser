@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.AppState;
@@ -20,7 +19,8 @@ public class AStarSearch {
   public static void findSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
 
     // Initialize the open set as a priority queue (A* search frontier)
-    PriorityQueue<State> openQueue = new PriorityQueue<>(Comparator.comparingInt(s -> s.getfScore()));
+    PriorityQueue<State> openQueue =
+        new PriorityQueue<>(Comparator.comparingInt(s -> s.getfScore()));
     Map<State, Integer> closedMap = new HashMap<>();
 
     // Add s_init to kick off A*
@@ -38,7 +38,8 @@ public class AStarSearch {
 
       // Check if this state has already been explored with a lower makespan
       // TODO: dunno what this is
-      if (closedMap.containsKey(currentState) && currentState.getMakespan() >= closedMap.get(currentState)) {
+      if (closedMap.containsKey(currentState)
+          && currentState.getMakespan() >= closedMap.get(currentState)) {
         continue;
       }
 
@@ -51,10 +52,10 @@ public class AStarSearch {
     throw new RuntimeException("No valid schedule found.");
   }
 
-  /**
-   * Add the initial state to the open queue at the start of the A* search.
-   */
-  private static void addInitialState(PriorityQueue<State> openQueue, int numProcessors,
+  /** Add the initial state to the open queue at the start of the A* search. */
+  private static void addInitialState(
+      PriorityQueue<State> openQueue,
+      int numProcessors,
       Graph<IOTask, DefaultWeightedEdge> taskGraph) {
 
     State initialState = new State(numProcessors); // No tasks
@@ -70,11 +71,13 @@ public class AStarSearch {
   }
 
   /**
-   * Expand the current state by scheduling all tasks that are ready to be
-   * scheduled. Creates a new state for each task and processor combination
-   * (|n|x|P| total) and adds them to the open queue.
+   * Expand the current state by scheduling all tasks that are ready to be scheduled. Creates a new
+   * state for each task and processor combination (|n|x|P| total) and adds them to the open queue.
    */
-  private static void expandState(State currentState, PriorityQueue<State> openQueue, Map<State, Integer> closedMap,
+  private static void expandState(
+      State currentState,
+      PriorityQueue<State> openQueue,
+      Map<State, Integer> closedMap,
       Graph<IOTask, DefaultWeightedEdge> taskGraph) {
 
     // Get all tasks that are ready to be scheduled (all predecessors are scheduled)
@@ -88,7 +91,8 @@ public class AStarSearch {
 
         // Calculate the fScore for the new state
         int makespan = newState.getMakespan(); // 'Distance' from s_init (start state)
-        int heuristic = FFunction.heuristicEstimate(newState, taskGraph, numProcessors); // 'ETA' to goal
+        int heuristic =
+            FFunction.heuristicEstimate(newState, taskGraph, numProcessors); // 'ETA' to goal
         int fScore = makespan + heuristic; // Estimated total 'distance' f(s) = g(s) + h(s)
 
         // If this state has already been explored with a lower makespan skip it
@@ -106,10 +110,11 @@ public class AStarSearch {
   }
 
   /**
-   * Update the task graph with the schedule from the final state of the A*
-   * search. Ran after A* completes.
+   * Update the task graph with the schedule from the final state of the A* search. Ran after A*
+   * completes.
    */
-  private static void updateTaskGraph(Graph<IOTask, DefaultWeightedEdge> taskGraph, State goalState) {
+  private static void updateTaskGraph(
+      Graph<IOTask, DefaultWeightedEdge> taskGraph, State goalState) {
     for (IOTask ioTask : taskGraph.vertexSet()) {
       StateTask stateTask = goalState.getStateTaskFromIOTask(ioTask);
       ioTask.setStartTime(stateTask.getStartTime());
