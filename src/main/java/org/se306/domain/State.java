@@ -26,6 +26,7 @@ public class State {
   private int fScore;
 
   // --- The following fields are used for dynamic programming only ---
+  // They're updated at the end of each scheduleTask() call
   private int makespan;
   private int idleTime; // Sum of idle time (so far) on all processors
   private int bottomLevelEta; // Max of start times + bottom levels of all scheduled tasks
@@ -176,6 +177,11 @@ public class State {
     return idsToStateTasks.get(task.getId());
   }
 
+  /**
+   * Sorry, this method isn't documented very well and I don't intend to until a
+   * later PR when I might make it faster :)
+   * It's exactly what Oliver says to do in [22]
+   */
   public int getDRT(Graph<IOTask, DefaultWeightedEdge> graph) {
     int DRTPlusBottomLevel = 0; // Maximise
     for (IOTask ioTask : getReadyTasks(graph)) {
