@@ -2,13 +2,13 @@ package org.se306;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.se306.domain.Task;
+import org.se306.domain.IOTask;
 
 public class AppState {
 
   private static AppState instance;
 
-  private Graph<Task, DefaultWeightedEdge> graph;
+  private Graph<IOTask, DefaultWeightedEdge> graph;
 
   public static AppState getInstance() {
     if (instance == null) {
@@ -17,11 +17,11 @@ public class AppState {
     return instance;
   }
 
-  public void setGraph(Graph<Task, DefaultWeightedEdge> graph) {
+  public void setGraph(Graph<IOTask, DefaultWeightedEdge> graph) {
     this.graph = graph;
   }
 
-  public Graph<Task, DefaultWeightedEdge> getGraph() {
+  public Graph<IOTask, DefaultWeightedEdge> getGraph() {
     return graph;
   }
 }
