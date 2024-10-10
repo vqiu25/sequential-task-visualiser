@@ -40,7 +40,7 @@ public class App {
     if (command.toVisualise()) {
       LOGGER.info("Visualisation starting...");
       state.setRunning(false); // user starts the algorithm using the 'play' button instead
-      FxApp.launch(FxApp.class);
+      new Thread(() -> FxApp.launch(FxApp.class)).start();
     } else {
       state.setRunning(true);
     }

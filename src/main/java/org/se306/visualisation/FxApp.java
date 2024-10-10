@@ -59,6 +59,7 @@ public class FxApp extends Application {
   @Override
   public void stop() throws IOException {
     LOGGER.info("Stopping application");
+    System.exit(0);
   }
 
   public static Stage getStage() {

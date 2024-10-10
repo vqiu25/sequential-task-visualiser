@@ -7,7 +7,7 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Circle;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.se306.AppState;
 import org.slf4j.Logger;
@@ -22,12 +22,14 @@ public class HeaderController {
   private Instant startTime;
 
   @FXML private Label timerLabel;
-  @FXML private Circle playPause; // TODO: implement playPause button
+  @FXML private Label playPauseLabel;
+  @FXML private StackPane playPause;
 
   @FXML
   private void initialize() {
     LOGGER.debug("HeaderController initialized");
 
+    storedSeconds = 0;
     timeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> updateTimer()));
     timeline.setCycleCount(Timeline.INDEFINITE);
     playPause.setOnMouseClicked(this::handlePlayPause);
@@ -36,18 +38,16 @@ public class HeaderController {
   }
 
   private void handlePlayPause(MouseEvent event) {
-    if (storedSeconds == 0) {
+    if (!AppState.getInstance().isRunning()) { // or however we know the algorithm isn't running
       startAlgorithm();
-    } else if (AppState.getInstance().isRunning()) { // or however we know the algorithm is running
-      pauseAlgorithm();
     } else {
-      resumeAlgorithm();
+      pauseAlgorithm();
     }
   }
 
   private void startAlgorithm() {
     AppState.getInstance().setRunning(true);
-    storedSeconds = 0;
+    playPauseLabel.setText("PAUSE");
     startTime = Instant.now();
     timeline.play();
   }
@@ -63,13 +63,9 @@ public class HeaderController {
   private void pauseAlgorithm() {
     // TODO: or whatever way we have of notifying the algorithm to pause
     AppState.getInstance().setRunning(false);
+    playPauseLabel.setText("RESUME");
     long secondsElapsed = ChronoUnit.SECONDS.between(startTime, Instant.now());
     storedSeconds = storedSeconds + secondsElapsed;
     timeline.pause();
-  }
-
-  private void resumeAlgorithm() {
-    startTime = Instant.now();
-    timeline.play();
   }
 }

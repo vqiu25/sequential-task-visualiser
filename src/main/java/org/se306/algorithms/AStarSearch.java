@@ -8,6 +8,7 @@ import java.util.PriorityQueue;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.se306.AppState;
 import org.se306.domain.IOTask;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
@@ -26,6 +27,7 @@ public class AStarSearch {
     addInitialState(openQueue, numProcessors, graph);
 
     while (!openQueue.isEmpty()) {
+      while (!AppState.getInstance().isRunning()) {} // do nothing is the app is not running
       State currentState = openQueue.poll();
 
       // If all tasks are scheduled, update the graph with the schedule and return
