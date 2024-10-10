@@ -26,12 +26,12 @@ public class FFunction {
    */
   public static int heuristicEstimate(State state, Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors,
       int totalComputeTime) {
-    // int idleTimeEstimate = estimateIdleTime(state, graph, numProcessors, totalComputeTime);
+    int idleTimeEstimate = estimateIdleTime(state, graph, numProcessors, totalComputeTime);
     int bottomLevelEstimate = estimateBottomLevel(state, graph);
     // int dataReadyTimeEstimate = estimateDataReadyTime(state, graph, numProcessors);
 
     // // Return the maximum of the three components (as written in Oliver's paper)
-    return bottomLevelEstimate;
+    return Math.max(idleTimeEstimate, bottomLevelEstimate);
     // return Math.max(Math.max(idleTimeEstimate, bottomLevelEstimate), dataReadyTimeEstimate);
   }
 
@@ -50,16 +50,6 @@ public class FFunction {
   // Estimate the bottom level for tasks already scheduled
   private static int estimateBottomLevel(State state, Graph<IOTask, DefaultWeightedEdge> graph) {
     return state.getBottomLevel();
-
-
-
-    // int maxBottomLevel = 0;
-    // for (StateTask taskInfo : state.getIdsToStateTasks().values()) {
-    //   IOTask task = state.getTaskById(taskInfo.getProcessor() + "", graph);
-    //   int bottomLevel = calculateBottomLevel(task, state, graph);
-    //   maxBottomLevel = Math.max(maxBottomLevel, taskInfo.getStartTime() + bottomLevel);
-    // }
-    // return maxBottomLevel;
   }
 
   // Estimate the data ready time for unscheduled tasks

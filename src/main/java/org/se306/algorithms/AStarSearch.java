@@ -20,6 +20,7 @@ public class AStarSearch {
   public static void findSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
 
     int totalComputeTime = Preprocessing.getTotalComputeTime(graph);
+    Preprocessing.calculateBottomLevels(graph);
 
     // Initialize the open set as a priority queue (A* search frontier)
     PriorityQueue<State> openQueue = new PriorityQueue<>(Comparator.comparingInt(s -> s.getfScore()));

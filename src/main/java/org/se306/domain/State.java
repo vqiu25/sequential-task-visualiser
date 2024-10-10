@@ -112,7 +112,7 @@ public class State {
     newState.idleTime += earliestStartTime - newState.processorAvailableTimes[processor];
     newState.processorAvailableTimes[processor] = earliestStartTime + task.getTaskLength();
     newState.makespan = Math.max(this.makespan, newState.getProcessorAvailableTimes()[processor]);
-    int newPotentialBottomLevel = earliestStartTime + task.getBottomLevel(graph);
+    int newPotentialBottomLevel = earliestStartTime + task.getBottomLevel();
     newState.bottomLevel = Math.max(this.bottomLevel, newPotentialBottomLevel);
 
     return newState;

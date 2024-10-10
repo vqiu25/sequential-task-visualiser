@@ -1,8 +1,5 @@
 package org.se306.domain;
 
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultWeightedEdge;
-
 /**
  * Represents a task in the STATE TREE. Each StateTask points to an IOTask but
  * stores the start time and processor itself to keep track of the schedule
@@ -40,8 +37,8 @@ public class StateTask {
     return startTime + getDuration();
   }
 
-  public int getBottomLevel(Graph<IOTask, DefaultWeightedEdge> graph) {
-    return ioTask.getBottomLevel(graph);
+  public int getBottomLevel() {
+    return ioTask.getBottomLevel();
   }
 
   @Override
