@@ -11,11 +11,15 @@ import org.se306.domain.IOTask;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
 import org.se306.helpers.FFunction;
+import org.se306.helpers.Preprocessing;
 
 public class AStarSearch {
 
   // Method to find the optimal schedule using A* search
   public static void findSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
+
+    int totalComputeTime = Preprocessing.getTotalComputeTime(graph);
+    Preprocessing.calculateBottomLevels(graph);
 
     // Initialize the open set as a priority queue (A* search frontier)
     PriorityQueue<State> openQueue =
@@ -34,15 +38,14 @@ public class AStarSearch {
         return;
       }
 
-      // Check if this state has already been explored with a lower makespan
-      // TODO: dunno what this is
-      if (closedMap.containsKey(currentState)
-          && currentState.getMakespan() >= closedMap.get(currentState)) {
+      // If this state has already been explored with a lower makespan skip it
+      if (stateAlreadyExploredWithLowerMakespan(
+          currentState, currentState.getMakespan(), closedMap)) {
         continue;
       }
 
       // Expand state & move to closed set
-      expandState(currentState, openQueue, closedMap, graph);
+      expandState(currentState, openQueue, closedMap, graph, totalComputeTime);
       closedMap.put(currentState, currentState.getMakespan());
     }
 
@@ -76,7 +79,8 @@ public class AStarSearch {
       State currentState,
       PriorityQueue<State> openQueue,
       Map<State, Integer> closedMap,
-      Graph<IOTask, DefaultWeightedEdge> taskGraph) {
+      Graph<IOTask, DefaultWeightedEdge> taskGraph,
+      int totalComputeTime) {
 
     // Get all tasks that are ready to be scheduled (all predecessors are scheduled)
     List<IOTask> readyTasks = currentState.getReadyTasks(taskGraph);
@@ -90,12 +94,12 @@ public class AStarSearch {
         // Calculate the fScore for the new state
         int makespan = newState.getMakespan(); // 'Distance' from s_init (start state)
         int heuristic =
-            FFunction.heuristicEstimate(newState, taskGraph, numProcessors); // 'ETA' to goal
+            FFunction.heuristicEstimate(
+                newState, taskGraph, numProcessors, totalComputeTime); // 'ETA' to goal
         int fScore = makespan + heuristic; // Estimated total 'distance' f(s) = g(s) + h(s)
 
         // If this state has already been explored with a lower makespan skip it
-        // TODO: dunno what this is
-        if (closedMap.containsKey(newState) && makespan >= closedMap.get(newState)) {
+        if (stateAlreadyExploredWithLowerMakespan(newState, makespan, closedMap)) {
           continue;
         }
 
@@ -105,6 +109,12 @@ public class AStarSearch {
         openQueue.add(newState);
       }
     }
+  }
+
+  /** Check if the state has already been explored with a lower makespan. If so, we can skip it. */
+  private static boolean stateAlreadyExploredWithLowerMakespan(
+      State newState, int makespan, Map<State, Integer> closedMap) {
+    return closedMap.containsKey(newState) && makespan >= closedMap.get(newState);
   }
 
   /**
