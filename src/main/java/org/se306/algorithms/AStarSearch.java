@@ -38,10 +38,8 @@ public class AStarSearch {
         return;
       }
 
-      // Check if this state has already been explored with a lower makespan
-      // TODO: dunno what this is
-      if (closedMap.containsKey(currentState)
-          && currentState.getMakespan() >= closedMap.get(currentState)) {
+      // If this state has already been explored with a lower makespan skip it
+      if (stateAlreadyExploredWithLowerMakespan(currentState, currentState.getMakespan(), closedMap)) {
         continue;
       }
 
@@ -101,8 +99,7 @@ public class AStarSearch {
         int fScore = makespan + heuristic; // Estimated total 'distance' f(s) = g(s) + h(s)
 
         // If this state has already been explored with a lower makespan skip it
-        // TODO: dunno what this is
-        if (closedMap.containsKey(newState) && makespan >= closedMap.get(newState)) {
+        if (stateAlreadyExploredWithLowerMakespan(newState, makespan, closedMap)) {
           continue;
         }
 
@@ -112,6 +109,15 @@ public class AStarSearch {
         openQueue.add(newState);
       }
     }
+  }
+
+  /**
+   * Check if the state has already been explored with a lower makespan. If so, we
+   * can skip it.
+   */
+  private static boolean stateAlreadyExploredWithLowerMakespan(State newState, int makespan,
+      Map<State, Integer> closedMap) {
+    return closedMap.containsKey(newState) && makespan >= closedMap.get(newState);
   }
 
   /**
