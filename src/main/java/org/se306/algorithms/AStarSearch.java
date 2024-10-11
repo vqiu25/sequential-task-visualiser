@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.domain.IOTask;
@@ -23,7 +22,8 @@ public class AStarSearch {
     Preprocessing.calculateBottomLevels(graph);
 
     // Initialize the open set as a priority queue (A* search frontier)
-    PriorityQueue<State> openQueue = new PriorityQueue<>(Comparator.comparingInt(s -> s.getfScore()));
+    PriorityQueue<State> openQueue =
+        new PriorityQueue<>(Comparator.comparingInt(s -> s.getfScore()));
     Map<State, Integer> closedMap = new HashMap<>();
 
     // Add s_init to kick off A*
@@ -39,7 +39,8 @@ public class AStarSearch {
       }
 
       // If this state has already been explored with a lower makespan skip it
-      if (stateAlreadyExploredWithLowerMakespan(currentState, currentState.getMakespan(), closedMap)) {
+      if (stateAlreadyExploredWithLowerMakespan(
+          currentState, currentState.getMakespan(), closedMap)) {
         continue;
       }
 
@@ -71,10 +72,8 @@ public class AStarSearch {
   }
 
   /**
-   * Expand the current state by scheduling all tasks that are ready to be
-   * scheduled. Creates a new
-   * state for each task and processor combination (|n|x|P| total) and adds them
-   * to the open queue.
+   * Expand the current state by scheduling all tasks that are ready to be scheduled. Creates a new
+   * state for each task and processor combination (|n|x|P| total) and adds them to the open queue.
    */
   private static void expandState(
       State currentState,
@@ -94,8 +93,9 @@ public class AStarSearch {
 
         // Calculate the fScore for the new state
         int makespan = newState.getMakespan(); // 'Distance' from s_init (start state)
-        int heuristic = FFunction.heuristicEstimate(
-            newState, taskGraph, numProcessors, totalComputeTime); // 'ETA' to goal
+        int heuristic =
+            FFunction.heuristicEstimate(
+                newState, taskGraph, numProcessors, totalComputeTime); // 'ETA' to goal
         int fScore = makespan + heuristic; // Estimated total 'distance' f(s) = g(s) + h(s)
 
         // If this state has already been explored with a lower makespan skip it
@@ -111,18 +111,14 @@ public class AStarSearch {
     }
   }
 
-  /**
-   * Check if the state has already been explored with a lower makespan. If so, we
-   * can skip it.
-   */
-  private static boolean stateAlreadyExploredWithLowerMakespan(State newState, int makespan,
-      Map<State, Integer> closedMap) {
+  /** Check if the state has already been explored with a lower makespan. If so, we can skip it. */
+  private static boolean stateAlreadyExploredWithLowerMakespan(
+      State newState, int makespan, Map<State, Integer> closedMap) {
     return closedMap.containsKey(newState) && makespan >= closedMap.get(newState);
   }
 
   /**
-   * Update the task graph with the schedule from the final state of the A*
-   * search. Ran after A*
+   * Update the task graph with the schedule from the final state of the A* search. Ran after A*
    * completes.
    */
   private static void updateTaskGraph(

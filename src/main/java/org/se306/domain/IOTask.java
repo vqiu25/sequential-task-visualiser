@@ -3,15 +3,11 @@ package org.se306.domain;
 /**
  * Represents a task in the TASK GRAPH. Each task has an id and a length.
  *
- * <p>
- * This is created from the input file. Start time and processor are not
- * modified by the A*
+ * <p>This is created from the input file. Start time and processor are not modified by the A*
  * algorithm, except at the very end in order to output the schedule as a file.
  *
- * @see org.se306.domain.StateTask In contrast, StateTask is used by the A*
- *      algorithm to keep track
- *      of the schedule within each state in the STATE TREE and is modified
- *      during the A* execution.
+ * @see org.se306.domain.StateTask In contrast, StateTask is used by the A* algorithm to keep track
+ *     of the schedule within each state in the STATE TREE and is modified during the A* execution.
  */
 public class IOTask {
 
