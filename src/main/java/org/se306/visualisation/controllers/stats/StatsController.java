@@ -3,6 +3,7 @@ package org.se306.visualisation.controllers.stats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -26,6 +27,7 @@ public class StatsController {
   private CentralProcessor processor;
   private GlobalMemory memory;
   private long[] prevTicks;
+  private double weightedCpuLoad = 0.0;
 
   @FXML
   private void initialize() {
@@ -49,39 +51,59 @@ public class StatsController {
     double cpuLoad = processor.getSystemCpuLoadBetweenTicks(prevTicks);
     prevTicks = processor.getSystemCpuLoadTicks();
 
+    // Calculate weighted average of CPU load
+    weightedCpuLoad = 0.2 * cpuLoad + 0.8 * weightedCpuLoad;
+
     // Get memory usage
     long totalMemory = memory.getTotal();
     long availableMemory = memory.getAvailable();
     double memoryUsage = (double) (totalMemory - availableMemory) / totalMemory;
 
     // Calculate CPU and Memory percentages
-    int cpuPercentage = (int) Math.round(cpuLoad * 100);
+    int cpuPercentage = (int) Math.round(weightedCpuLoad * 100);
     int memoryPercentage = (int) Math.round(memoryUsage * 100);
 
-    // Update CPU progress bar and label
-    cpuProgressBar.setProgress(cpuLoad);
-    percentageLabel.setText(String.format("%d%%", cpuPercentage));
+    // Smoothly animate CPU progress bar and update colour
+    animateProgress(
+        cpuProgressBar,
+        cpuProgressBar.getProgress(),
+        weightedCpuLoad,
+        cpuPercentage,
+        percentageLabel);
+    String cpuColour = getColourForPercentage(cpuPercentage);
+    cpuProgressBar.setStyle("-fx-accent: " + cpuColour + ";");
 
-    // Update Memory progress bar and label
-    memoryProgressBar.setProgress(memoryUsage);
-    memoryLabel.setText(String.format("%d%%", memoryPercentage));
-
-    // Adjust the color of the CPU progress bar based on the percentage
-    String cpuColor = getColorForPercentage(cpuPercentage);
-    cpuProgressBar.setStyle("-fx-accent: " + cpuColor + ";");
-
-    // Adjust the color of the Memory progress bar based on the percentage
-    String memoryColor = getColorForPercentage(memoryPercentage);
-    memoryProgressBar.setStyle("-fx-accent: " + memoryColor + ";");
+    // Smoothly animate Memory progress bar and update colour
+    animateProgress(
+        memoryProgressBar,
+        memoryProgressBar.getProgress(),
+        memoryUsage,
+        memoryPercentage,
+        memoryLabel);
+    String memoryColour = getColourForPercentage(memoryPercentage);
+    memoryProgressBar.setStyle("-fx-accent: " + memoryColour + ";");
   }
 
-  private String getColorForPercentage(int percentage) {
+  private void animateProgress(
+      ProgressBar progressBar, double startValue, double targetValue, int percentage, Label label) {
+    Timeline timeline =
+        new Timeline(
+            new KeyFrame(Duration.ZERO, event -> progressBar.setProgress(startValue)),
+            new KeyFrame(
+                Duration.seconds(0.5),
+                new javafx.animation.KeyValue(
+                    progressBar.progressProperty(), targetValue, Interpolator.EASE_BOTH)));
+    timeline.setOnFinished(event -> label.setText(String.format("%d%%", percentage)));
+    timeline.play();
+  }
+
+  private String getColourForPercentage(int percentage) {
     if (percentage < 50) {
-      return "#bef2c9";
+      return "#bef2c9"; // Light green
     } else if (percentage < 75) {
-      return "#f5d3a3";
+      return "#f5d3a3"; // Light orange
     } else {
-      return "#f6c9c4";
+      return "#f6c9c4"; // Light red
     }
   }
 }
