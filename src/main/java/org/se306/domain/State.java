@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -19,7 +18,10 @@ public class State {
   /** IOTask IDs of unscheduled tasks */
   private Set<String> unscheduledTaskIds;
 
-  /** Indexes represent 0-indexed processors, value is the finish time of last scheduled task on the processor */
+  /**
+   * Indexes represent 0-indexed processors, value is the finish time of last scheduled task on the
+   * processor
+   */
   private int[] processorAvailableTimes;
 
   /** fScore = idleTime + bottomLevel + dataReadyTime */
@@ -51,7 +53,8 @@ public class State {
     newState.fScore = this.fScore;
     newState.makespan = this.makespan;
     newState.idleTime = this.idleTime;
-    newState.processorAvailableTimes = Arrays.copyOf(this.processorAvailableTimes, this.getNumProcessors());
+    newState.processorAvailableTimes =
+        Arrays.copyOf(this.processorAvailableTimes, this.getNumProcessors());
     return newState;
   }
 
@@ -105,8 +108,7 @@ public class State {
     }
 
     // Schedule the task
-    newState.idsToStateTasks.put(
-        task.getId(), new StateTask(task, processor, earliestStartTime));
+    newState.idsToStateTasks.put(task.getId(), new StateTask(task, processor, earliestStartTime));
     newState.unscheduledTaskIds.remove(task.getId());
 
     // Update bookkeeping
@@ -170,17 +172,14 @@ public class State {
     return bottomLevelEta;
   }
 
-  /**
-   * Helper method to get StateTask by IOTask
-   */
+  /** Helper method to get StateTask by IOTask */
   public StateTask getStateTaskFromIOTask(IOTask task) {
     return idsToStateTasks.get(task.getId());
   }
 
   /**
-   * Sorry, this method isn't documented very well and I don't intend to until a
-   * later PR when I might make it faster :)
-   * It's exactly what Oliver says to do in [22]
+   * Sorry, this method isn't documented very well and I don't intend to until a later PR when I
+   * might make it faster :) It's exactly what Oliver says to do in [22]
    */
   public int getDRT(Graph<IOTask, DefaultWeightedEdge> graph) {
     int DRTPlusBottomLevel = 0; // Maximise
@@ -191,8 +190,10 @@ public class State {
         for (DefaultWeightedEdge inEdge : graph.incomingEdgesOf(ioTask)) {
           String parentId = graph.getEdgeSource(inEdge).getId();
           StateTask parent = idsToStateTasks.get(parentId);
-          int communicationDelay = (processor == parent.getProcessor()) ? 0 : (int) graph.getEdgeWeight(inEdge);
-          DRTForNodeProcessor = Math.max(DRTForNodeProcessor, parent.getEndTime() + communicationDelay);
+          int communicationDelay =
+              (processor == parent.getProcessor()) ? 0 : (int) graph.getEdgeWeight(inEdge);
+          DRTForNodeProcessor =
+              Math.max(DRTForNodeProcessor, parent.getEndTime() + communicationDelay);
         }
         DRTForNode = Math.min(DRTForNode, DRTForNodeProcessor);
       }
@@ -211,19 +212,13 @@ public class State {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
     State other = (State) obj;
     if (idsToStateTasks == null) {
-      if (other.idsToStateTasks != null)
-        return false;
-    } else if (!idsToStateTasks.equals(other.idsToStateTasks))
-      return false;
+      if (other.idsToStateTasks != null) return false;
+    } else if (!idsToStateTasks.equals(other.idsToStateTasks)) return false;
     return true;
   }
-
 }

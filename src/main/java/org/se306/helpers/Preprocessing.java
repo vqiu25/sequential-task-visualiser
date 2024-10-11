@@ -2,7 +2,6 @@ package org.se306.helpers;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -12,12 +11,9 @@ import org.slf4j.LoggerFactory;
 
 public class Preprocessing {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Preprocessing.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Preprocessing.class);
 
-
-  /**
-   * Returns the sum of all task weights in the graph (but not edge weights).
-   */
+  /** Returns the sum of all task weights in the graph (but not edge weights). */
   public static int getTotalComputeTime(Graph<IOTask, DefaultWeightedEdge> graph) {
     LOGGER.info("Begin calculate total compute time");
 
@@ -34,7 +30,8 @@ public class Preprocessing {
     LOGGER.info("Begin calculate bottom levels");
 
     // Get reverse topological order of tasks
-    TopologicalOrderIterator<IOTask, DefaultWeightedEdge> iterator = new TopologicalOrderIterator<>(graph);
+    TopologicalOrderIterator<IOTask, DefaultWeightedEdge> iterator =
+        new TopologicalOrderIterator<>(graph);
     Deque<IOTask> reverseTopologicalOrder = new ArrayDeque<>(); // Stack to reverse order
     while (iterator.hasNext()) {
       reverseTopologicalOrder.push(iterator.next());
@@ -54,5 +51,4 @@ public class Preprocessing {
 
     LOGGER.debug("Finished calculating bottom levels");
   }
-
 }
