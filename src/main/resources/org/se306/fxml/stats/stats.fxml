@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -15,7 +17,102 @@
    <children>
       <VBox maxHeight="390.0" maxWidth="180.0" minHeight="390.0" minWidth="180.0" prefHeight="390.0" prefWidth="180.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="85.0" stroke="BLACK" strokeType="INSIDE" styleClass="rectangle-default" width="165.0" />
+            <HBox prefHeight="85.0" prefWidth="165.0">
+               <children>
+                  <StackPane prefHeight="85.0" prefWidth="48.33">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="85.0" stroke="BLACK" strokeType="INSIDE" styleClass="rectangle-default" width="48.33" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/processorIcon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="25">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets top="5.0" />
+                                 </padding>
+                              </Label>
+                              <Label text="Processors">
+                                 <font>
+                                    <Font name="System Bold" size="7.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <Separator opacity="0.0" prefWidth="10.0" />
+                  <StackPane prefHeight="85.0" prefWidth="48.33">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="85.0" stroke="BLACK" strokeType="INSIDE" styleClass="rectangle-default" width="48.33" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/threadIcon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="25">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets top="5.0" />
+                                 </padding>
+                              </Label>
+                              <Label text="Threads">
+                                 <font>
+                                    <Font name="System Bold" size="7.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <Separator opacity="0.0" prefWidth="10.0" />
+                  <StackPane prefHeight="85.0" prefWidth="48.33">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="85.0" stroke="BLACK" strokeType="INSIDE" styleClass="rectangle-default" width="48.33" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/taskIcon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="25">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets top="5.0" />
+                                 </padding>
+                              </Label>
+                              <Label text="Tasks">
+                                 <font>
+                                    <Font name="System Bold" size="7.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
             <Separator maxHeight="10.0" minHeight="10.0" opacity="0.0" orientation="VERTICAL" prefHeight="10.0" />
             <StackPane prefHeight="150.0" prefWidth="200.0">
                <children>
