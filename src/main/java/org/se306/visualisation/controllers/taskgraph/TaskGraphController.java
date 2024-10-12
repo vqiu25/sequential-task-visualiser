@@ -1,5 +1,9 @@
 package org.se306.visualisation.controllers.taskgraph;
 
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.se306.AppState;
+import org.se306.domain.IOTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,53 +29,11 @@ public class TaskGraphController {
   private void initialize() {
     LOGGER.debug("TaskGraphController initialized");
 
-    // Create the graph and set its layout strategy
-    Digraph<String, String> graph = new DigraphEdgeList<>();
-    graph.insertVertex("A");
-    graph.insertVertex("B");
-    graph.insertVertex("C");
-    graph.insertVertex("D");
-    graph.insertVertex("E");
-    graph.insertVertex("F");
-    graph.insertVertex("G");
-    graph.insertVertex("H");
-    graph.insertVertex("I");
-    graph.insertVertex("J");
-    graph.insertVertex("K");
-    graph.insertVertex("L");
-    graph.insertVertex("M");
-    graph.insertVertex("N");
-    graph.insertVertex("O");
-    graph.insertVertex("P");
-    graph.insertVertex("Q");
-    graph.insertVertex("R");
-    graph.insertVertex("S");
+    // Get the graph from AppState
+    Graph<IOTask, DefaultWeightedEdge> jGraphT = AppState.getInstance().getGraph();
 
-    // Connect vertices with edges
-    graph.insertEdge("A", "B", "EdgeAB");
-    graph.insertEdge("A", "C", "EdgeAC");
-    graph.insertEdge("A", "D", "EdgeAD");
-    graph.insertEdge("B", "E", "EdgeBE");
-    graph.insertEdge("C", "F", "EdgeCF");
-    graph.insertEdge("D", "G", "EdgeDG");
-    graph.insertEdge("E", "H", "EdgeEH");
-    graph.insertEdge("F", "I", "EdgeFI");
-    graph.insertEdge("G", "J", "EdgeGJ");
-    graph.insertEdge("H", "K", "EdgeHK");
-    graph.insertEdge("I", "L", "EdgeIL");
-    graph.insertEdge("J", "M", "EdgeJM");
-    graph.insertEdge("K", "N", "EdgeKN");
-    graph.insertEdge("L", "O", "EdgeLO");
-    graph.insertEdge("M", "P", "EdgeMP");
-    graph.insertEdge("N", "Q", "EdgeNQ");
-    graph.insertEdge("O", "R", "EdgeOR");
-    graph.insertEdge("P", "S", "EdgePS");
-    graph.insertEdge("R", "A", "EdgeRA");
-    graph.insertEdge("S", "B", "EdgeSB");
-    graph.insertEdge("J", "L", "EdgeJL");
-    graph.insertEdge("E", "N", "EdgeEN");
-    graph.insertEdge("C", "S", "EdgeCS");
-    graph.insertEdge("M", "H", "EdgeMH");
+    // Convert JGraphT graph to the SmartGraph compatible graph
+    Digraph<String, String> graph = convertToSmartGraph(jGraphT);
 
     SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
 
@@ -98,5 +60,19 @@ public class TaskGraphController {
           graphView.init();
           graphView.update(); // Ensure radius changes are applied
         });
+  }
+
+  private Digraph<String, String> convertToSmartGraph(Graph<IOTask, DefaultWeightedEdge> jGraphT) {
+    Digraph<String, String> graph = new DigraphEdgeList<>();
+    jGraphT.vertexSet().forEach(vertex -> graph.insertVertex(vertex.toString()));
+    jGraphT
+        .edgeSet()
+        .forEach(
+            edge -> {
+              IOTask source = jGraphT.getEdgeSource(edge);
+              IOTask target = jGraphT.getEdgeTarget(edge);
+              graph.insertEdge(source.toString(), target.toString(), edge.toString());
+            });
+    return graph;
   }
 }

@@ -125,7 +125,6 @@ public class StatsController {
     threadCountLabel.setText(String.valueOf(threadCount));
     taskCountLabel.setText(String.valueOf(taskCount));
 
-    // Can you set these to the words Proccessor, Thread and Task, and include an s if there is mo//
     // Set the labels for processor, thread, and task with correct plurality
     processorLabel.setText(processorCount == 1 ? "Processor" : "Processors");
     threadLabel.setText(threadCount == 1 ? "Thread" : "Threads");
