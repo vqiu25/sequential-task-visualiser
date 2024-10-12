@@ -2,11 +2,6 @@ package org.se306.visualisation.controllers.header;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
-import org.se306.AppState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -14,6 +9,9 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.se306.AppState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HeaderController {
 
