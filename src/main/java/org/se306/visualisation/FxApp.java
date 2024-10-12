@@ -43,7 +43,7 @@ public class FxApp extends Application {
     scene.getStylesheets().add(ResourceUtils.loadCss("globals.css"));
 
     // Set up stage
-    scene.setFill(Color.web("#131d23"));
+    scene.setFill(Color.web("#1b1c24"));
     stage.setTitle(":D");
     stage.getIcons().add(ResourceUtils.loadImage("appIcon.png"));
 
