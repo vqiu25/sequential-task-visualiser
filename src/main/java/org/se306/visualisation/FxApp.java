@@ -1,6 +1,13 @@
 package org.se306.visualisation;
 
 import java.io.IOException;
+
+import org.se306.visualisation.controllers.WrapperController;
+import org.se306.visualisation.utils.ControllerUtils;
+import org.se306.visualisation.utils.ResourceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -9,11 +16,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import org.se306.visualisation.controllers.WrapperController;
-import org.se306.visualisation.utils.ControllerUtils;
-import org.se306.visualisation.utils.ResourceUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FxApp extends Application {
 
@@ -43,7 +45,7 @@ public class FxApp extends Application {
     // Set up stage
     scene.setFill(Color.web("#131d23"));
     stage.setTitle(":D");
-    stage.getIcons().add(ResourceUtils.loadImage("oliver.png"));
+    stage.getIcons().add(ResourceUtils.loadImage("appIcon.png"));
 
     // Set up fullscreen
     // stage.setFullScreen(true);
