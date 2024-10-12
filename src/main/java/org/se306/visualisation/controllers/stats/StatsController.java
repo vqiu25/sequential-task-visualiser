@@ -156,7 +156,7 @@ public class StatsController {
         dataCircle.setStyle("-fx-fill: #b6b9e2; -fx-stroke: #6d6f9e;");
         break;
       case "Bottom":
-        bottomCircle.setStyle("-fx-fill: #292a34; -fx-stroke: #1b1c24;");
+        bottomCircle.setStyle("-fx-fill: #b6b9e2; -fx-stroke: #6d6f9e;");
         break;
       case "Idle":
         idleCircle.setStyle("-fx-fill: #b6b9e2; -fx-stroke: #6d6f9e;");
