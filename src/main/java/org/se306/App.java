@@ -52,6 +52,8 @@ public class App {
     // TODO: implement parallelisation (use command.getCores() to determine number of threads)
     AStarSearch.findSchedule(state.getGraph(), command.getProcessors());
 
+    // TODO: after algorithm finishes, notify fx app so timer and stuff stops
+
     Instant endTime = Instant.now();
     Duration duration = Duration.between(startTime, endTime);
     LOGGER.info("Scheduler finished in {}ms", duration.toMillis());
