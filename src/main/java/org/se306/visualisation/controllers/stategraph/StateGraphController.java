@@ -26,14 +26,12 @@ public class StateGraphController {
   }
 
   private void setupCanvas() {
-    canvas = new Canvas(585, 155); // You can adjust the size as needed
+    canvas = new Canvas(585, 155);
     gc = canvas.getGraphicsContext2D();
     stateGraphStackPane.getChildren().add(canvas);
   }
 
   private void drawInitialTree() {
-    // Placeholder for tree drawing logic
-    // This method should include the logic to visualize the B&B tree
     drawRoot(292.5, 11);
   }
 
