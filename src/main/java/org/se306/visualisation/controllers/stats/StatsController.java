@@ -10,6 +10,7 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
@@ -30,6 +31,9 @@ public class StatsController {
   @FXML private Label processorLabel;
   @FXML private Label threadLabel;
   @FXML private Label taskLabel;
+  @FXML private Circle dataCircle;
+  @FXML private Circle bottomCircle;
+  @FXML private Circle idleCircle;
 
   private CentralProcessor processor;
   private GlobalMemory memory;
@@ -45,6 +49,9 @@ public class StatsController {
         AppState.getInstance().getProcessorCount(),
         AppState.getInstance().getThreadCount(),
         AppState.getInstance().getTaskCount());
+
+    // Reset heuristic indicators
+    resetHeuristicIndicators();
 
     // Initialise OSHI
     SystemInfo systemInfo = new SystemInfo();
@@ -120,7 +127,7 @@ public class StatsController {
     }
   }
 
-  public void setSystemValues(int processorCount, int threadCount, int taskCount) {
+  private void setSystemValues(int processorCount, int threadCount, int taskCount) {
     processorCountLabel.setText(String.valueOf(processorCount));
     threadCountLabel.setText(String.valueOf(threadCount));
     taskCountLabel.setText(String.valueOf(taskCount));
@@ -129,5 +136,31 @@ public class StatsController {
     processorLabel.setText(processorCount == 1 ? "Processor" : "Processors");
     threadLabel.setText(threadCount == 1 ? "Thread" : "Threads");
     taskLabel.setText(taskCount == 1 ? "Task" : "Tasks");
+  }
+
+  private void resetHeuristicIndicators() {
+    String fillColor = "#292a34";
+    String strokeColor = "#1b1c24";
+
+    dataCircle.setStyle("-fx-fill: " + fillColor + "; -fx-stroke: " + strokeColor + ";");
+    bottomCircle.setStyle("-fx-fill: " + fillColor + "; -fx-stroke: " + strokeColor + ";");
+    idleCircle.setStyle("-fx-fill: " + fillColor + "; -fx-stroke: " + strokeColor + ";");
+  }
+
+  public void setHeuristicIndicator(String heuristic) {
+    resetHeuristicIndicators();
+
+    // Apply specific colors based on the heuristic
+    switch (heuristic) {
+      case "Data":
+        dataCircle.setStyle("-fx-fill: #b6b9e2; -fx-stroke: #6d6f9e;");
+        break;
+      case "Bottom":
+        bottomCircle.setStyle("-fx-fill: #292a34; -fx-stroke: #1b1c24;");
+        break;
+      case "Idle":
+        idleCircle.setStyle("-fx-fill: #b6b9e2; -fx-stroke: #6d6f9e;");
+        break;
+    }
   }
 }

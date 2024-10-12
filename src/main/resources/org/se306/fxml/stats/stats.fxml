@@ -227,7 +227,7 @@
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                              <Circle fill="#292a34" radius="11.0" stroke="#1b1c24" strokeType="INSIDE" strokeWidth="2.0" />
+                              <Circle fx:id="dataCircle" fill="#292a34" radius="11.0" stroke="#1b1c24" strokeType="INSIDE" strokeWidth="2.0" />
                               <Label alignment="CENTER" prefWidth="206.0" text="Data">
                                  <font>
                                     <Font name="System Bold" size="10.0" />
@@ -239,7 +239,7 @@
                            </children>
                         </VBox>
                         <Separator opacity="0.0" prefWidth="200.0" />
-                        <Circle fill="#b6b9e2" radius="11.0" stroke="#6d6f9e" strokeType="INSIDE" strokeWidth="2.0" />
+                        <Circle fx:id="bottomCircle" fill="#b6b9e2" radius="11.0" stroke="#6d6f9e" strokeType="INSIDE" strokeWidth="2.0" />
                         <Separator opacity="0.0" prefWidth="200.0" />
                         <VBox alignment="CENTER" prefHeight="55.0" prefWidth="22.0">
                            <children>
@@ -251,7 +251,7 @@
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                              <Circle fill="#292a34" radius="11.0" stroke="#1b1c24" strokeType="INSIDE" strokeWidth="2.0" />
+                              <Circle fx:id="idleCircle" fill="#292a34" radius="11.0" stroke="#1b1c24" strokeType="INSIDE" strokeWidth="2.0" />
                               <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="206.0" text="Idle" textAlignment="CENTER">
                                  <font>
                                     <Font name="System Bold" size="10.0" />
