@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.AppState;
@@ -13,8 +14,12 @@ import org.se306.domain.State;
 import org.se306.domain.StateTask;
 import org.se306.helpers.FFunction;
 import org.se306.helpers.Preprocessing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AStarSearch {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AStarSearch.class);
 
   /**
    * Find a valid schedule for the given task graph and number of processors using the A* search
@@ -40,7 +45,15 @@ public class AStarSearch {
     addInitialState(openQueue, numProcessors, graph);
 
     while (!openQueue.isEmpty()) {
-      while (!AppState.getInstance().isRunning()) {} // do nothing is the app is not running
+      while (!AppState.getInstance().isRunning()) {
+        // do nothing is the app is not running
+        try {
+          Thread.sleep(10);
+        } catch (InterruptedException e) {
+          LOGGER.error("Thread interrupted while waiting for AppState to be running", e);
+        }
+      }
+
       State currentState = openQueue.poll();
 
       // If all tasks are scheduled, update the graph with the schedule and return

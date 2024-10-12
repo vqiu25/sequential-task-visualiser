@@ -9,7 +9,7 @@ public class AppState {
 
   private static AppState instance;
 
-  private boolean running;
+  private boolean running = true;
 
   private Graph<IOTask, DefaultWeightedEdge> graph;
 

@@ -152,11 +152,6 @@ public class AStarSearchTest {
 
   // --- These tests are actually verfied by Oliver and are correct ---
 
-  @BeforeEach
-  public void setUp() {
-    AppState.getInstance().setRunning(true);
-  }
-
   @Test
   public void testGraph7_2() {
     Graph<IOTask, DefaultWeightedEdge> graph =
