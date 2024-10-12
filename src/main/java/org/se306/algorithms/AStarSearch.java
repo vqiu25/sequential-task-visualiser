@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.AppState;
@@ -37,7 +36,8 @@ public class AStarSearch {
       State currentState = openQueue.poll();
 
       // Pass the current state to AppState
-      AppState.getInstance().setCurrentState(currentState);
+      // Add the current state to the blocking queue
+      AppState.getInstance().addStateToQueue(currentState);
 
       // If all tasks are scheduled, update the graph with the schedule and return
       if (currentState.getUnscheduledTaskIds().isEmpty()) {

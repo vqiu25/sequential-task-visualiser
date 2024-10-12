@@ -3,6 +3,7 @@ package org.se306.visualisation.controllers.schedule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 import org.se306.AppState;
 import org.se306.domain.State;
@@ -10,6 +11,7 @@ import org.se306.domain.StateTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -35,7 +37,7 @@ public class ScheduleController {
 
     // Example call to add rectangles and labels (adjust the number as needed)
     createHBoxWithRectanglesAndLabels(AppState.getInstance().getProcessorCount(), 100);
-    updateGanttChart();
+    startStateConsumer();
   }
 
   // Function to create rectangles with labels and add them to the scheduleHBox with even spacing
@@ -117,6 +119,11 @@ public class ScheduleController {
     // Update y-axis numbers dynamically based on maxYValue
     updateYAxis(maxYValue);
 
+    // Clear the Gantt chart before populating
+    for (Pane processorPane : processorPanes) {
+      processorPane.getChildren().clear(); // Clear all the rectangles in the processor panes
+    }
+
     for (StateTask task : tasks.values()) {
       int processorIndex = task.getProcessor();
       if (processorIndex < 0 || processorIndex >= processorPanes.size()) {
@@ -163,11 +170,43 @@ public class ScheduleController {
     }
   }
 
+  private void startStateConsumer() {
+    Thread consumerThread =
+        new Thread(
+            () -> {
+              BlockingQueue<State> stateQueue = AppState.getInstance().getStateQueue();
+              try {
+                while (true) {
+                  // Take the next state (blocking if none available)
+                  State nextState = stateQueue.take();
+
+                  // Update the Gantt chart on the JavaFX Application Thread
+                  Platform.runLater(
+                      () -> {
+                        AppState.getInstance().setCurrentState(nextState);
+                        AppState.getInstance().setHeuristicType(nextState.getHeuristicType());
+                        updateGanttChart();
+                      });
+                  // Add a delay to slow down the Gantt chart updates
+                  Thread.sleep(10);
+                }
+              } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+              }
+            });
+
+    // Start the consumer thread as a daemon so it doesn't block app shutdown
+    consumerThread.setDaemon(true);
+    consumerThread.start();
+  }
+
   public void updateGanttChart() {
     State currentState = AppState.getInstance().getCurrentState();
     if (currentState != null) {
       Map<String, StateTask> tasks = currentState.getIdsToStateTasks();
       int maxYValue = currentState.getMakespan();
+      // Update the makespan property in AppState
+      AppState.getInstance().setMakespan(maxYValue);
       populateTaskRectangles(tasks, maxYValue);
     }
   }

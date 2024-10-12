@@ -34,6 +34,7 @@ public class StatsController {
   @FXML private Circle dataCircle;
   @FXML private Circle bottomCircle;
   @FXML private Circle idleCircle;
+  @FXML private Label bestEtaLabel;
 
   private CentralProcessor processor;
   private GlobalMemory memory;
@@ -64,6 +65,22 @@ public class StatsController {
     Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> updateStats()));
     timeline.setCycleCount(Timeline.INDEFINITE);
     timeline.play();
+
+    // Bind the bestEtaLabel to the makespan property
+    AppState.getInstance()
+        .makespanProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              bestEtaLabel.setText(String.format("%d", newValue.intValue()));
+            });
+
+    // Bind the heuristic indicator to the heuristic property
+    AppState.getInstance()
+        .heuristicProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              setHeuristicIndicator(newValue.intValue());
+            });
   }
 
   private void updateStats() {
@@ -147,18 +164,21 @@ public class StatsController {
     idleCircle.setStyle("-fx-fill: " + fillColor + "; -fx-stroke: " + strokeColor + ";");
   }
 
-  public void setHeuristicIndicator(String heuristic) {
+  public void setHeuristicIndicator(int heuristic) {
     resetHeuristicIndicators();
 
     // Apply specific colors based on the heuristic
     switch (heuristic) {
-      case "Data":
+      // Data Ready Time
+      case 2:
         dataCircle.setStyle("-fx-fill: #b6b9e2; -fx-stroke: #6d6f9e;");
         break;
-      case "Bottom":
+      // Bottom Level
+      case 1:
         bottomCircle.setStyle("-fx-fill: #b6b9e2; -fx-stroke: #6d6f9e;");
         break;
-      case "Idle":
+      // Idle Time
+      case 0:
         idleCircle.setStyle("-fx-fill: #b6b9e2; -fx-stroke: #6d6f9e;");
         break;
     }
