@@ -19,7 +19,7 @@ public class IOTask {
   private int startTime = -1;
   private int processor = -1; // 1-indexed
 
-  // --- The following fields are used for dynamic programming only ---
+  // --- The following fields are used for caching only ---
   // -1 means unassigned
   private int bottomLevel = -1;
 

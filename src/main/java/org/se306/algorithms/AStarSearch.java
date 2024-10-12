@@ -11,6 +11,7 @@ import org.se306.domain.IOTask;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
 import org.se306.helpers.FFunction;
+import org.se306.helpers.IOTaskMap;
 import org.se306.helpers.Preprocessing;
 
 public class AStarSearch {
@@ -20,6 +21,7 @@ public class AStarSearch {
 
     int totalComputeTime = Preprocessing.getTotalComputeTime(graph);
     Preprocessing.calculateBottomLevels(graph);
+    IOTaskMap.initialise(graph);
 
     // Initialize the open set as a priority queue (A* search frontier)
     PriorityQueue<State> openQueue =
