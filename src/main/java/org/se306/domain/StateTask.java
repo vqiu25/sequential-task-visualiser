@@ -14,9 +14,6 @@ public class StateTask {
   private final int processor; // 0-indexed
   private final int startTime;
 
-  // --- The following fields are used for caching only ---
-  private int makespan;
-
   public StateTask(IOTask ioTask, int processor, int startTime) {
     this.ioTask = ioTask;
     this.processor = processor;

@@ -150,8 +150,9 @@ public class AStarSearchTest {
 
   @Test
   public void testGraph12_2() {
-    Graph<IOTask, DefaultWeightedEdge> graph = GraphParser.dotToGraph(
-        getClass().getResourceAsStream("astarsearch/input/Graph12_OutTree.dot"));
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(
+            getClass().getResourceAsStream("astarsearch/input/Graph12_OutTree.dot"));
     AStarSearch.findSchedule(graph, 2);
 
     int makespan = GraphTester.getMakespan(graph);
@@ -160,8 +161,9 @@ public class AStarSearchTest {
 
   @Test
   public void testGraph12_3() {
-    Graph<IOTask, DefaultWeightedEdge> graph = GraphParser.dotToGraph(
-        getClass().getResourceAsStream("astarsearch/input/Graph12_OutTree.dot"));
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(
+            getClass().getResourceAsStream("astarsearch/input/Graph12_OutTree.dot"));
     AStarSearch.findSchedule(graph, 3);
 
     int makespan = GraphTester.getMakespan(graph);
@@ -170,8 +172,9 @@ public class AStarSearchTest {
 
   @Test
   public void testGraph14_2() {
-    Graph<IOTask, DefaultWeightedEdge> graph = GraphParser.dotToGraph(
-        getClass().getResourceAsStream("astarsearch/input/Graph14_OutTree.dot"));
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(
+            getClass().getResourceAsStream("astarsearch/input/Graph14_OutTree.dot"));
     AStarSearch.findSchedule(graph, 2);
 
     int makespan = GraphTester.getMakespan(graph);
@@ -180,8 +183,9 @@ public class AStarSearchTest {
 
   @Test
   public void testGraph15_4() {
-    Graph<IOTask, DefaultWeightedEdge> graph = GraphParser.dotToGraph(
-        getClass().getResourceAsStream("astarsearch/input/Graph15_OutTree.dot"));
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(
+            getClass().getResourceAsStream("astarsearch/input/Graph15_OutTree.dot"));
     AStarSearch.findSchedule(graph, 2);
 
     int makespan = GraphTester.getMakespan(graph);
@@ -190,8 +194,8 @@ public class AStarSearchTest {
 
   @Test
   public void testGraph20_2() {
-    Graph<IOTask, DefaultWeightedEdge> graph = GraphParser.dotToGraph(
-        getClass().getResourceAsStream("astarsearch/input/Graph20.dot"));
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph20.dot"));
     AStarSearch.findSchedule(graph, 2);
 
     int makespan = GraphTester.getMakespan(graph);
@@ -200,8 +204,8 @@ public class AStarSearchTest {
 
   @Test
   public void testGraph20_3() {
-    Graph<IOTask, DefaultWeightedEdge> graph = GraphParser.dotToGraph(
-        getClass().getResourceAsStream("astarsearch/input/Graph20.dot"));
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph20.dot"));
     AStarSearch.findSchedule(graph, 3);
 
     int makespan = GraphTester.getMakespan(graph);

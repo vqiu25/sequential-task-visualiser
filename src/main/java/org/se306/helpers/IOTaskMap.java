@@ -2,7 +2,6 @@ package org.se306.helpers;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.domain.IOTask;
@@ -45,5 +44,4 @@ public class IOTaskMap {
   public IOTask getIOTask(String id) {
     return idToIOTask.get(id);
   }
-
 }
