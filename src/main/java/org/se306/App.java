@@ -3,6 +3,8 @@ package org.se306;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.Instant;
 import org.se306.algorithms.AStarSearch;
 import org.se306.utils.GraphParser;
 import org.se306.utils.SchedulerCommand;
@@ -26,6 +28,7 @@ public class App {
     logCommandInfo(command);
 
     AppState state = AppState.getInstance();
+    state.setCommand(command);
     try (InputStream inputStream = new FileInputStream(command.getInputFileName())) {
       state.setGraph(GraphParser.dotToGraph(inputStream));
     } catch (IOException e) {
@@ -33,16 +36,28 @@ public class App {
       return;
     }
 
-    // run scheduler here, using command.getProcessors(), command.getCores(), and state.getGraph()
-    AStarSearch.findSchedule(state.getGraph(), command.getProcessors());
-
-    // execute visualisation if indicated
+    // execute scheduler in visualisation mode if indicated
     if (command.toVisualise()) {
-      // Note: this is blocking, but we're allowed to use extra threads for JavaFX
-      FxApp.launch(FxApp.class);
+      LOGGER.info("Visualisation starting...");
+      state.setRunning(false); // user starts the algorithm using the 'play' button instead
+      new Thread(() -> FxApp.launch(FxApp.class)).start();
+    } else {
+      state.setRunning(true);
     }
 
-    // output graph to dot file
+    LOGGER.info("Scheduler running...");
+    Instant startTime = Instant.now();
+
+    // TODO: implement so that the algorithm only runs when the user sets app state running to true
+    // TODO: implement parallelisation (use command.getCores() to determine number of threads)
+    AStarSearch.findSchedule(state.getGraph(), command.getProcessors());
+
+    // TODO: after algorithm finishes, notify fx app so timer and stuff stops
+
+    Instant endTime = Instant.now();
+    Duration duration = Duration.between(startTime, endTime);
+    LOGGER.info("Scheduler finished in {}ms", duration.toMillis());
+
     GraphParser.graphToDot(state.getGraph(), command.getOutputFileName());
   }
 
