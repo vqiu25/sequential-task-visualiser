@@ -27,6 +27,18 @@ public class FFunction {
     int bottomLevelEstimate = estimateBottomLevel(state, graph);
     int dataReadyTimeEstimate = estimateDataReadyTime(state, graph);
 
+    if (idleTimeEstimate >= bottomLevelEstimate && idleTimeEstimate >= dataReadyTimeEstimate) {
+      // Idle Time
+      state.setHeuristicType(0);
+    } else if (bottomLevelEstimate >= idleTimeEstimate
+        && bottomLevelEstimate >= dataReadyTimeEstimate) {
+      // Bottom Level
+      state.setHeuristicType(1);
+    } else {
+      // Data Ready Time
+      state.setHeuristicType(2);
+    }
+
     // Return the maximum of the three components (as written in Oliver's paper)
     // Returns a minimum of 0 to prevent negative values
     return Math.max(
