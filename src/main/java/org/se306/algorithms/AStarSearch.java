@@ -16,7 +16,16 @@ import org.se306.helpers.Preprocessing;
 
 public class AStarSearch {
 
-  // Method to find the optimal schedule using A* search
+  /**
+   * Find a valid schedule for the given task graph and number of processors using the A* search
+   * algorithm.
+   *
+   * <p>IMPORTANT: Relies on AppState variable 'running' to determine if the algorithm should be
+   * running. If AppState is not running, the algorithm will hang.
+   *
+   * @param graph the task graph to schedule
+   * @param numProcessors the number of processors to schedule the tasks on
+   */
   public static void findSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
 
     int totalComputeTime = Preprocessing.getTotalComputeTime(graph);

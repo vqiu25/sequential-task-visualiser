@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.se306.AppState;
 import org.se306.GraphTester;
 import org.se306.domain.IOTask;
 import org.se306.utils.GraphParser;
@@ -149,6 +151,11 @@ public class AStarSearchTest {
   // }
 
   // --- These tests are actually verfied by Oliver and are correct ---
+
+  @BeforeEach
+  public void setUp() {
+    AppState.getInstance().setRunning(true);
+  }
 
   @Test
   public void testGraph7_2() {
