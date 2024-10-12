@@ -28,14 +28,19 @@ public class State {
   private int fScore;
 
   // --- The following fields are used for dynamic programming only ---
+  // They're updated at the end of each scheduleTask() call
   private int makespan;
+  private int idleTime; // Sum of idle time (so far) on all processors
+  private int bottomLevelEta; // Max of start times + bottom levels of all scheduled tasks
 
   /** Initial state constructor */
   public State(int numProcessors) {
     this.idsToStateTasks = new HashMap<>();
     this.unscheduledTaskIds = new HashSet<>();
-    this.makespan = 0;
     this.fScore = 0;
+    this.makespan = 0;
+    this.idleTime = 0;
+    this.bottomLevelEta = -1; // Invalid at first
     this.processorAvailableTimes = new int[numProcessors];
     Arrays.fill(this.processorAvailableTimes, 0);
   }
@@ -45,8 +50,9 @@ public class State {
     State newState = new State(this.getNumProcessors());
     newState.idsToStateTasks = new HashMap<>(this.idsToStateTasks);
     newState.unscheduledTaskIds = new HashSet<>(this.unscheduledTaskIds);
-    newState.makespan = this.makespan;
     newState.fScore = this.fScore;
+    newState.makespan = this.makespan;
+    newState.idleTime = this.idleTime;
     newState.processorAvailableTimes =
         Arrays.copyOf(this.processorAvailableTimes, this.getNumProcessors());
     return newState;
@@ -103,26 +109,16 @@ public class State {
 
     // Schedule the task
     newState.idsToStateTasks.put(task.getId(), new StateTask(task, processor, earliestStartTime));
-    newState.processorAvailableTimes[processor] = earliestStartTime + task.getTaskLength();
     newState.unscheduledTaskIds.remove(task.getId());
 
-    // Update makespan (gScore) efficiently
+    // Update bookkeeping
+    newState.idleTime += earliestStartTime - newState.processorAvailableTimes[processor];
+    newState.processorAvailableTimes[processor] = earliestStartTime + task.getTaskLength();
     newState.makespan = Math.max(this.makespan, newState.getProcessorAvailableTimes()[processor]);
+    int newPotentialBottomLevelETA = earliestStartTime + task.getBottomLevel();
+    newState.bottomLevelEta = Math.max(this.bottomLevelEta, newPotentialBottomLevelETA);
 
     return newState;
-  }
-
-  // Calculate idle time for all processors (this is important for oliver's
-  // heurstic)
-  // TODO: bug, I don't think this calculates idle time correctly
-  public int getIdleTime() {
-    int makespan = getMakespan();
-    int totalUsedTime = 0;
-    for (int availableTime : processorAvailableTimes) {
-      totalUsedTime += availableTime;
-    }
-    // Idle time is the difference between makespan * number of processors and total used time
-    return (makespan * getNumProcessors()) - totalUsedTime;
   }
 
   // Helper method to get Task by ID
@@ -144,6 +140,14 @@ public class State {
     return unscheduledTaskIds;
   }
 
+  public int getfScore() {
+    return fScore;
+  }
+
+  public void setfScore(int fScore) {
+    this.fScore = fScore;
+  }
+
   public int getMakespan() {
     return makespan;
   }
@@ -152,12 +156,8 @@ public class State {
     this.makespan = gScore;
   }
 
-  public int getfScore() {
-    return fScore;
-  }
-
-  public void setfScore(int fScore) {
-    this.fScore = fScore;
+  public int getIdleTime() {
+    return idleTime;
   }
 
   public int[] getProcessorAvailableTimes() {
@@ -168,9 +168,38 @@ public class State {
     return processorAvailableTimes.length;
   }
 
+  public int getBottomLevelEta() {
+    return bottomLevelEta;
+  }
+
   /** Helper method to get StateTask by IOTask */
   public StateTask getStateTaskFromIOTask(IOTask task) {
     return idsToStateTasks.get(task.getId());
+  }
+
+  /**
+   * Sorry, this method isn't documented very well and I don't intend to until a later PR when I
+   * might make it faster :) It's exactly what Oliver says to do in [22]
+   */
+  public int getDRT(Graph<IOTask, DefaultWeightedEdge> graph) {
+    int DRTPlusBottomLevel = 0; // Maximise
+    for (IOTask ioTask : getReadyTasks(graph)) {
+      int DRTForNode = Integer.MAX_VALUE; // Minimise
+      for (int processor = 0; processor < getNumProcessors(); processor++) {
+        int DRTForNodeProcessor = 0; // Maximise
+        for (DefaultWeightedEdge inEdge : graph.incomingEdgesOf(ioTask)) {
+          String parentId = graph.getEdgeSource(inEdge).getId();
+          StateTask parent = idsToStateTasks.get(parentId);
+          int communicationDelay =
+              (processor == parent.getProcessor()) ? 0 : (int) graph.getEdgeWeight(inEdge);
+          DRTForNodeProcessor =
+              Math.max(DRTForNodeProcessor, parent.getEndTime() + communicationDelay);
+        }
+        DRTForNode = Math.min(DRTForNode, DRTForNodeProcessor);
+      }
+      DRTPlusBottomLevel = Math.max(DRTPlusBottomLevel, DRTForNode + ioTask.getBottomLevel());
+    }
+    return DRTPlusBottomLevel;
   }
 
   @Override

@@ -36,6 +36,10 @@ public class StateTask {
     return startTime + getDuration();
   }
 
+  public int getBottomLevel() {
+    return ioTask.getBottomLevel();
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;

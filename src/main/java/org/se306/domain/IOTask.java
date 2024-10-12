@@ -1,9 +1,5 @@
 package org.se306.domain;
 
-import java.util.Set;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultWeightedEdge;
-
 /**
  * Represents a task in the TASK GRAPH. Each task has an id and a length.
  *
@@ -68,6 +64,14 @@ public class IOTask {
     this.processor = processor;
   }
 
+  public int getBottomLevel() {
+    return bottomLevel;
+  }
+
+  public void setBottomLevel(int bottomLevel) {
+    this.bottomLevel = bottomLevel;
+  }
+
   @Override
   public String toString() {
     return id;
@@ -94,27 +98,5 @@ public class IOTask {
   @Override
   public int hashCode() {
     return id.hashCode();
-  }
-
-  /** Gets bottom level using dynamic programming (recursively) in amortised O(m/n) time */
-  // Note: not yet connected to algorithm
-  public int getBottomLevel(Graph<IOTask, DefaultWeightedEdge> taskGraph) {
-    if (bottomLevel == -1) {
-      Set<DefaultWeightedEdge> successorEdges = taskGraph.outgoingEdgesOf(this);
-      if (successorEdges.isEmpty()) {
-        // Sink node
-        bottomLevel = taskLength;
-      } else {
-        // Recursively calculate bottom level
-        int maxSucessorBottomLevel = 0;
-        for (DefaultWeightedEdge edge : successorEdges) {
-          IOTask sucessor = taskGraph.getEdgeSource(edge);
-          int predecessorBottomLevel = sucessor.getBottomLevel(taskGraph);
-          maxSucessorBottomLevel = Math.max(maxSucessorBottomLevel, predecessorBottomLevel);
-        }
-        bottomLevel = taskLength + maxSucessorBottomLevel;
-      }
-    }
-    return bottomLevel;
   }
 }
