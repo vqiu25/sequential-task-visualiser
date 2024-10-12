@@ -30,7 +30,7 @@
                                     <Image url="@../../images/processorIcon.png" />
                                  </image>
                               </ImageView>
-                              <Label text="X">
+                              <Label fx:id="processorCountLabel" text="X">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
@@ -38,7 +38,7 @@
                                     <Insets top="5.0" />
                                  </padding>
                               </Label>
-                              <Label text="Processors">
+                              <Label fx:id="processorLabel" text="Processors">
                                  <font>
                                     <Font name="System Bold" size="7.0" />
                                  </font>
@@ -61,7 +61,7 @@
                                     <Image url="@../../images/threadIcon.png" />
                                  </image>
                               </ImageView>
-                              <Label text="X">
+                              <Label fx:id="threadCountLabel" text="X">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
@@ -69,7 +69,7 @@
                                     <Insets top="5.0" />
                                  </padding>
                               </Label>
-                              <Label text="Threads">
+                              <Label fx:id="threadLabel" text="Threads">
                                  <font>
                                     <Font name="System Bold" size="7.0" />
                                  </font>
@@ -92,7 +92,7 @@
                                     <Image url="@../../images/taskIcon.png" />
                                  </image>
                               </ImageView>
-                              <Label text="X">
+                              <Label fx:id="taskCountLabel" text="X">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
@@ -100,7 +100,7 @@
                                     <Insets top="5.0" />
                                  </padding>
                               </Label>
-                              <Label text="Tasks">
+                              <Label fx:id="taskLabel" text="Tasks">
                                  <font>
                                     <Font name="System Bold" size="7.0" />
                                  </font>

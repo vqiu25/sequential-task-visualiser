@@ -1,5 +1,6 @@
 package org.se306.visualisation.controllers.stats;
 
+import org.se306.AppState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,12 @@ public class StatsController {
   @FXML private ProgressBar cpuProgressBar;
   @FXML private Label memoryLabel;
   @FXML private ProgressBar memoryProgressBar;
+  @FXML private Label processorCountLabel;
+  @FXML private Label threadCountLabel;
+  @FXML private Label taskCountLabel;
+  @FXML private Label processorLabel;
+  @FXML private Label threadLabel;
+  @FXML private Label taskLabel;
 
   private CentralProcessor processor;
   private GlobalMemory memory;
@@ -32,6 +39,12 @@ public class StatsController {
   @FXML
   private void initialize() {
     LOGGER.debug("StatsController initialized");
+
+    // Initialise system values
+    setSystemValues(
+        AppState.getInstance().getProcessorCount(),
+        AppState.getInstance().getThreadCount(),
+        AppState.getInstance().getTaskCount());
 
     // Initialise OSHI
     SystemInfo systemInfo = new SystemInfo();
@@ -105,5 +118,17 @@ public class StatsController {
     } else {
       return "#f6c9c4"; // Light red
     }
+  }
+
+  public void setSystemValues(int processorCount, int threadCount, int taskCount) {
+    processorCountLabel.setText(String.valueOf(processorCount));
+    threadCountLabel.setText(String.valueOf(threadCount));
+    taskCountLabel.setText(String.valueOf(taskCount));
+
+    // Can you set these to the words Proccessor, Thread and Task, and include an s if there is mo//
+    // Set the labels for processor, thread, and task with correct plurality
+    processorLabel.setText(processorCount == 1 ? "Processor" : "Processors");
+    threadLabel.setText(threadCount == 1 ? "Thread" : "Threads");
+    taskLabel.setText(taskCount == 1 ? "Task" : "Tasks");
   }
 }

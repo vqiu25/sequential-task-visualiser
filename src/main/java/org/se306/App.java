@@ -39,6 +39,9 @@ public class App {
     // execute visualisation if indicated
     if (command.toVisualise()) {
       // Note: this is blocking, but we're allowed to use extra threads for JavaFX
+      state.setProcessorCount(command.getProcessors());
+      state.setThreadCount(command.getCores());
+      state.setTaskCount(state.getGraph().vertexSet().size());
       FxApp.launch(FxApp.class);
     }
 
