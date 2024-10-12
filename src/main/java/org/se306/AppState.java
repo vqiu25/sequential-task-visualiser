@@ -3,12 +3,14 @@ package org.se306;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.domain.IOTask;
+import org.se306.domain.State;
 
 public class AppState {
 
   private static AppState instance;
 
   private Graph<IOTask, DefaultWeightedEdge> graph;
+  private State currentState;
   private int processorCount;
   private int threadCount;
   private int taskCount;
@@ -50,5 +52,13 @@ public class AppState {
 
   public void setTaskCount(int taskCount) {
     this.taskCount = taskCount;
+  }
+
+  public void setCurrentState(State state) {
+    this.currentState = state;
+  }
+
+  public State getCurrentState() {
+    return currentState;
   }
 }

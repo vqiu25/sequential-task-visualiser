@@ -3,11 +3,13 @@ package org.se306;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.se306.algorithms.AStarSearch;
 import org.se306.utils.GraphParser;
 import org.se306.utils.SchedulerCommand;
 import org.se306.visualisation.FxApp;
 import org.slf4j.Logger;
+
 import picocli.CommandLine;
 
 /** Hello world! */

@@ -2,6 +2,14 @@ package org.se306.visualisation.controllers.schedule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.se306.AppState;
+import org.se306.domain.State;
+import org.se306.domain.StateTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -12,9 +20,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
-import org.se306.domain.IOTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ScheduleController {
 
@@ -29,16 +34,8 @@ public class ScheduleController {
     LOGGER.debug("ScheduleController initialized");
 
     // Example call to add rectangles and labels (adjust the number as needed)
-    createHBoxWithRectanglesAndLabels(5, 100);
-    ArrayList<IOTask> tasks = new ArrayList<>();
-
-    // Add sample tasks to the list
-    tasks.add(new IOTask("T1", 100, 0, 1));
-    tasks.add(new IOTask("T2", 20, 10, 2));
-    tasks.add(new IOTask("T3", 50, 30, 2));
-    tasks.add(new IOTask("T5", 20, 80, 4));
-
-    populateTaskRectangles(tasks, 100);
+    createHBoxWithRectanglesAndLabels(AppState.getInstance().getProcessorCount(), 100);
+    updateGanttChart();
   }
 
   // Function to create rectangles with labels and add them to the scheduleHBox with even spacing
@@ -116,11 +113,14 @@ public class ScheduleController {
   }
 
   // Method to populate task rectangles within processor panes
-  private void populateTaskRectangles(ArrayList<IOTask> tasks, int maxYValue) {
-    for (IOTask task : tasks) {
-      int processorIndex = task.getProcessor() - 1;
+  private void populateTaskRectangles(Map<String, StateTask> tasks, int maxYValue) {
+    // Update y-axis numbers dynamically based on maxYValue
+    updateYAxis(maxYValue);
+
+    for (StateTask task : tasks.values()) {
+      int processorIndex = task.getProcessor();
       if (processorIndex < 0 || processorIndex >= processorPanes.size()) {
-        LOGGER.warn("IOTask {} has invalid processor index {}", task.getId(), processorIndex);
+        LOGGER.warn("IOTask {} has invalid processor index {}", task, processorIndex);
         continue;
       }
 
@@ -130,7 +130,7 @@ public class ScheduleController {
 
       // Calculate the position and size of the task rectangle
       double taskStartTime = task.getStartTime();
-      double taskLength = task.getTaskLength();
+      double taskLength = task.getDuration();
 
       // Calculate the height of the task rectangle
       double taskHeight = taskLength * paneHeight / maxYValue;
@@ -160,6 +160,38 @@ public class ScheduleController {
 
       // Add the taskPane to the processorPane
       processorPane.getChildren().add(taskPane);
+    }
+  }
+
+  public void updateGanttChart() {
+    State currentState = AppState.getInstance().getCurrentState();
+    if (currentState != null) {
+      Map<String, StateTask> tasks = currentState.getIdsToStateTasks();
+      int maxYValue = currentState.getMakespan();
+      populateTaskRectangles(tasks, maxYValue);
+    }
+  }
+
+  private void updateYAxis(int maxYValue) {
+    VBox yAxis = (VBox) ((HBox) scheduleHBox.getChildren().get(0)).getChildren().get(0);
+
+    yAxis.getChildren().clear();
+
+    int totalNumbers = 6;
+
+    for (int j = 0; j < totalNumbers; j++) {
+      // Calculate the label value (evenly spaced between 0 and maxYValue)
+      int labelValue =
+          (int) Math.round((double) maxYValue * (totalNumbers - 1 - j) / (totalNumbers - 1));
+
+      // Create and style the label
+      Label numberLabel = new Label(String.valueOf(labelValue));
+      numberLabel.setStyle("-fx-font-weight: bold;");
+      numberLabel.setMinWidth(25);
+      numberLabel.setAlignment(Pos.CENTER_RIGHT);
+
+      // Add the label to the yAxis VBox
+      yAxis.getChildren().add(numberLabel);
     }
   }
 }

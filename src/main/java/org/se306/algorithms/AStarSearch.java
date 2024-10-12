@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.se306.AppState;
 import org.se306.domain.IOTask;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
@@ -30,7 +32,12 @@ public class AStarSearch {
     addInitialState(openQueue, numProcessors, graph);
 
     while (!openQueue.isEmpty()) {
+      // Pass to Gantt + State Graph
+      // Take the Heuristic + FScore/ETA
       State currentState = openQueue.poll();
+
+      // Pass the current state to AppState
+      AppState.getInstance().setCurrentState(currentState);
 
       // If all tasks are scheduled, update the graph with the schedule and return
       if (currentState.getUnscheduledTaskIds().isEmpty()) {
