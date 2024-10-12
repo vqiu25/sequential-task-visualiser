@@ -182,12 +182,12 @@
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="45.0" stroke="BLACK" strokeType="INSIDE" styleClass="rectangle-default" width="77.5" />
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <Label text="Best Time">
+                              <Label text="Best ETA">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label text="X" />
+                              <Label fx:id="bestEtaLabel" text="X" />
                            </children>
                         </VBox>
                      </children>
@@ -207,7 +207,7 @@
                         <Insets top="40.0" />
                      </padding>
                   </Label>
-                  <Label text="Heurestic">
+                  <Label text="Heuristic">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
