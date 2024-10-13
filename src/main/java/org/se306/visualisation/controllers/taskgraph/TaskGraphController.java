@@ -7,7 +7,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.AppState;
 import org.se306.domain.IOTask;
-import org.se306.visualisation.controllers.shared.ColourMapping;
+import org.se306.visualisation.utils.ColourMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

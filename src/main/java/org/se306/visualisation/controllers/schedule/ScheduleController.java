@@ -8,7 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import org.se306.AppState;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
-import org.se306.visualisation.controllers.shared.ColourMapping;
+import org.se306.visualisation.utils.ColourMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
