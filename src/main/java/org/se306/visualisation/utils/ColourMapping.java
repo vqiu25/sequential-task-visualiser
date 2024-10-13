@@ -1,4 +1,4 @@
-package org.se306.visualisation.controllers.shared;
+package org.se306.visualisation.utils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
