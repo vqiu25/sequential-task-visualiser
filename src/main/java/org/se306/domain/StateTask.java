@@ -20,6 +20,10 @@ public class StateTask {
     this.startTime = startTime;
   }
 
+  public String getId() {
+    return ioTask.getId();
+  }
+
   public int getProcessor() {
     return processor;
   }

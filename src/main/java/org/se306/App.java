@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
+
 import org.se306.algorithms.AStarSearch;
 import org.se306.utils.GraphParser;
 import org.se306.utils.SchedulerCommand;
 import org.se306.visualisation.FxApp;
 import org.slf4j.Logger;
+
 import picocli.CommandLine;
 
 /** Hello world! */
@@ -38,6 +40,10 @@ public class App {
 
     // execute scheduler in visualisation mode if indicated
     if (command.toVisualise()) {
+      // Note: this is blocking, but we're allowed to use extra threads for JavaFX
+      state.setProcessorCount(command.getProcessors());
+      state.setThreadCount(command.getCores());
+      state.setTaskCount(state.getGraph().vertexSet().size());
       LOGGER.info("Visualisation starting...");
       state.setRunning(false); // user starts the algorithm using the 'play' button instead
       new Thread(() -> FxApp.launch(FxApp.class)).start();

@@ -33,6 +33,7 @@ public class State {
   private int makespan;
   private int idleTime; // Sum of idle time (so far) on all processors
   private int bottomLevelEta; // Max of start times + bottom levels of all scheduled tasks
+  private int heuristicType;
 
   /** Initial state constructor */
   public State(int numProcessors) {
@@ -166,6 +167,14 @@ public class State {
 
   public int getBottomLevelEta() {
     return bottomLevelEta;
+  }
+
+  public int getHeuristicType() {
+    return heuristicType;
+  }
+
+  public void setHeuristicType(int heuristic) {
+    this.heuristicType = heuristic;
   }
 
   /** Helper method to get StateTask by IOTask */

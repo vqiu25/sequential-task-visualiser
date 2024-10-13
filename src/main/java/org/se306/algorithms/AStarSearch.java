@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.AppState;
@@ -46,16 +47,12 @@ public class AStarSearch {
     addInitialState(openQueue, numProcessors, graph);
 
     while (!openQueue.isEmpty()) {
-      while (!AppState.getInstance().isRunning()) {
-        // do nothing is the app is not running
-        try {
-          Thread.sleep(10);
-        } catch (InterruptedException e) {
-          LOGGER.error("Thread interrupted while waiting for AppState to be running", e);
-        }
-      }
 
       State currentState = openQueue.poll();
+
+      // Pass the current state to AppState
+      // Add the current state to the blocking queue
+      AppState.getInstance().addStateToQueue(currentState);
 
       // If all tasks are scheduled, update the graph with the schedule and return
       if (currentState.getUnscheduledTaskIds().isEmpty()) {
