@@ -60,13 +60,11 @@ public class ScheduleController {
     VBox yAxis = new VBox();
     yAxis.setAlignment(Pos.BOTTOM_RIGHT);
 
-    // Add numbers to the y-axis (1 at the bottom, 6 at the top)
     int totalNumbers = 6;
 
     for (int j = 0; j < totalNumbers; j++) {
       // Calculate the label value (evenly spaced between 0 and maxYValue)
-      int labelValue =
-          (int) Math.round((double) maxYValue * (totalNumbers - 1 - j) / (totalNumbers - 1));
+      int labelValue = (int) Math.round((double) maxYValue * j / (totalNumbers - 1));
 
       // Create and style the label
       Label numberLabel = new Label(String.valueOf(labelValue));
@@ -144,7 +142,7 @@ public class ScheduleController {
       double taskHeight = taskLength * paneHeight / maxYValue;
 
       // Calculate the y position (from top) of the task rectangle
-      double yPosition = paneHeight - ((taskStartTime + taskLength) * paneHeight / maxYValue) + 2;
+      double yPosition = (taskStartTime * paneHeight / maxYValue) + 2;
 
       // Create the task rectangle
       Rectangle taskRectangle = new Rectangle(paneWidth - 4, taskHeight);
@@ -219,21 +217,16 @@ public class ScheduleController {
     VBox yAxis = (VBox) ((HBox) scheduleHBox.getChildren().get(0)).getChildren().get(0);
 
     yAxis.getChildren().clear();
-
     int totalNumbers = 6;
 
     for (int j = 0; j < totalNumbers; j++) {
-      // Calculate the label value (evenly spaced between 0 and maxYValue)
-      int labelValue =
-          (int) Math.round((double) maxYValue * (totalNumbers - 1 - j) / (totalNumbers - 1));
+      int labelValue = (int) Math.round((double) maxYValue * j / (totalNumbers - 1));
 
-      // Create and style the label
       Label numberLabel = new Label(String.valueOf(labelValue));
       numberLabel.setStyle("-fx-font-weight: bold;");
       numberLabel.setMinWidth(25);
       numberLabel.setAlignment(Pos.CENTER_RIGHT);
 
-      // Add the label to the yAxis VBox
       yAxis.getChildren().add(numberLabel);
     }
   }
