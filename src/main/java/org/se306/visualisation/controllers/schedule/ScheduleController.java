@@ -177,6 +177,17 @@ public class ScheduleController {
               BlockingQueue<State> stateQueue = AppState.getInstance().getStateQueue();
               try {
                 while (true) {
+
+                  while (!AppState.getInstance().isRunning()) {
+                    // do nothing is the app is not running
+                    try {
+                      Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                      LOGGER.error(
+                          "Thread interrupted while waiting for AppState to be running", e);
+                    }
+                  }
+
                   // Take the next state (blocking if none available)
                   State nextState = stateQueue.take();
 

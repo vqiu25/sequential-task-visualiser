@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.se306.helpers.IOTaskMap;
 
 public class State {
 
@@ -27,7 +28,7 @@ public class State {
   /** fScore = idleTime + bottomLevel + dataReadyTime */
   private int fScore;
 
-  // --- The following fields are used for dynamic programming only ---
+  // --- The following fields are used for caching only ---
   // They're updated at the end of each scheduleTask() call
   private int makespan;
   private int idleTime; // Sum of idle time (so far) on all processors
@@ -64,7 +65,7 @@ public class State {
   public List<IOTask> getReadyTasks(Graph<IOTask, DefaultWeightedEdge> graph) {
     List<IOTask> readyTasks = new ArrayList<>();
     for (String taskId : unscheduledTaskIds) {
-      IOTask task = getTaskById(taskId, graph);
+      IOTask task = getIOTaskById(taskId);
       boolean allPredecessorsScheduled = true;
       for (DefaultWeightedEdge edge : graph.incomingEdgesOf(task)) {
         IOTask predecessor = graph.getEdgeSource(edge);
@@ -122,15 +123,10 @@ public class State {
     return newState;
   }
 
-  // Helper method to get Task by ID
-  // TODO: move to a utility class + optimise with hashmap
-  public IOTask getTaskById(String id, Graph<IOTask, DefaultWeightedEdge> graph) {
-    for (IOTask task : graph.vertexSet()) {
-      if (task.getId().equals(id)) {
-        return task;
-      }
-    }
-    return null;
+  /** Helper method to get an IOTask by ID via IOTaskMap */
+  private IOTask getIOTaskById(String id) {
+    IOTaskMap taskMap = IOTaskMap.getInstance();
+    return taskMap.getIOTask(id);
   }
 
   public Map<String, StateTask> getIdsToStateTasks() {

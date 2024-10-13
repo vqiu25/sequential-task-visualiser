@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.AppState;
@@ -12,15 +13,30 @@ import org.se306.domain.IOTask;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
 import org.se306.helpers.FFunction;
+import org.se306.helpers.IOTaskMap;
 import org.se306.helpers.Preprocessing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AStarSearch {
 
-  // Method to find the optimal schedule using A* search
+  private static final Logger LOGGER = LoggerFactory.getLogger(AStarSearch.class);
+
+  /**
+   * Find a valid schedule for the given task graph and number of processors using the A* search
+   * algorithm.
+   *
+   * <p>IMPORTANT: Relies on AppState variable 'running' to determine if the algorithm should be
+   * running. If AppState is not running, the algorithm will hang.
+   *
+   * @param graph the task graph to schedule
+   * @param numProcessors the number of processors to schedule the tasks on
+   */
   public static void findSchedule(Graph<IOTask, DefaultWeightedEdge> graph, int numProcessors) {
 
     int totalComputeTime = Preprocessing.getTotalComputeTime(graph);
     Preprocessing.calculateBottomLevels(graph);
+    IOTaskMap.initialise(graph);
 
     // Initialize the open set as a priority queue (A* search frontier)
     PriorityQueue<State> openQueue =
@@ -31,8 +47,7 @@ public class AStarSearch {
     addInitialState(openQueue, numProcessors, graph);
 
     while (!openQueue.isEmpty()) {
-      // Pass to Gantt + State Graph
-      // Take the Heuristic + FScore/ETA
+
       State currentState = openQueue.poll();
 
       // Pass the current state to AppState

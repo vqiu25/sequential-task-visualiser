@@ -2,12 +2,15 @@ package org.se306;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.domain.IOTask;
 import org.se306.domain.State;
+import org.se306.utils.SchedulerCommand;
+
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class AppState {
 
@@ -16,11 +19,15 @@ public class AppState {
   private BlockingQueue<State> stateQueue = new LinkedBlockingQueue<>();
   private final IntegerProperty fScoreProperty = new SimpleIntegerProperty(0);
   private final IntegerProperty heuristicTypeProperty = new SimpleIntegerProperty(0);
+  private boolean running = true;
+
   private Graph<IOTask, DefaultWeightedEdge> graph;
   private State currentState;
   private int processorCount;
   private int threadCount;
   private int taskCount;
+
+  private SchedulerCommand command;
 
   public static AppState getInstance() {
     if (instance == null) {
@@ -103,5 +110,21 @@ public class AppState {
 
   public void setHeuristicType(int heuristicType) {
     this.heuristicTypeProperty.set(heuristicType);
+  }
+
+  public SchedulerCommand getCommand() {
+    return command;
+  }
+
+  public void setCommand(SchedulerCommand command) {
+    this.command = command;
+  }
+
+  public boolean isRunning() {
+    return running;
+  }
+
+  public void setRunning(boolean running) {
+    this.running = running;
   }
 }

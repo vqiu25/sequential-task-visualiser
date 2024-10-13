@@ -148,6 +148,70 @@ public class AStarSearchTest {
   //   GraphTester.assertGraphEquals(expected, actual);
   // }
 
+  @Test
+  public void testGraph12_2() {
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(
+            getClass().getResourceAsStream("astarsearch/input/Graph12_OutTree.dot"));
+    AStarSearch.findSchedule(graph, 2);
+
+    int makespan = GraphTester.getMakespan(graph);
+    assertEquals(380, makespan);
+  }
+
+  @Test
+  public void testGraph12_3() {
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(
+            getClass().getResourceAsStream("astarsearch/input/Graph12_OutTree.dot"));
+    AStarSearch.findSchedule(graph, 3);
+
+    int makespan = GraphTester.getMakespan(graph);
+    assertEquals(275, makespan);
+  }
+
+  @Test
+  public void testGraph14_2() {
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(
+            getClass().getResourceAsStream("astarsearch/input/Graph14_OutTree.dot"));
+    AStarSearch.findSchedule(graph, 2);
+
+    int makespan = GraphTester.getMakespan(graph);
+    assertEquals(435, makespan);
+  }
+
+  @Test
+  public void testGraph15_4() {
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(
+            getClass().getResourceAsStream("astarsearch/input/Graph15_OutTree.dot"));
+    AStarSearch.findSchedule(graph, 2);
+
+    int makespan = GraphTester.getMakespan(graph);
+    assertEquals(455, makespan);
+  }
+
+  @Test
+  public void testGraph20_2() {
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph20.dot"));
+    AStarSearch.findSchedule(graph, 2);
+
+    int makespan = GraphTester.getMakespan(graph);
+    assertEquals(36, makespan);
+  }
+
+  @Test
+  public void testGraph20_3() {
+    Graph<IOTask, DefaultWeightedEdge> graph =
+        GraphParser.dotToGraph(getClass().getResourceAsStream("astarsearch/input/Graph20.dot"));
+    AStarSearch.findSchedule(graph, 3);
+
+    int makespan = GraphTester.getMakespan(graph);
+    assertEquals(35, makespan);
+  }
+
   // --- These tests are actually verfied by Oliver and are correct ---
 
   @Test
