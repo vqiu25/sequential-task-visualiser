@@ -13,6 +13,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.domain.IOTask;
 import org.se306.domain.State;
 import org.se306.utils.SchedulerCommand;
+import org.se306.visualisation.controllers.stategraph.StateGraphController;
 
 public class AppState {
 
@@ -30,6 +31,7 @@ public class AppState {
   private int processorCount;
   private int threadCount;
   private int taskCount;
+  private StateGraphController stateGraphController;
 
   private SchedulerCommand command;
 
@@ -158,5 +160,13 @@ public class AppState {
 
   public void setRunning(boolean running) {
     this.running = running;
+  }
+
+  public StateGraphController getStateGraphController() {
+    return stateGraphController;
+  }
+
+  public void setStateGraphController(StateGraphController stateGraphController) {
+    this.stateGraphController = stateGraphController;
   }
 }

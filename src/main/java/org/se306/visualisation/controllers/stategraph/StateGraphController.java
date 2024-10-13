@@ -38,6 +38,8 @@ public class StateGraphController {
                 addStateToGraph(newValue);
               }
             });
+
+    AppState.getInstance().setStateGraphController(this);
   }
 
   // This method adds the new state to the graph, drawing it and linking it to the parent
@@ -99,5 +101,51 @@ public class StateGraphController {
     gc.setLineWidth(2);
     gc.fillOval(x - NODE_SIZE / 2, y - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE); // Draw filled circle
     gc.strokeOval(x - NODE_SIZE / 2, y - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE); // Draw circle border
+  }
+
+  // Method to highlight the optimal path in red after the algorithm completes
+  public void highlightOptimalPath(State finalState) {
+    State currentState = finalState;
+    while (currentState != null) {
+      // Get the position of the current state
+      Double[] currentPosition = nodePositions.get(currentState);
+      if (currentPosition != null) {
+        double x = currentPosition[0];
+        double y = currentPosition[1];
+
+        // Redraw the current node and its connection to the parent in red
+        drawNode(x, y, Color.web("#95258A"));
+
+        if (currentState.getParentState() != null) {
+          drawLineToParent(x, y, currentState.getParentState(), Color.web("#95258A"));
+        }
+      }
+
+      // Move to the parent state
+      currentState = currentState.getParentState();
+    }
+  }
+
+  // Method to draw a node representing a state with a specified color
+  private void drawNode(double x, double y, Color colour) {
+    gc.setFill(colour);
+    gc.setStroke(Color.web("#6d6f9e"));
+    gc.setLineWidth(2);
+    gc.fillOval(x - NODE_SIZE / 2, y - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE);
+    gc.strokeOval(x - NODE_SIZE / 2, y - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE);
+  }
+
+  // Method to draw a line from the child node to its parent with color
+  private void drawLineToParent(double x, double y, State parentState, Color colour) {
+    Double[] parentPosition = nodePositions.get(parentState);
+
+    if (parentPosition != null) {
+      double parentX = parentPosition[0];
+      double parentY = parentPosition[1];
+
+      gc.setStroke(colour); // Set line color
+      gc.setLineWidth(0.5);
+      gc.strokeLine(x, y, parentX, parentY);
+    }
   }
 }

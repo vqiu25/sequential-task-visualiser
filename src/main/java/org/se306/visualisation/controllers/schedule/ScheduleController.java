@@ -195,13 +195,15 @@ public class ScheduleController {
                         AppState.getInstance().setCurrentState(nextState);
                         AppState.getInstance().setHeuristicType(nextState.getHeuristicType());
 
-                        double fScore = (double) nextState.getfScore();
-                        if (fScore != 0) {
+                        double taskCount = (double) AppState.getInstance().getTaskCount();
+                        if (taskCount != 0) {
                           AppState.getInstance()
-                              .setCurrentProgress((double) nextState.getMakespan() / fScore);
+                              .setCurrentProgress(
+                                  (double) nextState.getIdsToStateTasks().size() / taskCount);
 
                           LOGGER.debug(
-                              "Current progress: {}", (double) nextState.getMakespan() / fScore);
+                              "Current progress: {}",
+                              (double) nextState.getIdsToStateTasks().size() / taskCount);
                         } else {
                           LOGGER.error(
                               "Attempted division by zero: fScore is zero in ScheduleController.");
@@ -213,6 +215,9 @@ public class ScheduleController {
                         if (stateQueue.isEmpty()) {
                           System.out.println("All states have been visualized.");
                           AppState.getInstance().setFinished(true);
+                          AppState.getInstance()
+                              .getStateGraphController()
+                              .highlightOptimalPath(nextState);
                         }
                       });
                   // Add a delay to slow down the Gantt chart updates
