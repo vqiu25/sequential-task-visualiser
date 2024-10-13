@@ -2,21 +2,19 @@ package org.se306;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.domain.IOTask;
 import org.se306.domain.State;
-
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 
 public class AppState {
 
   private static AppState instance;
 
   private BlockingQueue<State> stateQueue = new LinkedBlockingQueue<>();
-  private final IntegerProperty makespanProperty = new SimpleIntegerProperty(0);
+  private final IntegerProperty fScoreProperty = new SimpleIntegerProperty(0);
   private final IntegerProperty heuristicTypeProperty = new SimpleIntegerProperty(0);
   private Graph<IOTask, DefaultWeightedEdge> graph;
   private State currentState;
@@ -83,16 +81,16 @@ public class AppState {
     }
   }
 
-  public IntegerProperty makespanProperty() {
-    return makespanProperty;
+  public IntegerProperty fScoreProperty() {
+    return fScoreProperty;
   }
 
-  public int getMakespan() {
-    return makespanProperty.get();
+  public int getFScoreProperty() {
+    return fScoreProperty.get();
   }
 
-  public void setMakespan(int makespan) {
-    this.makespanProperty.set(makespan);
+  public void setFScoreProperty(int fScore) {
+    this.fScoreProperty.set(fScore);
   }
 
   public IntegerProperty heuristicProperty() {

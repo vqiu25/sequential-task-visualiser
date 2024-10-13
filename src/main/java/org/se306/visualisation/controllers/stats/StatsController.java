@@ -68,7 +68,7 @@ public class StatsController {
 
     // Bind the bestEtaLabel to the makespan property
     AppState.getInstance()
-        .makespanProperty()
+        .fScoreProperty()
         .addListener(
             (observable, oldValue, newValue) -> {
               bestEtaLabel.setText(String.format("%d", newValue.intValue()));

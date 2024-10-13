@@ -207,8 +207,10 @@ public class ScheduleController {
     if (currentState != null) {
       Map<String, StateTask> tasks = currentState.getIdsToStateTasks();
       int maxYValue = currentState.getMakespan();
-      // Update the makespan property in AppState
-      AppState.getInstance().setMakespan(maxYValue);
+      int fScore = currentState.getfScore();
+      LOGGER.debug("{}", fScore);
+      // Update the fscore property in AppState
+      AppState.getInstance().setFScoreProperty(fScore);
       populateTaskRectangles(tasks, maxYValue);
     }
   }
