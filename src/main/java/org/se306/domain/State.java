@@ -34,6 +34,7 @@ public class State {
   private int idleTime; // Sum of idle time (so far) on all processors
   private int bottomLevelEta; // Max of start times + bottom levels of all scheduled tasks
   private int heuristicType;
+  private State parentState;
 
   /** Initial state constructor */
   public State(int numProcessors) {
@@ -45,6 +46,7 @@ public class State {
     this.bottomLevelEta = -1; // Invalid at first
     this.processorAvailableTimes = new int[numProcessors];
     Arrays.fill(this.processorAvailableTimes, 0);
+    this.parentState = null;
   }
 
   /** Returns deep clone of this state */
@@ -85,6 +87,7 @@ public class State {
   // TODO: track DRT(processor) in StateTask
   public State scheduleTask(IOTask task, int processor, Graph<IOTask, DefaultWeightedEdge> graph) {
     State newState = this.copyOf();
+    newState.parentState = this;
 
     // Determine earliest start time
     int earliestStartTime = newState.processorAvailableTimes[processor];
@@ -171,6 +174,14 @@ public class State {
 
   public int getHeuristicType() {
     return heuristicType;
+  }
+
+  public State getParentState() {
+    return parentState;
+  }
+
+  public void setParentState(State parentState) {
+    this.parentState = parentState;
   }
 
   public void setHeuristicType(int heuristic) {

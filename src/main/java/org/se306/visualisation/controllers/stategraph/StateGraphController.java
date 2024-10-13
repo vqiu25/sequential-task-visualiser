@@ -1,46 +1,103 @@
 package org.se306.visualisation.controllers.stategraph;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import org.se306.AppState;
+import org.se306.domain.State;
 
 public class StateGraphController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(StateGraphController.class);
+  @FXML private Canvas stateGraphCanvas;
 
-  @FXML StackPane stateGraphStackPane;
-
-  private Canvas canvas;
   private GraphicsContext gc;
+  private Random random = new Random(); // Random generator for x-position
+
+  private static final int CANVAS_WIDTH = 585;
+  private static final int CANVAS_HEIGHT = 155;
+  private static final double NODE_SIZE = 5;
+  private static final double MAX_VERTICAL_SPACING = CANVAS_HEIGHT - NODE_SIZE * 2;
+
+  // Use this map to track the positions of each state node
+  private Map<State, Double[]> nodePositions = new HashMap<>();
 
   @FXML
   private void initialize() {
-    LOGGER.debug("StateGraphController initialized");
-    setupCanvas();
-    drawInitialTree();
+    gc = stateGraphCanvas.getGraphicsContext2D();
+
+    // Add listener for changes to the current state in AppState
+    AppState.getInstance()
+        .currentStateProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              if (newValue != null) {
+                addStateToGraph(newValue);
+              }
+            });
   }
 
-  private void setupCanvas() {
-    canvas = new Canvas(585, 155);
-    gc = canvas.getGraphicsContext2D();
-    stateGraphStackPane.getChildren().add(canvas);
+  // This method adds the new state to the graph, drawing it and linking it to the parent
+  public void addStateToGraph(State state) {
+    // Calculate the vertical position based on the number of tasks in this state
+    double y = getLogarithmicVerticalPosition(state.getIdsToStateTasks().size());
+
+    // Calculate the x position (randomized for each node except the root)
+    double x = (state.getParentState() == null) ? CANVAS_WIDTH / 2 : getRandomXPosition();
+
+    // Draw the current state node
+    drawNode(x, y);
+
+    // Store the position of this state (x, y)
+    nodePositions.put(state, new Double[] {x, y});
+
+    // Draw a line to the parent if it exists
+    if (state.getParentState() != null) {
+      drawLineToParent(x, y, state.getParentState());
+    }
   }
 
-  private void drawInitialTree() {
-    drawRoot(292.5, 11);
+  // Method to calculate vertical position based on the number of tasks using logarithmic scaling
+  private double getLogarithmicVerticalPosition(int taskCount) {
+    if (taskCount == 0) {
+      return 20; // Root node near the top
+    }
+
+    // Apply logarithmic scaling
+    double logScale = Math.log(taskCount + 1); // +1 to avoid log(0)
+    double scaledTaskCount = (logScale / Math.log(10)) * (MAX_VERTICAL_SPACING + 20);
+
+    return Math.min(scaledTaskCount + NODE_SIZE, CANVAS_HEIGHT - NODE_SIZE);
   }
 
-  private void drawRoot(double x, double y) {
-    final double nodeSize = 10;
-    gc.setFill(Color.web("#b6b9e2"));
-    gc.setStroke(Color.web("#6d6f9e"));
+  // Method to get a random x-position within the canvas width
+  private double getRandomXPosition() {
+    return 20 + random.nextDouble() * (CANVAS_WIDTH - 20); // Padding 20px on both sides
+  }
+
+  // Method to draw a line from the child node to its parent
+  private void drawLineToParent(double x, double y, State parentState) {
+    Double[] parentPosition = nodePositions.get(parentState);
+
+    if (parentPosition != null) {
+      double parentX = parentPosition[0];
+      double parentY = parentPosition[1];
+
+      gc.setStroke(Color.web("#B6B9E2", 0.2));
+      gc.setLineWidth(0.5);
+      gc.strokeLine(x, y, parentX, parentY);
+    }
+  }
+
+  // Method to draw a node representing a state
+  private void drawNode(double x, double y) {
+    gc.setFill(Color.web("#b6b9e2")); // Node fill color
+    gc.setStroke(Color.web("#6d6f9e")); // Node stroke color
     gc.setLineWidth(2);
-    gc.fillOval(x - nodeSize / 2, y - nodeSize / 2, nodeSize, nodeSize);
-    gc.strokeOval(x - nodeSize / 2, y - nodeSize / 2, nodeSize, nodeSize);
+    gc.fillOval(x - NODE_SIZE / 2, y - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE); // Draw filled circle
+    gc.strokeOval(x - NODE_SIZE / 2, y - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE); // Draw circle border
   }
 }

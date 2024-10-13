@@ -199,7 +199,7 @@ public class ScheduleController {
                         updateGanttChart();
                       });
                   // Add a delay to slow down the Gantt chart updates
-                  Thread.sleep(10);
+                  Thread.sleep(1);
                 }
               } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -217,7 +217,6 @@ public class ScheduleController {
       Map<String, StateTask> tasks = currentState.getIdsToStateTasks();
       int maxYValue = currentState.getMakespan();
       int fScore = currentState.getfScore();
-      LOGGER.debug("{}", fScore);
       // Update the fscore property in AppState
       AppState.getInstance().setFScoreProperty(fScore);
       populateTaskRectangles(tasks, maxYValue);
