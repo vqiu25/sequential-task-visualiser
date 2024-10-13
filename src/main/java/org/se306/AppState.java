@@ -19,6 +19,7 @@ public class AppState {
   private BlockingQueue<State> stateQueue = new LinkedBlockingQueue<>();
   private final IntegerProperty fScoreProperty = new SimpleIntegerProperty(0);
   private final IntegerProperty heuristicTypeProperty = new SimpleIntegerProperty(0);
+  private final IntegerProperty currentProgressProperty = new SimpleIntegerProperty(0);
   private boolean running = true;
 
   private Graph<IOTask, DefaultWeightedEdge> graph;
@@ -110,6 +111,18 @@ public class AppState {
 
   public int getHeuristicType() {
     return heuristicTypeProperty.get();
+  }
+
+  public IntegerProperty currentProgressProperty() {
+    return currentProgressProperty;
+  }
+
+  public int getCurrentProgress() {
+    return currentProgressProperty.get();
+  }
+
+  public void setCurrentProgress(int progress) {
+    this.currentProgressProperty.set(progress);
   }
 
   public void setHeuristicType(int heuristicType) {

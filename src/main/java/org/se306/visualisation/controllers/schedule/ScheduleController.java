@@ -4,14 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-
-import org.se306.AppState;
-import org.se306.domain.State;
-import org.se306.domain.StateTask;
-import org.se306.visualisation.controllers.shared.ColourMapping;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -23,6 +15,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import org.se306.AppState;
+import org.se306.domain.State;
+import org.se306.domain.StateTask;
+import org.se306.visualisation.controllers.shared.ColourMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ScheduleController {
 
@@ -196,6 +194,17 @@ public class ScheduleController {
                       () -> {
                         AppState.getInstance().setCurrentState(nextState);
                         AppState.getInstance().setHeuristicType(nextState.getHeuristicType());
+
+                        int fScore = nextState.getfScore();
+                        if (fScore != 0) {
+                          AppState.getInstance()
+                              .setCurrentProgress(nextState.getMakespan() / fScore);
+                        } else {
+                          LOGGER.error(
+                              "Attempted division by zero: fScore is zero in ScheduleController.");
+                          AppState.getInstance().setCurrentProgress(0);
+                        }
+
                         updateGanttChart();
                       });
                   // Add a delay to slow down the Gantt chart updates

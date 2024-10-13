@@ -2,10 +2,12 @@ package org.se306.visualisation.controllers.header;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -24,6 +26,7 @@ public class HeaderController {
   @FXML private Label timerLabel;
   @FXML private Label playPauseLabel;
   @FXML private StackPane playPause;
+  @FXML private ProgressBar globalProgressBar;
 
   @FXML
   private void initialize() {
@@ -34,7 +37,28 @@ public class HeaderController {
     timeline.setCycleCount(Timeline.INDEFINITE);
     playPause.setOnMouseClicked(this::handlePlayPause);
 
+    // Bind the heuristic indicator to the heuristic property
+    AppState.getInstance()
+        .currentProgressProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              smoothAnimateProgress(
+                  globalProgressBar, globalProgressBar.getProgress(), newValue.doubleValue());
+            });
+
     // timeline.stop(); // TODO: add event listener for when the algorithm finishes to stop timer?
+  }
+
+  private void smoothAnimateProgress(
+      ProgressBar progressBar, double startValue, double targetValue) {
+    Timeline timeline =
+        new Timeline(
+            new KeyFrame(Duration.ZERO, event -> progressBar.setProgress(startValue)),
+            new KeyFrame(
+                Duration.seconds(0.5),
+                new javafx.animation.KeyValue(
+                    progressBar.progressProperty(), targetValue, Interpolator.EASE_BOTH)));
+    timeline.play();
   }
 
   private void handlePlayPause(MouseEvent event) {
