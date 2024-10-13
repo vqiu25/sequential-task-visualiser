@@ -200,10 +200,6 @@ public class ScheduleController {
                           AppState.getInstance()
                               .setCurrentProgress(
                                   (double) nextState.getIdsToStateTasks().size() / taskCount);
-
-                          LOGGER.debug(
-                              "Current progress: {}",
-                              (double) nextState.getIdsToStateTasks().size() / taskCount);
                         } else {
                           LOGGER.error(
                               "Attempted division by zero: fScore is zero in ScheduleController.");
