@@ -195,17 +195,25 @@ public class ScheduleController {
                         AppState.getInstance().setCurrentState(nextState);
                         AppState.getInstance().setHeuristicType(nextState.getHeuristicType());
 
-                        int fScore = nextState.getfScore();
+                        double fScore = (double) nextState.getfScore();
                         if (fScore != 0) {
                           AppState.getInstance()
-                              .setCurrentProgress(nextState.getMakespan() / fScore);
+                              .setCurrentProgress((double) nextState.getMakespan() / fScore);
+
+                          LOGGER.debug(
+                              "Current progress: {}", (double) nextState.getMakespan() / fScore);
                         } else {
                           LOGGER.error(
                               "Attempted division by zero: fScore is zero in ScheduleController.");
-                          AppState.getInstance().setCurrentProgress(0);
+                          AppState.getInstance().setCurrentProgress(0.0);
                         }
 
                         updateGanttChart();
+
+                        if (stateQueue.isEmpty()) {
+                          System.out.println("All states have been visualized.");
+                          AppState.getInstance().setFinished(true);
+                        }
                       });
                   // Add a delay to slow down the Gantt chart updates
                   Thread.sleep(1);

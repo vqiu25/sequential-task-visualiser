@@ -4,6 +4,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.jgrapht.Graph;
@@ -19,7 +21,8 @@ public class AppState {
   private BlockingQueue<State> stateQueue = new LinkedBlockingQueue<>();
   private final IntegerProperty fScoreProperty = new SimpleIntegerProperty(0);
   private final IntegerProperty heuristicTypeProperty = new SimpleIntegerProperty(0);
-  private final IntegerProperty currentProgressProperty = new SimpleIntegerProperty(0);
+  private final SimpleDoubleProperty currentProgressProperty = new SimpleDoubleProperty(0);
+  private final SimpleBooleanProperty finishedProperty = new SimpleBooleanProperty(false);
   private boolean running = true;
 
   private Graph<IOTask, DefaultWeightedEdge> graph;
@@ -113,16 +116,28 @@ public class AppState {
     return heuristicTypeProperty.get();
   }
 
-  public IntegerProperty currentProgressProperty() {
+  public SimpleDoubleProperty currentProgressProperty() {
     return currentProgressProperty;
   }
 
-  public int getCurrentProgress() {
+  public Double getCurrentProgress() {
     return currentProgressProperty.get();
   }
 
-  public void setCurrentProgress(int progress) {
+  public void setCurrentProgress(Double progress) {
     this.currentProgressProperty.set(progress);
+  }
+
+  public SimpleBooleanProperty finishedProperty() {
+    return finishedProperty;
+  }
+
+  public boolean isFinished() {
+    return finishedProperty.get();
+  }
+
+  public void setFinished(boolean finished) {
+    this.finishedProperty.set(finished);
   }
 
   public void setHeuristicType(int heuristicType) {

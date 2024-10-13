@@ -46,7 +46,14 @@ public class HeaderController {
                   globalProgressBar, globalProgressBar.getProgress(), newValue.doubleValue());
             });
 
-    // timeline.stop(); // TODO: add event listener for when the algorithm finishes to stop timer?
+    AppState.getInstance()
+        .finishedProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              if (newValue) {
+                stopTimerAndFinish();
+              }
+            });
   }
 
   private void smoothAnimateProgress(
@@ -91,5 +98,15 @@ public class HeaderController {
     long secondsElapsed = ChronoUnit.SECONDS.between(startTime, Instant.now());
     storedSeconds = storedSeconds + secondsElapsed;
     timeline.pause();
+  }
+
+  private void stopTimerAndFinish() {
+    timeline.stop();
+
+    playPause.setDisable(true);
+
+    playPauseLabel.setText("End");
+
+    LOGGER.debug("Algorithm finished, timer stopped, and button disabled.");
   }
 }
