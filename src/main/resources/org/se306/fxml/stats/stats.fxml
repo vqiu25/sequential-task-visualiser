@@ -187,7 +187,7 @@
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="bestEtaLabel" text="X" />
+                              <Label fx:id="bestEtaLabel" text="N/A" />
                            </children>
                         </VBox>
                      </children>
@@ -201,7 +201,7 @@
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1b1c24" height="10.0" stroke="TRANSPARENT" strokeType="INSIDE" width="135.0" />
                   <Label text="Bottom">
                      <font>
-                        <Font name="System Bold" size="10.0" />
+                        <Font name="System Bold" size="9.0" />
                      </font>
                      <padding>
                         <Insets top="40.0" />
@@ -224,13 +224,13 @@
                                     <Insets bottom="2.0" />
                                  </padding>
                                  <font>
-                                    <Font size="10.0" />
+                                    <Font size="9.0" />
                                  </font>
                               </Label>
                               <Circle fx:id="dataCircle" fill="#292a34" radius="11.0" stroke="#1b1c24" strokeType="INSIDE" strokeWidth="2.0" />
                               <Label alignment="CENTER" prefWidth="206.0" text="Data">
                                  <font>
-                                    <Font name="System Bold" size="10.0" />
+                                    <Font name="System Bold" size="9.0" />
                                  </font>
                                  <padding>
                                     <Insets top="2.0" />
@@ -254,7 +254,7 @@
                               <Circle fx:id="idleCircle" fill="#292a34" radius="11.0" stroke="#1b1c24" strokeType="INSIDE" strokeWidth="2.0" />
                               <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="206.0" text="Idle" textAlignment="CENTER">
                                  <font>
-                                    <Font name="System Bold" size="10.0" />
+                                    <Font name="System Bold" size="9.0" />
                                  </font>
                                  <padding>
                                     <Insets top="2.0" />

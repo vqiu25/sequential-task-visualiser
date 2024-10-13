@@ -78,7 +78,7 @@ public class HeaderController {
 
   private void startAlgorithm() {
     AppState.getInstance().setRunning(true);
-    playPauseLabel.setText("PAUSE");
+    playPauseLabel.setText("Pause");
     startTime = Instant.now();
     timeline.play();
   }
@@ -94,7 +94,7 @@ public class HeaderController {
   private void pauseAlgorithm() {
     // TODO: or whatever way we have of notifying the algorithm to pause
     AppState.getInstance().setRunning(false);
-    playPauseLabel.setText("RESUME");
+    playPauseLabel.setText("Resume");
     long secondsElapsed = ChronoUnit.SECONDS.between(startTime, Instant.now());
     storedSeconds = storedSeconds + secondsElapsed;
     timeline.pause();

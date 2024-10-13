@@ -1,13 +1,6 @@
 package org.se306.visualisation;
 
 import java.io.IOException;
-
-import org.se306.visualisation.controllers.WrapperController;
-import org.se306.visualisation.utils.ControllerUtils;
-import org.se306.visualisation.utils.ResourceUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,6 +9,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.se306.visualisation.controllers.WrapperController;
+import org.se306.visualisation.utils.ControllerUtils;
+import org.se306.visualisation.utils.ResourceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FxApp extends Application {
 
@@ -33,7 +31,8 @@ public class FxApp extends Application {
     FxApp.stage = stage;
 
     // Load scene
-    scene = new Scene(new AnchorPane(), 800, 450);
+    AnchorPane rootPane = new AnchorPane();
+    scene = new Scene(rootPane, 800, 450);
     stage.setScene(scene);
     Pair<Parent, WrapperController> main = ControllerUtils.loadFxml("wrapper.fxml");
     scene.setRoot(main.getKey());
@@ -49,6 +48,13 @@ public class FxApp extends Application {
 
     // Set up fullscreen
     // stage.setFullScreen(true);
+    stage.setFullScreenExitHint("Press F11 to exit full screen mode.");
+    scene.setOnKeyPressed(
+        event -> {
+          if (event.getCode() == KeyCode.F11) stage.setFullScreen(!stage.isFullScreen());
+        });
+
+    // Set up fullscreen
     stage.setFullScreenExitHint("Press F11 to exit full screen mode.");
     scene.setOnKeyPressed(
         event -> {
