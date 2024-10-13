@@ -3,12 +3,14 @@ package org.se306.visualisation.controllers.stategraph;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import org.se306.AppState;
+import org.se306.domain.State;
+
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import org.se306.AppState;
-import org.se306.domain.State;
 
 public class StateGraphController {
 
@@ -73,7 +75,7 @@ public class StateGraphController {
         (MAX_VERTICAL_SPACING - 20) / (AppState.getInstance().getTaskCount() - 1);
 
     // Ensure non-root nodes start at a position below 20
-    return 10 + NODE_SIZE + taskCount * verticalSpacing;
+    return 15 + NODE_SIZE + taskCount * verticalSpacing;
   }
 
   // Method to calculate vertical position based on the number of tasks using logarithmic scaling
