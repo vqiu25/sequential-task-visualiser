@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import org.se306.AppState;
 import org.se306.domain.State;
 import org.se306.domain.StateTask;
+import org.se306.visualisation.controllers.shared.ColourMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,8 +148,9 @@ public class ScheduleController {
 
       // Create the task rectangle
       Rectangle taskRectangle = new Rectangle(paneWidth - 4, taskHeight);
-      taskRectangle.setFill(Color.web("#b1dff7"));
-      taskRectangle.setStroke(Color.web("#61b5f1"));
+      String[] colours = ColourMapping.getColours(task.getId());
+      taskRectangle.setFill(Color.web(colours[0]));
+      taskRectangle.setStroke(Color.web(colours[1]));
       taskRectangle.setStrokeType(StrokeType.INSIDE);
       taskRectangle.setStrokeWidth(2);
       taskRectangle.setArcWidth(17);

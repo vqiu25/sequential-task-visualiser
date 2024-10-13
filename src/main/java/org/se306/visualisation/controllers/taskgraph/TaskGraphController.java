@@ -1,9 +1,13 @@
 package org.se306.visualisation.controllers.taskgraph;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.se306.AppState;
 import org.se306.domain.IOTask;
+import org.se306.visualisation.controllers.shared.ColourMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +18,7 @@ import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrateg
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartRadiusProvider;
+import com.brunomnsilva.smartgraph.graphview.SmartStylableNode;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -42,6 +47,17 @@ public class TaskGraphController {
 
     SmartGraphPanel<String, String> graphView =
         new SmartGraphPanel<>(graph, strategy, layoutStrategy);
+
+    graph
+        .vertices()
+        .forEach(
+            vertex -> {
+              SmartStylableNode node = graphView.getStylableVertex(vertex);
+              String[] colors =
+                  ColourMapping.getColours(
+                      extractVertexId(vertex.toString())); // Fetch colors based on vertex ID
+              node.setStyleInline("-fx-fill: " + colors[0] + "; -fx-stroke: " + colors[1]);
+            });
 
     int numVertices = graph.vertices().size();
     SmartRadiusProvider<String> radiusProvider = vertex -> (numVertices >= 20) ? 5.0 : 10.0;
@@ -74,5 +90,14 @@ public class TaskGraphController {
               graph.insertEdge(source.toString(), target.toString(), edge.toString());
             });
     return graph;
+  }
+
+  public String extractVertexId(String vertexString) {
+    Pattern pattern = Pattern.compile("Vertex\\{(.*?)\\}");
+    Matcher matcher = pattern.matcher(vertexString);
+    if (matcher.find()) {
+      return matcher.group(1); // Returns the content within the curly braces
+    }
+    return null;
   }
 }
