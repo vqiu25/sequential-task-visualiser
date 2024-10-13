@@ -45,7 +45,7 @@ public class StateGraphController {
   // This method adds the new state to the graph, drawing it and linking it to the parent
   public void addStateToGraph(State state) {
     // Calculate the vertical position based on the number of tasks in this state
-    double y = getLogarithmicVerticalPosition(state.getIdsToStateTasks().size());
+    double y = getEvenlyDistributedVerticalPosition(state.getIdsToStateTasks().size());
 
     // Calculate the x position (randomized for each node except the root)
     double x = (state.getParentState() == null) ? CANVAS_WIDTH / 2 : getRandomXPosition();
@@ -60,6 +60,20 @@ public class StateGraphController {
     if (state.getParentState() != null) {
       drawLineToParent(x, y, state.getParentState());
     }
+  }
+
+  // Method to calculate vertical position based on the number of tasks (layers)
+  private double getEvenlyDistributedVerticalPosition(int taskCount) {
+    if (taskCount == 0) {
+      return 20;
+    }
+
+    // Evenly distribute based on taskCount, with some padding for nodes
+    double verticalSpacing =
+        (MAX_VERTICAL_SPACING - 20) / (AppState.getInstance().getTaskCount() - 1);
+
+    // Ensure non-root nodes start at a position below 20
+    return 10 + NODE_SIZE + taskCount * verticalSpacing;
   }
 
   // Method to calculate vertical position based on the number of tasks using logarithmic scaling
